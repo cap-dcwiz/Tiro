@@ -9,6 +9,8 @@ python = "^3.10"
 pydantic = "^1.9.0"
 Faker = "^13.3.4"
 pydantic-factories = "^1.2.7"
+exrex = "^0.10.5"
+fastapi = "^0.75.1"
 
 [tool.poetry.dev-dependencies]
 
