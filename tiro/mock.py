@@ -1,6 +1,8 @@
 from typing import Optional, Union
 from uuid import uuid1
 
+from fastapi import FastAPI
+
 from tiro.utils import camel_to_snake, DataPointTypes
 from tiro.vocabulary import Entity, DataPointInfo, Telemetry
 
@@ -12,10 +14,13 @@ class MockedItem:
 
 
 class MockedEntity(MockedItem):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, entity_type, *args, **kwargs):
         super(MockedEntity, self).__init__(*args, **kwargs)
-        self.children: dict[str, list[MockedEntity]] = {}
-        self.uuid: Optional[str] = None
+        self.children: dict[str, dict[str, MockedEntity]] = {}
+        self.uuid: Optional[str] = str(uuid1())
+        self.entity_type = entity_type
+        self._initialised = False
+        self._path = None
 
         for dp_type in DataPointInfo.SUB_CLASSES:
             setattr(self, dp_type.__name__.lower(), {})
@@ -27,12 +32,17 @@ class MockedEntity(MockedItem):
                 dps[k] = MockedDataPoint(v, parent=self)
 
     def generate(self, regenerate=True, include_data_points=True, change_attrs=False):
-        if not self.uuid or regenerate:
-            self.uuid = str(uuid1())
+        if not self._initialised or regenerate:
             self.children = {}
             for k, v in self.prototype.children.items():
                 num = self.prototype.child_info[k].number_faker()
-                self.children[k.lower()] = [MockedEntity(v, parent=self).generate() for _ in range(num)]
+                entity_type = k.lower()
+                _children = {}
+                for _ in range(num):
+                    entity = MockedEntity(entity_type=entity_type, prototype=v, parent=self)
+                    _children[entity.uuid] = entity.generate()
+                self.children[entity_type] = _children
+            self._initialised = True
         if include_data_points:
             self.generate_data_points(change_attrs=change_attrs or regenerate)
         return self
@@ -41,14 +51,12 @@ class MockedEntity(MockedItem):
         self.generate(regenerate=regenerate,
                       include_data_points=include_data_points,
                       change_attrs=change_attrs)
-        res = dict(uuid=self.uuid)
+        res = {}
         if self.children:
-            res |= dict(
-                entities={k: [c.dict(regenerate=regenerate,
+            res |= {k: {uuid: c.dict(regenerate=regenerate,
                                      include_data_points=include_data_points,
-                                     change_attrs=change_attrs) for c in v]
-                          for k, v in self.children.items()}
-            )
+                                     change_attrs=change_attrs) for uuid, c in v.items()}
+                    for k, v in self.children.items()}
         for dp_type in DataPointInfo.SUB_CLASSES:
             dp_type_name = dp_type.__name__.lower()
             dps = getattr(self, dp_type_name)
@@ -74,24 +82,37 @@ class MockedEntity(MockedItem):
             return self
         else:
             for v in self.children.values():
-                for c in v:
+                for c in v.values():
                     entity = c.search_entity(uuid)
                     if entity:
                         return entity
 
+    @property
+    def path(self):
+        if self._path is None:
+            if not self.parent:
+                self._path = ""
+            else:
+                self._path = f"{self.parent.path}.{self.entity_type}.{self.uuid}".strip(".")
+        return self._path
+
     def list_entities(self) -> tuple[str, "MockedEntity"]:
         self.generate(regenerate=False, include_data_points=False)
-        yield self.uuid, self
+        yield self.path, self
         for v in self.children.values():
-            for c in v:
+            for c in v.values():
                 yield from c.list_entities()
 
     def list_data_points(self) -> tuple[str, "MockedDataPoint"]:
         self.generate(regenerate=False, include_data_points=False)
         for dp_type in DataPointInfo.SUB_CLASSES:
-            dps = getattr(self, dp_type.__name__.lower())
+            dp_type_name = dp_type.__name__.lower()
+            dps = getattr(self, dp_type_name)
             for k, v in dps.items():
-                yield f"{self.uuid}/{k}", v
+                yield f"{self.path}.{dp_type_name}.{k}".strip("."), v
+        for v in self.children.values():
+            for c in v.values():
+                yield from c.list_data_points()
 
     def gen_data_point(self, dp_name, change_attrs=False) -> Union[DataPointTypes]:
         self.generate(regenerate=False, include_data_points=False)
@@ -100,6 +121,14 @@ class MockedEntity(MockedItem):
             if dp_name in dps:
                 return dps[dp_name].generate(change_attrs=change_attrs).dict()
         raise KeyError(f"Cannot find data points {dp_name} in {self.prototype.unique_name}")
+
+    def get_child(self, path: str) -> 'MockedEntity':
+        if path:
+            c_type, _, path = path.partition(".")
+            c_uuid, _, path = path.partition(".")
+            return self.children[c_type][c_uuid].get_child(path)
+        else:
+            return self
 
 
 class MockedDataPoint(MockedItem):
@@ -123,22 +152,44 @@ class MockedDataPoint(MockedItem):
 
 class Mocker:
     def __init__(self, entity: Entity):
-        self.entity: MockedEntity = MockedEntity(entity)
+        self.entity: MockedEntity = MockedEntity(None, entity)
         self.entity_cache: Optional[dict[str, MockedEntity]] = None
 
-    def dict(self, regenerate=False, **kwargs):
+    def dict(self, regenerate: bool = False, **kwargs):
         if regenerate:
             self.entity_cache = None
         return self.entity.dict(regenerate=regenerate, **kwargs)
 
-    def gen_data_points(self, path, change_attr=False):
-        uuid, dp_name = path.split("/")
-        if self.entity_cache is None:
-            self.entity_cache = {k: v for k, v in self.entity.list_entities()}
-        return self.entity_cache[uuid].gen_data_point(dp_name, change_attrs=change_attr)
+    def gen_data_points(self, path: str, change_attr: bool = False):
+        path, _, dp_name = path.rpartition(".")
+        path, _, _ = path.rpartition(".")
+        return self.entity.get_child(path).gen_data_point(dp_name, change_attrs=change_attr)
 
     def list_entities(self) -> list[str]:
         return [k for k, _ in self.entity.list_entities()]
 
     def list_data_points(self) -> list[str]:
         return [k for k, _ in self.entity.list_data_points()]
+
+
+class MockApp(FastAPI):
+    def __init__(self, mocker, *args, **kwargs):
+        super(MockApp, self).__init__(*args, **kwargs)
+        self.mocker: Mocker = Mocker(mocker)
+
+        @self.get("/hierarchy")
+        def get_hierarchy():
+            return self.mocker.dict(include_data_points=False)
+
+        @self.get("/sample")
+        def get_sample(change_attrs: bool = False):
+            return self.mocker.dict(change_attrs=change_attrs)
+
+        @self.get("/points")
+        def list_points():
+            return self.mocker.list_data_points()
+
+        @self.get("/points/{path:str}")
+        def get_point(path):
+            return self.mocker.gen_data_points(path)
+

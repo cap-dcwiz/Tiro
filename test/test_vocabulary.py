@@ -50,8 +50,7 @@ scenario.requires(
     "Temperature"
 )
 
-# print(scenario.model(hide_data_points=False).schema_json(indent=2))
-#
+print(scenario.model(hide_data_points=False).schema_json(indent=2))
+
 print(scenario.fake(include_data_points=True).json(indent=2))
-#
-# print(scenario.children["Racks"].mock_data_points())
+

@@ -11,6 +11,7 @@ Faker = "^13.3.4"
 pydantic-factories = "^1.2.7"
 exrex = "^0.10.5"
 fastapi = "^0.75.1"
+uvicorn = "^0.17.6"
 
 [tool.poetry.dev-dependencies]
 

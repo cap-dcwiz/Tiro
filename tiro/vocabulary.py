@@ -1,7 +1,7 @@
 from inspect import get_annotations
 from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable
 
-from pydantic import BaseModel, conlist, create_model
+from pydantic import BaseModel, create_model
 from pydantic.generics import GenericModel
 
 from .utils import camel_to_snake, DataPointTypes
@@ -47,7 +47,8 @@ class EntityList:
             self.number_faker = faking_number
 
     def new_entity(self, parent: Optional["Entity"] = None):
-        return self.cls(parent, min_items=self.min_items, max_items=self.max_items)
+        # return self.cls(parent, min_items=self.min_items, max_items=self.max_items)
+        return self.cls(parent)
 
 
 class DataPoint(GenericModel, Generic[DPT]):
@@ -112,15 +113,16 @@ class Entity:
 
     def __init__(self,
                  parent: Optional["Entity"] = None,
-                 min_items: Optional[int] = None,
-                 max_items: Optional[int] = None):
+                 # min_items: Optional[int] = None,
+                 # max_items: Optional[int] = None
+                 ):
         self.children: dict[str, Entity] = {}
         self.parent: Optional[Entity] = parent
-        self.conlist_args: dict[str, Any] = dict(
-            min_items=min_items,
-            max_items=max_items,
-            unique_items=True
-        )
+        # self.conlist_args: dict[str, Any] = dict(
+        #     min_items=min_items,
+        #     max_items=max_items,
+        #     unique_items=True
+        # )
         self._used_data_points: set[str] = set()
 
     @property
@@ -165,26 +167,20 @@ class Entity:
             sub_models[camel_to_snake(dp_name)] = (model_cache[dp_model_name], ...)
         return create_model(f"{self.unique_name}_{dp_type.__name__}", **sub_models)
 
-    def _create_entities_model(self, hide_data_points: bool = False) -> Optional[BaseModel]:
+    def _create_entities_model(self,
+                               hide_data_points: bool = False
+                               ) -> dict[str, tuple[type, Any]]:
         fields = {
-            name.lower(): (ins.model_list(hide_data_points=hide_data_points), ...)
+            name.lower(): (Optional[ins.model_list(hide_data_points=hide_data_points)], ...)
             for name, ins in self.children.items()
         }
-        if fields:
-            return create_model(f"{self.unique_name}_Entities", **fields)
-        else:
-            return None
+        return fields
 
     def model_list(self, hide_data_points: bool = False):
-        return conlist(self.model(hide_data_points=hide_data_points), **self.conlist_args)
+        return dict[str, self.model(hide_data_points=hide_data_points)]
 
     def model(self, hide_data_points: bool = False) -> Type[BaseModel]:
-        fields: dict[str, tuple[type, Any]] = dict(
-            uuid=(str, ...)
-        )
-        entities_model = self._create_entities_model(hide_data_points=hide_data_points)
-        if entities_model:
-            fields |= dict(entities=(entities_model, ...))
+        fields: dict[str, tuple[type, Any]] = self._create_entities_model(hide_data_points=hide_data_points)
         if not hide_data_points:
             for dp_type in DataPointInfo.SUB_CLASSES:
                 dp_model = self._create_date_points_model(dp_type)
