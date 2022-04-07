@@ -85,7 +85,7 @@ class RequireHelper:
     def __getattr__(self, item):
         return RequireHelper(item, self)
 
-    def use(self):
+    def use(self) -> "Entity":
         return self.origin.requires(self.path)
 
 
@@ -113,16 +113,9 @@ class Entity:
 
     def __init__(self,
                  parent: Optional["Entity"] = None,
-                 # min_items: Optional[int] = None,
-                 # max_items: Optional[int] = None
                  ):
         self.children: dict[str, Entity] = {}
         self.parent: Optional[Entity] = parent
-        # self.conlist_args: dict[str, Any] = dict(
-        #     min_items=min_items,
-        #     max_items=max_items,
-        #     unique_items=True
-        # )
         self._used_data_points: set[str] = set()
 
     @property
@@ -151,7 +144,7 @@ class Entity:
                         self.children[path] = self.child_info[path].new_entity(self)
         return self
 
-    def _create_date_points_model(self, dp_type) -> Optional[BaseModel]:
+    def _create_date_points_model(self, dp_type: Type[DataPoint]) -> Optional[BaseModel]:
         info = {k: v for k, v in self.data_point_info.items()
                 if isinstance(v, dp_type) and k in self._used_data_points}
         if not info:
@@ -176,7 +169,7 @@ class Entity:
         }
         return fields
 
-    def model_list(self, hide_data_points: bool = False):
+    def model_list(self, hide_data_points: bool = False) -> dict[str, type]:
         return dict[str, self.model(hide_data_points=hide_data_points)]
 
     def model(self, hide_data_points: bool = False) -> Type[BaseModel]:
@@ -188,7 +181,7 @@ class Entity:
                     fields |= {dp_type.__name__.lower(): (dp_model, ...)}
         return create_model(self.unique_name, __config__=self.Config, **fields)
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str) -> RequireHelper:
         return RequireHelper(item, self)
 
     def fake(self, include_data_points=True) -> "Entity":

@@ -31,7 +31,10 @@ class MockedEntity(MockedItem):
             if k not in dps:
                 dps[k] = MockedDataPoint(v, parent=self)
 
-    def generate(self, regenerate=True, include_data_points=True, change_attrs=False):
+    def generate(self,
+                 regenerate=True,
+                 include_data_points=True,
+                 change_attrs=False) -> "MockedEntity":
         if not self._initialised or regenerate:
             self.children = {}
             for k, v in self.prototype.children.items():
@@ -47,7 +50,10 @@ class MockedEntity(MockedItem):
             self.generate_data_points(change_attrs=change_attrs or regenerate)
         return self
 
-    def dict(self, regenerate=False, include_data_points=True, change_attrs=False):
+    def dict(self,
+             regenerate=False,
+             include_data_points=True,
+             change_attrs=False) -> dict:
         self.generate(regenerate=regenerate,
                       include_data_points=include_data_points,
                       change_attrs=change_attrs)
@@ -77,7 +83,7 @@ class MockedEntity(MockedItem):
             for v in dps.values():
                 v.generate(**kwargs)
 
-    def search_entity(self, uuid):
+    def search_entity(self, uuid: str) -> Optional["MockedEntity"]:
         if uuid == self.uuid:
             return self
         else:
@@ -88,7 +94,7 @@ class MockedEntity(MockedItem):
                         return entity
 
     @property
-    def path(self):
+    def path(self) -> str:
         if self._path is None:
             if not self.parent:
                 self._path = ""
@@ -114,7 +120,7 @@ class MockedEntity(MockedItem):
             for c in v.values():
                 yield from c.list_data_points()
 
-    def gen_data_point(self, dp_name, change_attrs=False) -> Union[DataPointTypes]:
+    def gen_data_point(self, dp_name: str, change_attrs=False) -> Union[DataPointTypes]:
         self.generate(regenerate=False, include_data_points=False)
         for dp_type in DataPointInfo.SUB_CLASSES:
             dps = getattr(self, dp_type.__name__.lower())
@@ -136,14 +142,14 @@ class MockedDataPoint(MockedItem):
         super(MockedDataPoint, self).__init__(*args, **kwargs)
         self.cur_value = None
 
-    def generate(self, change_attrs=False):
+    def generate(self, change_attrs=False) -> "MockedDataPoint":
         if self.cur_value is None \
                 or isinstance(self.prototype, Telemetry) \
                 or change_attrs:
             self.cur_value = self.prototype.faker()
         return self
 
-    def dict(self):
+    def dict(self) -> dict:
         res = dict(value=self.cur_value)
         if self.prototype.unit is not None:
             res |= dict(unit=self.prototype.unit)
@@ -155,7 +161,7 @@ class Mocker:
         self.entity: MockedEntity = MockedEntity(None, entity)
         self.entity_cache: Optional[dict[str, MockedEntity]] = None
 
-    def dict(self, regenerate: bool = False, **kwargs):
+    def dict(self, regenerate: bool = False, **kwargs) -> dict:
         if regenerate:
             self.entity_cache = None
         return self.entity.dict(regenerate=regenerate, **kwargs)
@@ -173,9 +179,9 @@ class Mocker:
 
 
 class MockApp(FastAPI):
-    def __init__(self, mocker, *args, **kwargs):
+    def __init__(self, entity: Entity, *args, **kwargs):
         super(MockApp, self).__init__(*args, **kwargs)
-        self.mocker: Mocker = Mocker(mocker)
+        self.mocker: Mocker = Mocker(entity)
 
         @self.get("/hierarchy")
         def get_hierarchy():
@@ -192,4 +198,3 @@ class MockApp(FastAPI):
         @self.get("/points/{path:str}")
         def get_point(path):
             return self.mocker.gen_data_points(path)
-

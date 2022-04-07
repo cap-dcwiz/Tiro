@@ -4,7 +4,7 @@ from random import randint
 from faker import Faker
 from pydantic import confloat, conint
 
-from tiro.mock import Mocker, create_app
+from tiro.mock import Mocker
 from tiro.utils import insert_into
 from tiro.vocabulary import Entity, Telemetry, Attribute, EntityList
 
@@ -49,6 +49,7 @@ class Room(Entity):
 
 scenario = Room()
 scenario.Rack.FrontTemperature.use()
+scenario.Server.MemoryTemperature.use()
 scenario.requires(
     "Site",
     "Rack.BackTemperature",
@@ -69,7 +70,7 @@ pprint(mocker.dict(include_data_points=False))
 #
 # print(scenario.model().parse_obj(mocker.dict()).json(indent=2))
 
-# mock_data = {}
-# for path in mocker.list_data_points():
-#     insert_into(mock_data, path, mocker.gen_data_points(path))
-# print(scenario.model().parse_obj(mock_data).json(indent=2))
+mock_data = {}
+for path in mocker.list_data_points():
+    insert_into(mock_data, path, mocker.gen_data_points(path))
+print(scenario.model().parse_obj(mock_data).json(indent=2))
