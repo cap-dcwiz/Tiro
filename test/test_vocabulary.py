@@ -25,7 +25,7 @@ class Rack(Entity):
     BackTemperature: Telemetry(temperature_type, "°C")
 
     # Entities
-    Servers: EntityList(Server, faking_number=lambda: randint(2, 20))
+    Server: EntityList(Server, faking_number=lambda: randint(2, 20))
 
 
 class Room(Entity):
@@ -36,19 +36,25 @@ class Room(Entity):
     Site: Attribute(str)
 
     # Entities
-    Racks: EntityList(Rack, faking_number=10)
-    Servers: EntityList(Server, faking_number=5)
+    Rack: EntityList(Rack, faking_number=10)
+    Server: EntityList(Server, faking_number=5)
 
+
+yaml = """
+- Site
+- Rack:
+    - BackTemperature
+    - Server:
+        - CPUTemperature
+        - MemoryTemperature
+- Server:
+    - CPUTemperature
+- Temperature
+"""
 
 scenario = Room()
-scenario.Racks.FrontTemperature.use()
-scenario.requires(
-    "Racks.BackTemperature",
-    "Racks.Servers.CPUTemperature",
-    "Racks.Servers.MemoryTemperature",
-    "Servers.CPUTemperature",
-    "Temperature"
-)
+scenario.Rack.FrontTemperature.use()
+scenario.requires(yaml=yaml)
 
 print(scenario.model(hide_data_points=False).schema_json(indent=2))
 

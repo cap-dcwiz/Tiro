@@ -166,7 +166,7 @@ class Mocker:
             self.entity_cache = None
         return self.entity.dict(regenerate=regenerate, **kwargs)
 
-    def gen_data_points(self, path: str, change_attr: bool = False):
+    def gen_data_point(self, path: str, change_attr: bool = False):
         path, _, dp_name = path.rpartition(".")
         path, _, _ = path.rpartition(".")
         return self.entity.get_child(path).gen_data_point(dp_name, change_attrs=change_attr)
@@ -197,4 +197,4 @@ class MockApp(FastAPI):
 
         @self.get("/points/{path:str}")
         def get_point(path):
-            return self.mocker.gen_data_points(path)
+            return self.mocker.gen_data_point(path)

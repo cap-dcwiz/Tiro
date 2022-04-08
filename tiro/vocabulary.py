@@ -1,8 +1,10 @@
+from collections.abc import Iterable
 from inspect import get_annotations
 from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable
 
 from pydantic import BaseModel, create_model
 from pydantic.generics import GenericModel
+from yaml import safe_load
 
 from .utils import camel_to_snake, DataPointTypes
 
@@ -129,7 +131,20 @@ class Entity:
         else:
             return self.name
 
-    def requires(self, *paths: str) -> "Entity":
+    def _parse_yaml(self, d, prefix="") -> Iterable[str]:
+        if isinstance(d, list):
+            for item in d:
+                yield from self._parse_yaml(item, prefix=prefix)
+        elif isinstance(d, dict):
+            for k, v in d.items():
+                yield from self._parse_yaml(v, prefix=f"{prefix}.{k}")
+        elif isinstance(d, str):
+            yield f"{prefix}.{d}".strip(".")
+
+    def requires(self, *paths: str, yaml: str = None) -> "Entity":
+        paths = list(paths)
+        if yaml:
+            paths.extend(self._parse_yaml(safe_load(yaml)))
         for path in paths:
             if "." in path:
                 entity, _, path = path.partition(".")
@@ -144,7 +159,7 @@ class Entity:
                         self.children[path] = self.child_info[path].new_entity(self)
         return self
 
-    def _create_date_points_model(self, dp_type: Type[DataPoint]) -> Optional[BaseModel]:
+    def _create_date_points_model(self, dp_type: Type[DataPoint]) -> Optional[Type[BaseModel]]:
         info = {k: v for k, v in self.data_point_info.items()
                 if isinstance(v, dp_type) and k in self._used_data_points}
         if not info:
@@ -169,7 +184,7 @@ class Entity:
         }
         return fields
 
-    def model_list(self, hide_data_points: bool = False) -> dict[str, type]:
+    def model_list(self, hide_data_points: bool = False) -> Type[dict[str, BaseModel]]:
         return dict[str, self.model(hide_data_points=hide_data_points)]
 
     def model(self, hide_data_points: bool = False) -> Type[BaseModel]:
@@ -179,17 +194,10 @@ class Entity:
                 dp_model = self._create_date_points_model(dp_type)
                 if dp_model:
                     fields |= {dp_type.__name__.lower(): (dp_model, ...)}
-        return create_model(self.unique_name, __config__=self.Config, **fields)
+        return create_model(self.unique_name, config=self.Config, **fields)
 
     def __getattr__(self, item: str) -> RequireHelper:
         return RequireHelper(item, self)
-
-    def fake(self, include_data_points=True) -> "Entity":
-        from pydantic_factories import ModelFactory
-        return type("_Factory",
-                    (ModelFactory,),
-                    dict(__model__=self.model(hide_data_points=not include_data_points))
-                    ).build()
 
     def data_points(self, used_only: bool = True) -> list[str]:
         if used_only:
