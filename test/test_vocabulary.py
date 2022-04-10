@@ -1,9 +1,7 @@
-from pprint import pprint
 from random import randint
 
 from pydantic import confloat, conint
 
-from tiro.mock import MockedEntity
 from tiro.vocabulary import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
@@ -57,6 +55,3 @@ scenario.Rack.FrontTemperature.use()
 scenario.requires(yaml=yaml)
 
 print(scenario.model(hide_data_points=False).schema_json(indent=2))
-
-print(scenario.fake(include_data_points=True).json(indent=2))
-

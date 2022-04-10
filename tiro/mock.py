@@ -1,7 +1,8 @@
+import json
 from typing import Optional, Union
 from uuid import uuid1
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from tiro.utils import camel_to_snake, DataPointTypes
 from tiro.vocabulary import Entity, DataPointInfo, Telemetry
@@ -166,6 +167,15 @@ class Mocker:
             self.entity_cache = None
         return self.entity.dict(regenerate=regenerate, **kwargs)
 
+    def json(self,
+             regenerate: bool = False,
+             include_data_points=True,
+             change_attrs=False, **kwargs) -> str:
+        d = self.dict(regenerate=regenerate,
+                      include_data_points=include_data_points,
+                      change_attrs=change_attrs)
+        return json.dumps(d, **kwargs)
+
     def gen_data_point(self, path: str, change_attr: bool = False):
         path, _, dp_name = path.rpartition(".")
         path, _, _ = path.rpartition(".")
@@ -191,10 +201,13 @@ class MockApp(FastAPI):
         def get_sample(change_attrs: bool = False):
             return self.mocker.dict(change_attrs=change_attrs)
 
-        @self.get("/points")
+        @self.get("/points/")
         def list_points():
             return self.mocker.list_data_points()
 
         @self.get("/points/{path:str}")
         def get_point(path):
-            return self.mocker.gen_data_point(path)
+            try:
+                return self.mocker.gen_data_point(path)
+            except KeyError as e:
+                raise HTTPException(status_code=404, detail=str(e))

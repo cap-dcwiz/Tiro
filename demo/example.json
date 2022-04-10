@@ -1,0 +1,1357 @@
+{
+  "rack": {
+    "86b52648-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b5271a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 17.52,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.46,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52882-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 15.2,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.3,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52986-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 11.97,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.77,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52a62-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.23,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 14.93,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52b34-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 11.65,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 15.9,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52bfc-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 11.13,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.63,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 11.44,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b52d00-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b52d50-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.75,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 28.46,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52e2c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 20.28,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.45,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52ef4-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.6,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.4,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b52fd0-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.9,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.22,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53098-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 14.61,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 16.41,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53160-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.4,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 26.45,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53232-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 15.58,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 17.47,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b532fa-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 26.77,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 29.53,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b533c2-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.67,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 10.84,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5348a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.9,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 18.51,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53552-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.57,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.96,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5361a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.4,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 28.15,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b536e2-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.98,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.78,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b537aa-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.23,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 20.28,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5387c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 17.77,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 29.85,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53958-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 24.5,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 16.85,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53a2a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.72,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 15.92,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53af2-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 15.9,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 29.79,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 25.9,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b53bf6-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b53c46-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 19.31,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 12.7,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53d0e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 16.97,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.33,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53dd6-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.51,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.12,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53e94-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 29.34,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 13.73,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b53f5c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 10.55,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 19.35,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54024-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 19.24,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 28.29,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b540ec-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 12.9,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 10.89,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b541b4-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 22.66,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.16,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 22.96,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b542ae-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b542fe-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 27.31,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 24.34,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b543c6-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 15.4,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.16,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5448e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 20.26,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 19.27,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54556-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.84,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.87,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54614-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 17.94,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 26.7,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b546e6-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.62,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 12.85,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b547a4-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.4,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.45,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 22.3,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b548bc-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b5490c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.19,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 10.85,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b549d4-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 15.59,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.36,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54a9c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.55,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 24.89,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54b64-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.3,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.78,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54c4a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 12.2,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 16.72,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54d1c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.72,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 29.74,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54de4-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 19.95,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 14.79,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54eac-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.5,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.51,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b54f6a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.5,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 17.51,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 11.68,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b55082-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b550e6-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.82,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 13.5,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b551b8-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.28,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 10.56,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55280-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.16,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 16.47,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55348-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 12.97,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 14.3,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55438-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.3,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.5,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55500-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 12.62,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.44,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b555c8-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 24.21,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.38,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55690-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 11.79,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 12.47,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55758-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 22.39,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 24.19,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55820-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.92,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.4,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b558de-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.54,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.82,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b559a6-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.1,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.64,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55a6e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.78,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.8,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55b36-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 27.9,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.63,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55bfe-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.22,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 26.78,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55cbc-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 20.42,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 11.44,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55d84-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 14.67,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 11.47,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b55e4c-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 16.28,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 13.29,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 20.67,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b55f46-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b55f96-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 24.88,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 13.17,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56054-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 26.65,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 26.0,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56202-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 12.59,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 14.38,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b562ca-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.84,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.78,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56392-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 20.66,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 10.3,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5645a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.79,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 24.52,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56518-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 14.16,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.29,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b565e0-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.27,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.42,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b566a8-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.72,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 11.47,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56770-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.4,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 22.56,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5682e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 10.8,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.95,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 24.11,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b56928-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b56978-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 27.62,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 29.68,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56a40-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.98,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 29.29,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56afe-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 11.4,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 24.6,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56bc6-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 16.93,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 10.98,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56c8e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.79,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 24.74,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56d6a-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.75,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.17,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56e32-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 19.74,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 12.75,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56efa-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.94,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 14.53,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b56fb8-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 16.8,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.65,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57080-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.75,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 15.88,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57148-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 16.12,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 16.91,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57210-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 27.49,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 27.31,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b572d8-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 18.65,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.21,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57396-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.2,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 20.65,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5745e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 15.8,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 11.2,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 16.72,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b57558-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b5759e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 26.97,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 19.55,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57666-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 28.62,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 25.56,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b5772e-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 25.53,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 19.1,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b577ec-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 22.89,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 21.81,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b578b4-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 21.16,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 16.12,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 11.35,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b579ae-b8cc-11ec-a5d3-aa966665d395": {
+      "server": {
+        "86b579fe-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 23.1,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 23.87,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57abc-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.49,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 18.2,
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "86b57b84-b8cc-11ec-a5d3-aa966665d395": {
+          "telemetry": {
+            "memory_temperature": {
+              "value": 13.95,
+              "unit": "\u00b0C"
+            },
+            "cpu_temperature": {
+              "value": 15.41,
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "telemetry": {
+        "back_temperature": {
+          "value": 26.53,
+          "unit": "\u00b0C"
+        }
+      }
+    }
+  },
+  "server": {
+    "86b57c88-b8cc-11ec-a5d3-aa966665d395": {
+      "telemetry": {
+        "cpu_temperature": {
+          "value": 15.8,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b57d00-b8cc-11ec-a5d3-aa966665d395": {
+      "telemetry": {
+        "cpu_temperature": {
+          "value": 14.68,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b57d82-b8cc-11ec-a5d3-aa966665d395": {
+      "telemetry": {
+        "cpu_temperature": {
+          "value": 20.1,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b57dfa-b8cc-11ec-a5d3-aa966665d395": {
+      "telemetry": {
+        "cpu_temperature": {
+          "value": 13.9,
+          "unit": "\u00b0C"
+        }
+      }
+    },
+    "86b57e72-b8cc-11ec-a5d3-aa966665d395": {
+      "telemetry": {
+        "cpu_temperature": {
+          "value": 27.58,
+          "unit": "\u00b0C"
+        }
+      }
+    }
+  },
+  "telemetry": {
+    "temperature": {
+      "value": 24.95,
+      "unit": "\u00b0C"
+    }
+  },
+  "attribute": {
+    "site": {
+      "value": "Mays-Taylor"
+    }
+  }
+}
