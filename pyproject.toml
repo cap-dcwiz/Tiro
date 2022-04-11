@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
@@ -14,6 +14,8 @@ typer = "^0.4.1"
 PyYAML = "^6.0"
 httpx = "^0.22.0"
 rich = "^12.2.0"
+nats-py = "^2.1.0"
+karez = {path = "../Karez"}
 
 [tool.poetry.dev-dependencies]
 
@@ -22,4 +24,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-tiro = "tiro.tool:app"
+tiro = "tiro.cli:app"

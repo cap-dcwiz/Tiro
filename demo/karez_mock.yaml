@@ -1,0 +1,17 @@
+dispatchers:
+  - type: tiro_mock
+    connector: tiro_mock
+    interval: 30
+    base_url: http://localhost:8000
+
+connectors:
+  - type: tiro_mock
+    base_url: http://localhost:8000
+
+aggregators:
+  - type: tiro_validate
+    category: telemetry
+    scenario: scenario:scenario
+    uses: use1.yaml
+    retention: 60
+    log_file: validation.log

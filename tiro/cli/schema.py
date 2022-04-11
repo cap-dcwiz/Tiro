@@ -7,7 +7,7 @@ import typer
 from typer import Typer
 
 from tiro.mock import Mocker
-from .utils import prepare_scenario
+from ..utils import prepare_scenario
 
 app = Typer()
 

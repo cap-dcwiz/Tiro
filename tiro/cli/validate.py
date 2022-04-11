@@ -4,8 +4,8 @@ from rich import print
 import typer
 import uvicorn
 
-from tiro.tool.utils import prepare_scenario
-from tiro.validate import ValidationApp, Validator
+from tiro.utils import prepare_scenario
+from tiro.validate import RestfulValidationApp, Validator
 
 app = typer.Typer()
 
@@ -23,5 +23,5 @@ def serve(
     print(f"[green]CONF[/green]:     Log Size: {log_size}")
     scenario = prepare_scenario(scenario_path, uses)
     validator = Validator(scenario, retention=retention, log=True, log_size=log_size)
-    validate_app = ValidationApp(validator)
+    validate_app = RestfulValidationApp(validator)
     uvicorn.run(validate_app, host=host, port=port)

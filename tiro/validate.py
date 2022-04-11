@@ -1,3 +1,4 @@
+import json
 from collections import deque
 from copy import copy
 from dataclasses import dataclass
@@ -26,6 +27,14 @@ class ValidationResult:
             msg += f"Failed!\n{str(self.exception)}"
         return msg
 
+    def json(self):
+        return json.dumps(dict(
+            start=self.start.isoformat(),
+            end=self.end.isoformat(),
+            valid=self.valid,
+            exception=self.exception.errors() if self.exception else None
+        ))
+
 
 class Validator:
     def __init__(self,
@@ -38,9 +47,11 @@ class Validator:
         self._data = {}
         self.retention: Optional[timedelta] = timedelta(seconds=retention) if retention > 0 else None
         self.data_create_time: datetime = datetime.now()
-        self.log: Optional[deque[ValidationResult]] = deque(maxlen=log_size) if log else None
+        self.log: deque[ValidationResult] = deque(maxlen=log_size if log else 1)
+        self._collect_count = 0
 
     def reset_data(self):
+        self._collect_count = 0
         self._data = {}
         if self.retention:
             self.data_create_time = datetime.now()
@@ -61,6 +72,7 @@ class Validator:
     def collect(self, path: str, value: Any):
         self.validate_retention()
         self._insert_data(self._data, path.split("."), value)
+        self._collect_count += 1
 
     @classmethod
     def _insert_data(cls, data: dict, path: list[str], value: Any):
@@ -82,18 +94,34 @@ class Validator:
             res = ValidationResult(period_start, period_end, True, None)
         except ValidationError as e:
             res = ValidationResult(period_start, period_end, False, e)
-        if self.log is not None:
-            print([(str(x.start), str(x.end)) for x in self.log], period_start)
-            if self.log and self.log[0].start == period_start:
-                self.log[0] = res
-            else:
-                self.log.appendleft(res)
+        if self.log and self.log[0].start == period_start:
+            self.log[0] = res
+        else:
+            self.log.appendleft(res)
         return res
 
+    @property
+    def last_validation_start_time(self):
+        if self.log:
+            return self.log[0].start
+        else:
+            return datetime.min
 
-class ValidationApp(FastAPI):
+    @property
+    def last_result(self):
+        if self.log:
+            return self.log[0]
+        else:
+            return None
+
+    @property
+    def current_collection_size(self):
+        return self._collect_count
+
+
+class RestfulValidationApp(FastAPI):
     def __init__(self, validator: Validator, *args, **kwargs):
-        super(ValidationApp, self).__init__(*args, **kwargs)
+        super(RestfulValidationApp, self).__init__(*args, **kwargs)
         self.validator: Validator = validator
 
         @self.post("/points/{path}")
