@@ -7,11 +7,25 @@ dispatchers:
 connectors:
   - type: tiro_mock
     base_url: http://localhost:8000
+    converter:
+    - tiro_fmt
+    - fix_timestamp
+    - fmt_ts
 
-aggregators:
-  - type: tiro_validate
-    category: telemetry
-    scenario: scenario:scenario
-    uses: use1.yaml
-    retention: 60
-    log_file: validation.log
+converters:
+  - type: tiro_fmt
+  - type: fix_timestamp
+    tz_infos:
+      SGT: Aisa/Singapore
+  - type: fmt_ts
+    measurement: tiro_mock_data
+    field_name: field
+    field_value: value
+
+#aggregators:
+#  - type: tiro_validate
+#    category: telemetry
+#    scenario: scenario:scenario
+#    uses: use1.yaml
+#    retention: 60
+#    log_file: validation.log

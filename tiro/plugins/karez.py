@@ -6,9 +6,11 @@ from rich import print, print_json
 from karez.aggregator.base import AggregatorBase
 from karez.config import OptionalConfigEntity, ConfigEntity
 from karez.connector import RestfulConnectorBase
+from karez.converter import ConverterBase
 from karez.dispatcher import DispatcherBase
 from tiro.utils import prepare_scenario
 from tiro.validate import Validator
+from tiro.vocabulary import Entity
 
 
 class DispatcherForMockServer(DispatcherBase):
@@ -34,6 +36,17 @@ class ConnectorForMockServer(RestfulConnectorBase):
         for entity in entities:
             r = await client.get(f"/points/{entity}")
             return [dict(path=entity, result=r.json())]
+
+
+class TiroConverter(ConverterBase):
+    @classmethod
+    def role_description(cls):
+        return "Converter to format Tiro data points"
+
+    def convert(self, payload):
+        path = payload["path"]
+        yield from [x | dict(path=path)
+                    for x in Entity.decompose(path, payload["result"])]
 
 
 class ValidationAggregator(AggregatorBase):

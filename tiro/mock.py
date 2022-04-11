@@ -1,7 +1,9 @@
 import json
+from datetime import datetime
 from typing import Optional, Union
 from uuid import uuid1
 
+from faker import Faker
 from fastapi import FastAPI, HTTPException
 
 from tiro.utils import camel_to_snake, DataPointTypes
@@ -142,16 +144,18 @@ class MockedDataPoint(MockedItem):
     def __init__(self, *args, **kwargs):
         super(MockedDataPoint, self).__init__(*args, **kwargs)
         self.cur_value = None
+        self.gen_timestamp = None
 
     def generate(self, change_attrs=False) -> "MockedDataPoint":
         if self.cur_value is None \
                 or isinstance(self.prototype, Telemetry) \
                 or change_attrs:
             self.cur_value = self.prototype.faker()
+            self.gen_timestamp = Faker().past_datetime(-self.prototype.time_var)
         return self
 
     def dict(self) -> dict:
-        res = dict(value=self.cur_value)
+        res = dict(value=self.cur_value, timestamp=self.gen_timestamp)
         if self.prototype.unit is not None:
             res |= dict(unit=self.prototype.unit)
         return res

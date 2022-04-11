@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from datetime import datetime, timedelta
 from inspect import get_annotations
 from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable
 
@@ -17,10 +18,12 @@ class DataPointInfo:
     def __init__(self,
                  type: Any,
                  unit: Optional[str] = None,
-                 faker: Optional[Callable] = None):
+                 faker: Optional[Callable] = None,
+                 time_var: Optional[timedelta] = timedelta(seconds=0)):
         self.type = type
         self.unit = unit
         self.faker = faker
+        self.time_var = time_var
 
     def __init_subclass__(cls, **kwargs):
         cls.SUB_CLASSES.append(cls)
@@ -55,6 +58,7 @@ class EntityList:
 
 class DataPoint(GenericModel, Generic[DPT]):
     value: DPT
+    timestamp: datetime
     _unit: Optional[str] = None
 
     class Config:
@@ -204,3 +208,38 @@ class Entity:
             return list(self._used_data_points)
         else:
             return list(self.data_point_info.keys())
+
+    @classmethod
+    def decompose(cls, path: str | list[str], value: dict, prefix=None) -> Iterable[dict]:
+        if isinstance(path, str):
+            if path:
+                path = path.split(".")
+            else:
+                path = []
+        prefix = prefix or {}
+        len_prefix = len(path)
+        data_point_types = set(x.__name__.lower() for x in DataPointInfo.SUB_CLASSES)
+        if len_prefix == 0:
+            for k, v in value.items():
+                if k in data_point_types:
+                    for sub_k, sub_v in v.items():
+                        yield prefix | dict(type=k, field=sub_k) | sub_v
+                elif "type" in prefix:
+                    yield prefix | dict(field=k), v
+                else:
+                    for sub_k, sub_v in v.items():
+                        yield from cls.decompose(path, sub_v, prefix | {k: sub_k})
+        elif len_prefix == 1:
+            for name in data_point_types:
+                if path[0] == name:
+                    for k, v in value.items():
+                        yield prefix | dict(type=name, field=k) | v
+                    return
+            for k, v in value.items():
+                yield from cls.decompose(path[1:], v, prefix=prefix | {path[0]: k})
+        else:
+            for name in data_point_types:
+                if path[0] == name:
+                    yield prefix | dict(type=name, field=path[1]) | value
+                    return
+            yield from cls.decompose(path[2:], value, prefix=prefix | {path[0]: path[1]})

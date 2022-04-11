@@ -1,10 +1,11 @@
-from pprint import pprint
-from random import randint
+from random import randint, choice
+from rich import print_json, print
 
 from faker import Faker
 from pydantic import confloat, conint
 
 from tiro.mock import Mocker
+from tiro.validate import Validator
 from tiro.vocabulary import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
@@ -39,10 +40,10 @@ class Room(Entity):
     Temperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
 
     # Attributes
-    Site: Attribute(str, faker=lambda: faker.company())
+    Site: Attribute(str, faker=faker.company)
 
     # Entities
-    Rack: EntityList(Rack, faking_number=1)
+    Rack: EntityList(Rack, faking_number=10)
     Server: EntityList(Server, faking_number=5)
 
 
@@ -60,11 +61,9 @@ scenario.requires(
 
 mocker = Mocker(scenario)
 
-pprint(mocker.dict(include_data_points=False))
-# pprint(mocker.dict(regenerate=True, include_data_points=False))
-# print(json.dumps(mocker.dict(), indent=2))
-# pprint(mocker.dict())
-# pprint(mocker.dict(change_attrs=True))
-# pprint(mocker.dict(regenerate=True))
-#
-print(scenario.model().parse_obj(mocker.dict()).json(indent=2))
+# print(mocker.dict())
+
+print(list(scenario.decompose("rack.4a248aea-b96a-11ec-90b6-aa966665d395.server.4a248cb6-b96a-11ec-90b6-aa966665d395.telemetry.cpu_temperature", dict(A=2))))
+
+for item in scenario.decompose("", mocker.dict()):
+    print(item)

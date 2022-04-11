@@ -28,3 +28,5 @@ def prepare_scenario(scenario_path: str, uses: list[Path | str]):
                 use = Path(use)
             scenario.requires(yaml=use.open().read())
     return scenario
+
+
