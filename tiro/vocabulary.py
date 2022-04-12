@@ -1,3 +1,4 @@
+import re
 from collections.abc import Iterable
 from datetime import datetime, timedelta
 from inspect import get_annotations
@@ -7,7 +8,7 @@ from pydantic import BaseModel, create_model
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, split_path, concat_path, snake_to_camel
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -141,17 +142,17 @@ class Entity:
                 yield from self._parse_yaml(item, prefix=prefix)
         elif isinstance(d, dict):
             for k, v in d.items():
-                yield from self._parse_yaml(v, prefix=f"{prefix}.{k}")
+                yield from self._parse_yaml(v, prefix=concat_path(prefix, k))
         elif isinstance(d, str):
-            yield f"{prefix}.{d}".strip(".")
+            yield concat_path(prefix, d)
 
     def requires(self, *paths: str, yaml: str = None) -> "Entity":
         paths = list(paths)
         if yaml:
             paths.extend(self._parse_yaml(safe_load(yaml)))
         for path in paths:
-            if "." in path:
-                entity, _, path = path.partition(".")
+            if PATH_SEP in path:
+                entity, _, path = path.partition(PATH_SEP)
                 if entity not in self.children:
                     self.children[entity] = self.child_info[entity].new_entity(self)
                 self.children[entity].requires(path)
@@ -210,36 +211,63 @@ class Entity:
             return list(self.data_point_info.keys())
 
     @classmethod
-    def decompose(cls, path: str | list[str], value: dict, prefix=None) -> Iterable[dict]:
-        if isinstance(path, str):
-            if path:
-                path = path.split(".")
-            else:
-                path = []
-        prefix = prefix or {}
+    def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Iterable[dict]:
+        path = split_path(path)
+        info = info or dict(path="")
+        pre_path = info["path"]
         len_prefix = len(path)
         data_point_types = set(x.__name__.lower() for x in DataPointInfo.SUB_CLASSES)
         if len_prefix == 0:
             for k, v in value.items():
                 if k in data_point_types:
                     for sub_k, sub_v in v.items():
-                        yield prefix | dict(type=k, field=sub_k) | sub_v
-                elif "type" in prefix:
-                    yield prefix | dict(field=k), v
+                        yield info | \
+                              dict(type=k,
+                                   field=sub_k,
+                                   path=concat_path(pre_path, snake_to_camel(sub_k))) | \
+                              sub_v
+                elif "type" in info:
+                    yield info | dict(field=k)
                 else:
                     for sub_k, sub_v in v.items():
-                        yield from cls.decompose(path, sub_v, prefix | {k: sub_k})
+                        _info = info | {k: sub_k} | \
+                                dict(path=concat_path(pre_path, snake_to_camel(k)))
+                        yield from cls.decompose_data(path, sub_v, _info)
         elif len_prefix == 1:
             for name in data_point_types:
                 if path[0] == name:
                     for k, v in value.items():
-                        yield prefix | dict(type=name, field=k) | v
+                        yield info | \
+                              dict(type=name,
+                                   field=k,
+                                   path=concat_path(info, snake_to_camel(k))) | v
                     return
             for k, v in value.items():
-                yield from cls.decompose(path[1:], v, prefix=prefix | {path[0]: k})
+                _info = info | {path[0]: k} | \
+                        dict(path=concat_path(pre_path, snake_to_camel(path[0])))
+                yield from cls.decompose_data(path[1:], v, _info)
         else:
             for name in data_point_types:
                 if path[0] == name:
-                    yield prefix | dict(type=name, field=path[1]) | value
+                    yield info | \
+                          dict(type=name,
+                               field=path[1],
+                               path=concat_path(pre_path, snake_to_camel(path[1]))) | value
                     return
-            yield from cls.decompose(path[2:], value, prefix=prefix | {path[0]: path[1]})
+            _info = info | {path[0]: path[1]} | \
+                    dict(path=concat_path(pre_path, snake_to_camel(path[0])))
+            yield from cls.decompose_data(path[2:], value, _info)
+
+    def all_required_paths(self, prefix=None):
+        prefix = prefix or ""
+        for name, child in self.children.items():
+            yield from child.all_required_paths(concat_path(prefix, name))
+        for dp in self._used_data_points:
+            yield concat_path(prefix, dp)
+
+    def match_data_points(self, pattern):
+        pattern = pattern.replace("%", "").replace("#", "\.")
+        for path in self.all_required_paths():
+            if re.fullmatch(pattern, PATH_SEP + path):
+                yield path
+

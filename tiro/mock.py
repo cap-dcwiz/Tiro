@@ -6,7 +6,7 @@ from uuid import uuid1
 from faker import Faker
 from fastapi import FastAPI, HTTPException
 
-from tiro.utils import camel_to_snake, DataPointTypes
+from tiro.utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
 from tiro.vocabulary import Entity, DataPointInfo, Telemetry
 
 
@@ -102,7 +102,7 @@ class MockedEntity(MockedItem):
             if not self.parent:
                 self._path = ""
             else:
-                self._path = f"{self.parent.path}.{self.entity_type}.{self.uuid}".strip(".")
+                self._path = concat_path(self.parent.path, self.entity_type, self.uuid)
         return self._path
 
     def list_entities(self) -> tuple[str, "MockedEntity"]:
@@ -118,7 +118,7 @@ class MockedEntity(MockedItem):
             dp_type_name = dp_type.__name__.lower()
             dps = getattr(self, dp_type_name)
             for k, v in dps.items():
-                yield f"{self.path}.{dp_type_name}.{k}".strip("."), v
+                yield concat_path(self.path, dp_type_name, k), v
         for v in self.children.values():
             for c in v.values():
                 yield from c.list_data_points()
@@ -133,8 +133,8 @@ class MockedEntity(MockedItem):
 
     def get_child(self, path: str) -> 'MockedEntity':
         if path:
-            c_type, _, path = path.partition(".")
-            c_uuid, _, path = path.partition(".")
+            c_type, _, path = path.partition(PATH_SEP)
+            c_uuid, _, path = path.partition(PATH_SEP)
             return self.children[c_type][c_uuid].get_child(path)
         else:
             return self
@@ -181,8 +181,8 @@ class Mocker:
         return json.dumps(d, **kwargs)
 
     def gen_data_point(self, path: str, change_attr: bool = False):
-        path, _, dp_name = path.rpartition(".")
-        path, _, _ = path.rpartition(".")
+        path, _, dp_name = path.rpartition(PATH_SEP)
+        path, _, _ = path.rpartition(PATH_SEP)
         return self.entity.get_child(path).gen_data_point(dp_name, change_attrs=change_attr)
 
     def list_entities(self) -> list[str]:

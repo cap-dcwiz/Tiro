@@ -2,6 +2,25 @@ import importlib
 import re
 from pathlib import Path
 
+PATH_SEP = "."
+
+
+def concat_path(*components):
+    return PATH_SEP.join(components).strip(PATH_SEP)
+
+
+def split_path(path):
+    if isinstance(path, str):
+        if path:
+            path = path.split(PATH_SEP)
+        else:
+            path = []
+    return path
+
+
+def snake_to_camel(name: str) -> str:
+    return "".join([x.capitalize() for x in name.split("_")])
+
 
 def camel_to_snake(name: str) -> str:
     name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -28,5 +47,3 @@ def prepare_scenario(scenario_path: str, uses: list[Path | str]):
                 use = Path(use)
             scenario.requires(yaml=use.open().read())
     return scenario
-
-

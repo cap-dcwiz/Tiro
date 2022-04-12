@@ -66,10 +66,11 @@ mocker = Mocker(scenario)
 data_points = list(mocker.list_data_points())
 
 with Validator(scenario, retention=1) as validator:
-    for _ in range(5000):
+    for i in range(5000):
         path = choice(data_points)
         value = mocker.gen_data_point(path)
+        print(i, path, value)
         validator.collect(path, value)
-        time.sleep(0.0005)
+        # time.sleep(0.0005)
     res = validator.validate()
     print(res)

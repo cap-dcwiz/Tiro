@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, ValidationError
 
+from tiro.utils import PATH_SEP, split_path
 from tiro.vocabulary import Entity
 
 
@@ -71,11 +72,12 @@ class Validator:
 
     def collect(self, path: str, value: Any):
         self.validate_retention()
-        self._insert_data(self._data, path.split("."), value)
+        self._insert_data(self._data, path, value)
         self._collect_count += 1
 
     @classmethod
-    def _insert_data(cls, data: dict, path: list[str], value: Any):
+    def _insert_data(cls, data: dict, path: str | list[str], value: Any):
+        path = split_path(path)
         component = path.pop(0)
         if not path:
             data[component] = copy(value)

@@ -63,7 +63,12 @@ mocker = Mocker(scenario)
 
 # print(mocker.dict())
 
-print(list(scenario.decompose("rack.4a248aea-b96a-11ec-90b6-aa966665d395.server.4a248cb6-b96a-11ec-90b6-aa966665d395.telemetry.cpu_temperature", dict(A=2))))
+print(list(scenario.decompose_data("rack.4a248aea-b96a-11ec-90b6-aa966665d395.server.4a248cb6-b96a-11ec-90b6-aa966665d395.telemetry.cpu_temperature", dict(A=2))))
 
-for item in scenario.decompose("", mocker.dict()):
-    print(item)
+# print(mocker.dict())
+#
+# for item in scenario.decompose_data("", mocker.dict()):
+#     print(item["path"])
+
+for path in scenario.match_data_points(r"#%Server#CPUTemperature"):
+    print(path)

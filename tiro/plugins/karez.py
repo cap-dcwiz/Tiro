@@ -44,9 +44,7 @@ class TiroConverter(ConverterBase):
         return "Converter to format Tiro data points"
 
     def convert(self, payload):
-        path = payload["path"]
-        yield from [x | dict(path=path)
-                    for x in Entity.decompose(path, payload["result"])]
+        yield from Entity.decompose_data(payload["path"], payload["result"])
 
 
 class ValidationAggregator(AggregatorBase):

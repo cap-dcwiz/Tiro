@@ -5,7 +5,6 @@ from faker import Faker
 from pydantic import confloat, conint
 
 from tiro.mock import Mocker, MockApp
-from tiro.utils import insert_into
 from tiro.vocabulary import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
