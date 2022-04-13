@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  storage-influxdb:
+    image: influxdb:latest
+    restart: always
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb2
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_PLATFORM_BUCKET}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+
+  telegraf:
+    image: telegraf
+    restart: always
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf
+
+  nats-server:
+    image: nats
+    restart: always
+    ports:
+      - "4222:4222"
+
+  mock-server:
+    build:
+      context: ..
+      dockerfile: demo/tiro_mock.dockerfile
+    image: tiro_mock
+    restart: always
+    command: tiro mock serve scenario:scenario use1.yaml -h 0.0.0.0
+
+
+  karze-roles:
+    build:
+      context: ..
+      dockerfile: demo/tiro_mock.dockerfile
+    image: tiro_mock
+    restart: always
+    command: karez deploy -c karez_mock.yaml -p plugins -a nats://nats-server:4222
