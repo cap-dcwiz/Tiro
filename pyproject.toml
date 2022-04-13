@@ -5,7 +5,7 @@ description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.11"
 pydantic = "^1.9.0"
 Faker = "^13.3.4"
 fastapi = "^0.75.1"
@@ -19,6 +19,7 @@ karez = {path = "deps/karez-0.2.9-py3-none-any.whl"}
 influxdb-client = "^1.27.0"
 
 [tool.poetry.dev-dependencies]
+utinni = {path = "deps/utinni-0.2.1-py3-none-any.whl"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

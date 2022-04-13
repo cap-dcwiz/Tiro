@@ -1,0 +1,11 @@
+[influxdb]
+url="http://localhost:8086"
+token="12345678"
+org="tiro"
+bucket="tiro"
+measurement="mock"
+
+[on_request]
+interpolate=true
+interpolate_limit=5
+interpolate_value_range=[-inf, inf]

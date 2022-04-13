@@ -49,3 +49,6 @@ services:
       - ./karez_mock.yaml:/tiro/karez_mock.yaml
       - ./karez_plugins:/tiro/plugins
     command: karez deploy -c karez_mock.yaml -p plugins -a nats://nats-server:4222
+    depends_on:
+      - mock-server
+      - nats-server

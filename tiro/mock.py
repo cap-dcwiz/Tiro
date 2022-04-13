@@ -26,10 +26,10 @@ class MockedEntity(MockedItem):
         self._path = None
 
         for dp_type in DataPointInfo.SUB_CLASSES:
-            setattr(self, dp_type.__name__.lower(), {})
+            setattr(self, camel_to_snake(dp_type.__name__), {})
         for k in self.prototype.data_points():
             v = self.prototype.data_point_info[k]
-            dps = getattr(self, v.__class__.__name__.lower())
+            dps = getattr(self, camel_to_snake(v.__class__.__name__))
             k = camel_to_snake(k)
             if k not in dps:
                 dps[k] = MockedDataPoint(v, parent=self)
@@ -42,7 +42,7 @@ class MockedEntity(MockedItem):
             self.children = {}
             for k, v in self.prototype.children.items():
                 num = self.prototype.child_info[k].number_faker()
-                entity_type = k.lower()
+                entity_type = camel_to_snake(k)
                 _children = {}
                 for _ in range(num):
                     entity = MockedEntity(entity_type=entity_type, prototype=v, parent=self)
@@ -67,7 +67,7 @@ class MockedEntity(MockedItem):
                                      change_attrs=change_attrs) for uuid, c in v.items()}
                     for k, v in self.children.items()}
         for dp_type in DataPointInfo.SUB_CLASSES:
-            dp_type_name = dp_type.__name__.lower()
+            dp_type_name = camel_to_snake(dp_type.__name__)
             dps = getattr(self, dp_type_name)
             if dps:
                 if include_data_points:
@@ -82,7 +82,7 @@ class MockedEntity(MockedItem):
 
     def generate_data_points(self, **kwargs):
         for dp_type in DataPointInfo.SUB_CLASSES:
-            dps = getattr(self, dp_type.__name__.lower())
+            dps = getattr(self, camel_to_snake(dp_type.__name__))
             for v in dps.values():
                 v.generate(**kwargs)
 
@@ -115,7 +115,7 @@ class MockedEntity(MockedItem):
     def list_data_points(self) -> tuple[str, "MockedDataPoint"]:
         self.generate(regenerate=False, include_data_points=False)
         for dp_type in DataPointInfo.SUB_CLASSES:
-            dp_type_name = dp_type.__name__.lower()
+            dp_type_name = camel_to_snake(dp_type.__name__)
             dps = getattr(self, dp_type_name)
             for k, v in dps.items():
                 yield concat_path(self.path, dp_type_name, k), v
@@ -126,7 +126,7 @@ class MockedEntity(MockedItem):
     def gen_data_point(self, dp_name: str, change_attrs=False) -> Union[DataPointTypes]:
         self.generate(regenerate=False, include_data_points=False)
         for dp_type in DataPointInfo.SUB_CLASSES:
-            dps = getattr(self, dp_type.__name__.lower())
+            dps = getattr(self, camel_to_snake(dp_type.__name__))
             if dp_name in dps:
                 return dps[dp_name].generate(change_attrs=change_attrs).dict()
         raise KeyError(f"Cannot find data points {dp_name} in {self.prototype.unique_name}")

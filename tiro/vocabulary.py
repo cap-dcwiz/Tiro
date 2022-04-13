@@ -184,7 +184,7 @@ class Entity:
                                hide_data_points: bool = False
                                ) -> dict[str, tuple[type, Any]]:
         fields = {
-            name.lower(): (Optional[ins.model_list(hide_data_points=hide_data_points)], ...)
+            camel_to_snake(name): (Optional[ins.model_list(hide_data_points=hide_data_points)], ...)
             for name, ins in self.children.items()
         }
         return fields
@@ -198,7 +198,7 @@ class Entity:
             for dp_type in DataPointInfo.SUB_CLASSES:
                 dp_model = self._create_date_points_model(dp_type)
                 if dp_model:
-                    fields |= {dp_type.__name__.lower(): (dp_model, ...)}
+                    fields |= {camel_to_snake(dp_type.__name__): (dp_model, ...)}
         return create_model(self.unique_name, config=self.Config, **fields)
 
     def __getattr__(self, item: str) -> RequireHelper:
@@ -216,7 +216,7 @@ class Entity:
         info = info or dict(path="")
         pre_path = info["path"]
         len_prefix = len(path)
-        data_point_types = set(x.__name__.lower() for x in DataPointInfo.SUB_CLASSES)
+        data_point_types = set(camel_to_snake(x.__name__) for x in DataPointInfo.SUB_CLASSES)
         if len_prefix == 0:
             for k, v in value.items():
                 if k in data_point_types:
@@ -243,7 +243,7 @@ class Entity:
                                    path=concat_path(info, snake_to_camel(k))) | v
                     return
             for k, v in value.items():
-                _info = info | {path[0]: k} | \
+                _info = info | {snake_to_camel(path[0]): k} | \
                         dict(path=concat_path(pre_path, snake_to_camel(path[0])))
                 yield from cls.decompose_data(path[1:], v, _info)
         else:
@@ -254,7 +254,7 @@ class Entity:
                                field=path[1],
                                path=concat_path(pre_path, snake_to_camel(path[1]))) | value
                     return
-            _info = info | {path[0]: path[1]} | \
+            _info = info | {snake_to_camel(path[0]): path[1]} | \
                     dict(path=concat_path(pre_path, snake_to_camel(path[0])))
             yield from cls.decompose_data(path[2:], value, _info)
 
@@ -266,8 +266,8 @@ class Entity:
             yield concat_path(prefix, dp)
 
     def match_data_points(self, pattern):
-        pattern = pattern.replace("%", "").replace("#", "\.")
+        pattern = pattern.replace("%", "\.")
         for path in self.all_required_paths():
-            if re.fullmatch(pattern, PATH_SEP + path):
+            if re.fullmatch(pattern, path):
                 yield path
 
