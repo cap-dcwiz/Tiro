@@ -34,8 +34,10 @@ services:
       dockerfile: demo/tiro_mock.dockerfile
     image: tiro_mock
     restart: always
+    volumes:
+      - ./scenario.py:/tiro/scenario.py
+      - ./use1.yaml:/tiro/use1.yaml
     command: tiro mock serve scenario:scenario use1.yaml -h 0.0.0.0
-
 
   karze-roles:
     build:
@@ -43,4 +45,7 @@ services:
       dockerfile: demo/tiro_mock.dockerfile
     image: tiro_mock
     restart: always
+    volumes:
+      - ./karez_mock.yaml:/tiro/karez_mock.yaml
+      - ./karez_plugins:/tiro/plugins
     command: karez deploy -c karez_mock.yaml -p plugins -a nats://nats-server:4222

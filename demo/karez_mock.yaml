@@ -12,14 +12,16 @@ connectors:
     converter:
     - tiro_fmt
     - fix_timestamp
-    - fmt_ts
+#    - fmt_ts
+    - influx_line_protocol
 
 converters:
   - type: tiro_fmt
   - type: fix_timestamp
     tz_infos:
       SGT: Aisa/Singapore
-  - type: fmt_ts
+#  - type: fmt_ts
+  - type: influx_line_protocol
     measurement: mock
     field_name: field
     field_value: value
