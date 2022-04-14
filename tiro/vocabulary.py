@@ -124,6 +124,7 @@ class Entity:
         self.children: dict[str, Entity] = {}
         self.parent: Optional[Entity] = parent
         self._used_data_points: set[str] = set()
+        self.uses = set()
 
     @property
     def name(self) -> str:
@@ -151,6 +152,7 @@ class Entity:
         if yaml:
             paths.extend(self._parse_yaml(safe_load(yaml)))
         for path in paths:
+            self.uses.add(path)
             if PATH_SEP in path:
                 entity, _, path = path.partition(PATH_SEP)
                 if entity not in self.children:
@@ -213,8 +215,9 @@ class Entity:
     @classmethod
     def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Iterable[dict]:
         path = split_path(path)
-        info = info or dict(path="")
+        info = info or dict(path="", asset_path="")
         pre_path = info["path"]
+        pre_asset_path = info["asset_path"]
         len_prefix = len(path)
         data_point_types = set(camel_to_snake(x.__name__) for x in DataPointInfo.SUB_CLASSES)
         if len_prefix == 0:
@@ -231,7 +234,8 @@ class Entity:
                 else:
                     for sub_k, sub_v in v.items():
                         _info = info | {k: sub_k} | \
-                                dict(path=concat_path(pre_path, snake_to_camel(k)))
+                                dict(path=concat_path(pre_path, snake_to_camel(k)),
+                                     asset_path=concat_path(pre_asset_path, snake_to_camel(k), sub_k))
                         yield from cls.decompose_data(path, sub_v, _info)
         elif len_prefix == 1:
             for name in data_point_types:
@@ -240,11 +244,12 @@ class Entity:
                         yield info | \
                               dict(type=name,
                                    field=k,
-                                   path=concat_path(info, snake_to_camel(k))) | v
+                                   path=concat_path(pre_path, snake_to_camel(k))) | v
                     return
             for k, v in value.items():
                 _info = info | {snake_to_camel(path[0]): k} | \
-                        dict(path=concat_path(pre_path, snake_to_camel(path[0])))
+                        dict(path=concat_path(pre_path, snake_to_camel(path[0])),
+                             asset_path=concat_path(pre_asset_path, snake_to_camel(path[0]), k))
                 yield from cls.decompose_data(path[1:], v, _info)
         else:
             for name in data_point_types:
@@ -255,7 +260,8 @@ class Entity:
                                path=concat_path(pre_path, snake_to_camel(path[1]))) | value
                     return
             _info = info | {snake_to_camel(path[0]): path[1]} | \
-                    dict(path=concat_path(pre_path, snake_to_camel(path[0])))
+                    dict(path=concat_path(pre_path, snake_to_camel(path[0])),
+                         asset_path=concat_path(pre_asset_path, snake_to_camel(path[0]), path[1]))
             yield from cls.decompose_data(path[2:], value, _info)
 
     def all_required_paths(self, prefix=None):
@@ -265,9 +271,16 @@ class Entity:
         for dp in self._used_data_points:
             yield concat_path(prefix, dp)
 
+    def all_required_edges(self, self_name=None):
+        self_name = self_name or self.name
+        for child_name, child in self.children.items():
+            yield "is_parent_of", self_name, child_name
+            yield from child.all_required_edges(child_name)
+        for dp_name in self._used_data_points:
+            yield "has_data_point", self_name, self.data_point_info[dp_name].__class__.__name__
+
     def match_data_points(self, pattern):
         pattern = pattern.replace("%", "\.")
         for path in self.all_required_paths():
             if re.fullmatch(pattern, path):
                 yield path
-

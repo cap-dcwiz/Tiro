@@ -1,6 +1,7 @@
 import importlib
-import re
+from copy import copy
 from pathlib import Path
+from typing import Any
 
 PATH_SEP = "."
 
@@ -49,3 +50,14 @@ def prepare_scenario(scenario_path: str, uses: list[Path | str]):
                 use = Path(use)
             scenario.requires(yaml=use.open().read())
     return scenario
+
+
+def insert_data_point_to_dict(path: str | list[str], value: Any, data: dict):
+    path = split_path(path)
+    component = path.pop(0)
+    if not path:
+        data[component] = copy(value)
+    else:
+        if component not in data:
+            data[component] = {}
+        insert_data_point_to_dict(path, value, data[component])

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+import pandas as pd
 from dynaconf import Dynaconf
 
 from tiro.plugins.utinni import TiroTSPump
@@ -14,8 +15,12 @@ context.add_pump("tiro",
                             uses=["use1.yaml"],
                             **conf.influxdb))
 
-table = context.tiro_table(".*Server%(CPU|Memory)Temperature", column="Server")
+table = context.tiro_table(".*Server%(CPU|Memory)Temperature")
 
 context.bind(start=-timedelta(hours=1),
              step=timedelta(minutes=10))
-print(table["MemoryTemperature"].value)
+# print(table.value)
+
+df = table["CPUTemperature"].value
+print([x.split(".") for x in df.columns])
+# print(pd.MultiIndex.from_tuples)

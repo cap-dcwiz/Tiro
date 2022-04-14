@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, ValidationError
 
-from tiro.utils import PATH_SEP, split_path
+from tiro.utils import PATH_SEP, split_path, insert_data_point_to_dict
 from tiro.vocabulary import Entity
 
 
@@ -72,19 +72,20 @@ class Validator:
 
     def collect(self, path: str, value: Any):
         self.validate_retention()
-        self._insert_data(self._data, path, value)
+        # self._insert_data(self._data, path, value)
+        insert_data_point_to_dict(path, value, self._data)
         self._collect_count += 1
 
-    @classmethod
-    def _insert_data(cls, data: dict, path: str | list[str], value: Any):
-        path = split_path(path)
-        component = path.pop(0)
-        if not path:
-            data[component] = copy(value)
-        else:
-            if component not in data:
-                data[component] = {}
-            cls._insert_data(data[component], path, value)
+    # @classmethod
+    # def _insert_data(cls, data: dict, path: str | list[str], value: Any):
+    #     path = split_path(path)
+    #     component = path.pop(0)
+    #     if not path:
+    #         data[component] = copy(value)
+    #     else:
+    #         if component not in data:
+    #             data[component] = {}
+    #         cls._insert_data(data[component], path, value)
 
     def validate(self) -> ValidationResult:
         period_start = self.data_create_time

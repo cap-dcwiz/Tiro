@@ -12,7 +12,6 @@ class TiroTSPump(InfluxDBDataPump):
                 raise RuntimeError("Either scenario or scenario_path must be specified.")
             self.scenario = prepare_scenario(scenario_path, uses)
 
-    def gen_table(self, pattern, column=None, agg_fn="mean"):
+    def gen_table(self, pattern, column="asset_path", agg_fn="mean"):
         paths = list(self.scenario.match_data_points(pattern))
-        print(paths)
         return super(TiroTSPump, self).gen_table(column=column, agg_fn=agg_fn, path=paths)

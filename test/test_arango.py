@@ -1,10 +1,12 @@
 from random import randint
 
+from arango import ArangoClient
 from faker import Faker
 from pydantic import confloat, conint
+from rich import print
 
+from tiro.graphdb import ArangoAgent
 from tiro.mock import Mocker
-from tiro.validate import Validator
 from tiro.vocabulary import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
@@ -60,17 +62,13 @@ scenario.requires(
 
 mocker = Mocker(scenario)
 
-# print(mocker.dict())
+gdb_client = ArangoAgent(scenario, "tiro_test", "scenario",
+                         ArangoClient(hosts="http://localhost:8529"))
 
-# print(list(scenario.decompose_data("Rack.4a248aea-b96a-11ec-90b6-aa966665d395.Server.4a248cb6-b96a-11ec-90b6-aa966665d395.Telemetry.CPUTemperature", dict(A=2))))
+# gdb_client.create_graph(clear_existing=True, clear_database=True)
+# gdb_client.update("", mocker.dict())
+# data = gdb_client.snapshot()
+# print(scenario.model().parse_obj(data).json(indent=2))
 
-# print(mocker.dict())
-#
-for item in scenario.decompose_data("", mocker.dict()):
-    print(item)
-    print(Entity.parse_entity(item))
-    # print(">>", item["path"])
-    # print("@@", item["asset_path"])
-
-# for path in scenario.match_data_points(r".*|Server|.*Temperature"):
-#     print(path)
+data = gdb_client.snapshot(pattern=".*Server%(CPU|Memory)Temperature")
+print(data)
