@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import httpx as httpx
+from arango import ArangoClient
 from rich import print, print_json
 
 from karez.aggregator.base import AggregatorBase
@@ -8,6 +9,7 @@ from karez.config import OptionalConfigEntity, ConfigEntity
 from karez.connector import RestfulConnectorBase
 from karez.converter import ConverterBase
 from karez.dispatcher import DispatcherBase
+from tiro.graphdb import ArangoAgent
 from tiro.utils import prepare_scenario
 from tiro.validate import Validator
 from tiro.vocabulary import Entity
@@ -45,6 +47,41 @@ class TiroConverter(ConverterBase):
 
     def convert(self, payload):
         yield from Entity.decompose_data(payload["path"], payload["result"])
+
+
+class Tiro2ArangoAggregator(AggregatorBase):
+    def __init__(self, *args, **kwargs):
+        super(Tiro2ArangoAggregator, self).__init__(*args, **kwargs)
+        self._agent = None
+
+    @classmethod
+    def role_description(cls):
+        return "Aggregator to send Tiro data to ArangoDB"
+
+    def config_entities(self):
+        yield from super(Tiro2ArangoAggregator, self).config_entities()
+        yield ConfigEntity("scenario", "Scenario file")
+        yield ConfigEntity("uses", "Configuration files for use cases")
+        yield ConfigEntity("db_name", "Database name")
+        yield ConfigEntity("graph_name", "Graph name")
+        yield OptionalConfigEntity("hosts", "http://localhost:8529",
+                                   "Host URL or list of URLs (coordinators in a cluster)")
+        yield OptionalConfigEntity("db_auth_args", {}, "Authentication args for connecting to db")
+
+    @property
+    def agent(self):
+        if not self._agent:
+            uses = self.config.uses.split(",")
+            scenario = prepare_scenario(self.config.scenario, uses)
+            self._agent = ArangoAgent(scenario,
+                                      self.config.db_name,
+                                      self.config.graph_name,
+                                      ArangoClient(hosts=self.config.hosts))
+            self._agent.create_graph(clear_database=False, clear_existing=False)
+        return self._agent
+
+    def process(self, payload):
+        self.agent.update(payload)
 
 
 class ValidationAggregator(AggregatorBase):

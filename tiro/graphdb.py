@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from arango import ArangoClient
 
 from tiro.utils import PATH_SEP, insert_data_point_to_dict
@@ -60,6 +62,9 @@ class ArangoAgent:
         dp_name = path[-1]
         dp_type = doc['type']
         dp_id = f"{final_entity_id}-{dp_name}"
+        timestamp = doc["timestamp"]
+        if isinstance(timestamp, datetime):
+            timestamp = timestamp.isoformat()
         edges.append((
             f"has_data_point",
             f"{final_entity_id}_{dp_id}",
@@ -73,7 +78,7 @@ class ArangoAgent:
             "name": dp_name,
             "value": doc["value"],
             "unit": doc.get("unit", None),
-            "timestamp": doc["timestamp"].isoformat(),
+            "timestamp": timestamp,
         }
         return {
             "vertices": vertices,
@@ -116,27 +121,30 @@ class ArangoAgent:
 
         for e_type, e_info in edges_info.items():
             if self.graph.has_edge_definition(e_type):
-                self.graph.replace_edge_definition(e_type, e_info["from_set"], e_info["to_set"])
+                self.graph.replace_edge_definition(e_type, list(e_info["from_set"]), list(e_info["to_set"]))
             else:
                 self.graph.create_edge_definition(e_type, list(e_info["from_set"]), list(e_info["to_set"]))
 
         return self
 
-    def update(self, path, data):
+    def collect_raw(self, path, data):
         for item in self.scenario.decompose_data(path, data):
-            g_info = self.parse_doc_to_graph_components(item)
-            for v_type, v_value in g_info["vertices"].items():
-                v_collection = self.graph.vertex_collection(v_type)
-                if not v_collection.has(v_value["_key"]):
-                    v_collection.insert(v_value)
-                else:
-                    v_collection.update(v_value)
-            for e_type, e_key, e_from, e_to, e_data in g_info["edges"]:
-                e_collection = self.graph.edge_collection(e_type)
-                if not e_collection.has(e_key):
-                    e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
+            self.update(item)
 
-    def snapshot(self, pattern=None, paths=None):
+    def update(self, item):
+        g_info = self.parse_doc_to_graph_components(item)
+        for v_type, v_value in g_info["vertices"].items():
+            v_collection = self.graph.vertex_collection(v_type)
+            if not v_collection.has(v_value["_key"]):
+                v_collection.insert(v_value)
+            else:
+                v_collection.update(v_value)
+        for e_type, e_key, e_from, e_to, e_data in g_info["edges"]:
+            e_collection = self.graph.edge_collection(e_type)
+            if not e_collection.has(e_key):
+                e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
+
+    def capture_status(self, pattern=None, paths=None):
         if paths:
             if pattern:
                 paths.extend(self.scenario.match_data_points(pattern))
