@@ -15,9 +15,9 @@ PyYAML = "^6.0"
 httpx = "^0.22.0"
 rich = "^12.2.0"
 nats-py = "^2.1.0"
-karez = {path = "deps/karez-0.2.9-py3-none-any.whl"}
 influxdb-client = "^1.27.0"
 python-arango = "^7.3.2"
+karez = {path = "deps/karez-0.2.16-py3-none-any.whl"}
 
 [tool.poetry.dev-dependencies]
 utinni = {path = "deps/utinni-0.2.1-py3-none-any.whl"}

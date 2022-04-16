@@ -11,18 +11,26 @@ connectors:
     base_url: http://localhost:8000
     converter:
       - tiro_fmt
-#    - fix_timestamp
-#    - influx_line_protocol
 
 converters:
   - type: tiro_fmt
+    next:
+      - fix_timestamp
+      - filter_and_update_meta
   - type: fix_timestamp
     tz_infos:
       SGT: Aisa/Singapore
+    next: influx_line_protocol
   - type: influx_line_protocol
     measurement: mock
     field_name: field
     field_value: value
+  - type: filter_and_update_meta
+    key: category
+    rename:
+      telemetry: telemetry2
+      attribute: attribute2
+
 
 aggregators:
 #  - type: tiro_validate
@@ -31,10 +39,13 @@ aggregators:
 #    uses: use1.yaml
 #    retention: 60
 #    log_file: validation.log
-  - type: arango_db
-    category: telemetry
-    scenario: scenario:scenario
-    uses: use1.yaml
-    db_name: tiro_test
-    graph_name: scenario
-    hosts: http://localhost:8529
+#  - type: arango_db
+#    category: telemetry
+#    scenario: scenario:scenario
+#    uses: use1.yaml
+#    db_name: tiro_test
+#    graph_name: scenario
+#    hosts: http://localhost:8529
+  - type: echo
+    category: attribute2
+

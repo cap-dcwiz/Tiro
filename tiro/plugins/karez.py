@@ -37,7 +37,8 @@ class ConnectorForMockServer(RestfulConnectorBase):
     async def fetch_data(self, client, entities):
         for entity in entities:
             r = await client.get(f"/points/{entity}")
-            return [dict(path=entity, result=r.json())]
+            data = dict(path=entity, result=r.json())
+            return [self.update_meta(data, category=entity.split(".")[-2].lower())]
 
 
 class TiroConverter(ConverterBase):
