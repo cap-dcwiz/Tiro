@@ -12,7 +12,7 @@ from karez.dispatcher import DispatcherBase
 from tiro.graphdb import ArangoAgent
 from tiro.utils import prepare_scenario
 from tiro.validate import Validator
-from tiro.vocabulary import Entity
+from tiro.model import Entity
 
 
 class DispatcherForMockServer(DispatcherBase):

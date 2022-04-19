@@ -7,7 +7,7 @@ from faker import Faker
 from fastapi import FastAPI, HTTPException
 
 from tiro.utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
-from tiro.vocabulary import Entity, DataPointInfo, Telemetry
+from tiro.model import Entity, DataPointInfo, Telemetry
 
 
 class MockedItem:

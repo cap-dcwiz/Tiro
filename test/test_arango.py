@@ -7,7 +7,7 @@ from rich import print
 
 from tiro.graphdb import ArangoAgent
 from tiro.mock import Mocker
-from tiro.vocabulary import Entity, Telemetry, Attribute, EntityList
+from tiro.model import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
 faker = Faker()

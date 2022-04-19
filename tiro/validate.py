@@ -10,7 +10,7 @@ from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, ValidationError
 
 from tiro.utils import PATH_SEP, split_path, insert_data_point_to_dict
-from tiro.vocabulary import Entity
+from tiro.model import Entity
 
 
 @dataclass
