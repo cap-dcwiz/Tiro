@@ -29,7 +29,7 @@ class Rack(Entity):
     BackTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
 
     # Entities
-    Server: EntityList(Server, faking_number=lambda: randint(2, 20))
+    Server: EntityList(Server, faking_number=lambda: randint(2, 5))
 
 
 class Room(Entity):
@@ -40,8 +40,8 @@ class Room(Entity):
     Site: Attribute(str, faker=faker.company)
 
     # Entities
-    Rack: EntityList(Rack, faking_number=10)
-    Server: EntityList(Server, faking_number=5)
+    Rack: EntityList(Rack, faking_number=1)
+    Server: EntityList(Server, faking_number=1)
 
 
 scenario = Room()

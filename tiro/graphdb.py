@@ -22,12 +22,14 @@ class ArangoAgent:
     def __init__(self, scenario: Entity,
                  db_name: str,
                  graph_name: str = "scenario",
-                 client: ArangoClient = None):
+                 client: ArangoClient = None,
+                 auth_info: dict = None):
         self.scenario = scenario
         self.db_name = db_name
         self.graph_name = graph_name
         self.client: ArangoClient = client or ArangoClient(hosts="http://localhost:8529")
         self.graph = None
+        self.auth_info = auth_info
 
     def parse_doc_to_graph_components(self, doc):
         path = doc["path"].split(PATH_SEP)
@@ -86,10 +88,10 @@ class ArangoAgent:
         }
 
     def db(self, create=False):
-        sys_db = self.client.db("_system")
+        sys_db = self.client.db("_system", **self.auth_info or {})
         if not sys_db.has_database(self.db_name) and create:
             sys_db.create_database(self.db_name)
-        db = self.client.db(self.db_name)
+        db = self.client.db(self.db_name, **self.auth_info or {})
         return db
 
     def create_graph(self, clear_existing=True, clear_database=False):

@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-import pandas as pd
 from dynaconf import Dynaconf
 
 from tiro.plugins.utinni import TiroTSPump
@@ -22,5 +21,4 @@ context.bind(start=-timedelta(hours=1),
 # print(table.value)
 
 df = table["CPUTemperature"].value
-print([x.split(".") for x in df.columns])
-# print(pd.MultiIndex.from_tuples)
+print(df)

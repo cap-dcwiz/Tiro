@@ -50,9 +50,9 @@ class TiroConverter(ConverterBase):
         yield from Entity.decompose_data(payload["path"], payload["result"])
 
 
-class Tiro2ArangoAggregator(AggregatorBase):
+class ArangoAggregator(AggregatorBase):
     def __init__(self, *args, **kwargs):
-        super(Tiro2ArangoAggregator, self).__init__(*args, **kwargs)
+        super(ArangoAggregator, self).__init__(*args, **kwargs)
         self._agent = None
 
     @classmethod
@@ -60,14 +60,14 @@ class Tiro2ArangoAggregator(AggregatorBase):
         return "Aggregator to send Tiro data to ArangoDB"
 
     def config_entities(self):
-        yield from super(Tiro2ArangoAggregator, self).config_entities()
+        yield from super(ArangoAggregator, self).config_entities()
         yield ConfigEntity("scenario", "Scenario file")
         yield ConfigEntity("uses", "Configuration files for use cases")
         yield ConfigEntity("db_name", "Database name")
         yield ConfigEntity("graph_name", "Graph name")
         yield OptionalConfigEntity("hosts", "http://localhost:8529",
                                    "Host URL or list of URLs (coordinators in a cluster)")
-        yield OptionalConfigEntity("db_auth_args", {}, "Authentication args for connecting to db")
+        yield OptionalConfigEntity("auth", {}, "Authentication args for connecting to db")
 
     @property
     def agent(self):
@@ -77,11 +77,13 @@ class Tiro2ArangoAggregator(AggregatorBase):
             self._agent = ArangoAgent(scenario,
                                       self.config.db_name,
                                       self.config.graph_name,
-                                      ArangoClient(hosts=self.config.hosts))
+                                      ArangoClient(hosts=self.config.hosts),
+                                      auth_info=self.config.auth)
             self._agent.create_graph(clear_database=False, clear_existing=False)
         return self._agent
 
     def process(self, payload):
+        self.agent.create_graph(clear_existing=False, clear_database=False)
         self.agent.update(payload)
 
 
@@ -119,4 +121,5 @@ class ValidationAggregator(AggregatorBase):
             if self.config.log_file:
                 with open(self.config.log_file, "a") as f:
                     f.write(result)
+                    f.write("\n")
             self.last_validation_start_time = self.validator.last_validation_start_time

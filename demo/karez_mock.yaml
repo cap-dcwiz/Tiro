@@ -2,21 +2,27 @@ dispatchers:
   - type: tiro_mock
     connector: tiro_mock
     interval: 30
-#    base_url: http://mock-server:8000
-    base_url: http://localhost:8000
+    base_url: http://mock-server:8000
+#    base_url: http://localhost:8000
 
 connectors:
   - type: tiro_mock
-#    base_url: http://mock-server:8000
-    base_url: http://localhost:8000
+    base_url: http://mock-server:8000
+#    base_url: http://localhost:8000
     converter:
       - tiro_fmt
+      - update_category_for_validator
 
 converters:
   - type: tiro_fmt
     next:
-      - fix_timestamp
-      - filter_and_update_meta
+      - update_category_for_arangodb
+      - filter_data_for_influxdb
+  - name: filter_data_for_influxdb
+    type: filter_and_update_meta
+    key: category
+    filter: telemetry
+    next: fix_timestamp
   - type: fix_timestamp
     tz_infos:
       SGT: Aisa/Singapore
@@ -25,27 +31,37 @@ converters:
     measurement: mock
     field_name: field
     field_value: value
-  - type: filter_and_update_meta
+  - name: update_category_for_arangodb
+    type: filter_and_update_meta
     key: category
     rename:
-      telemetry: telemetry2
-      attribute: attribute2
+      telemetry: graph_data
+      attribute: graph_data
+  - name: update_category_for_validator
+    type: filter_and_update_meta
+    key: category
+    rename:
+      telemetry: validation_data
+      attribute: validation_data
 
 
 aggregators:
-#  - type: tiro_validate
-#    category: telemetry
-#    scenario: scenario:scenario
-#    uses: use1.yaml
-#    retention: 60
-#    log_file: validation.log
-#  - type: arango_db
-#    category: telemetry
-#    scenario: scenario:scenario
-#    uses: use1.yaml
-#    db_name: tiro_test
-#    graph_name: scenario
+  - type: tiro_validate
+    category: validation_data
+    scenario: scenario:scenario
+    uses: use1.yaml
+    retention: 60
+    log_file: logs/validation.log
+  - type: arango_db
+    category: graph_data
+    scenario: scenario:scenario
+    uses: use1.yaml
+    db_name: tiro_test
+    graph_name: scenario
 #    hosts: http://localhost:8529
-  - type: echo
-    category: attribute2
+    hosts: http://storage-arangodb:8529
+    auth:
+      password: 12345678
+#  - type: echo
+#    category: attribute2
 

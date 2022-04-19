@@ -151,7 +151,7 @@ class MockedDataPoint(MockedItem):
                 or isinstance(self.prototype, Telemetry) \
                 or change_attrs:
             self.cur_value = self.prototype.faker()
-            self.gen_timestamp = Faker().past_datetime(-self.prototype.time_var)
+            self.gen_timestamp = Faker().past_datetime(-self.prototype.time_var).isoformat()
         return self
 
     def dict(self) -> dict:

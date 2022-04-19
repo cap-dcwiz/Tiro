@@ -1,1 +1,1 @@
-from tiro.plugins.karez import Tiro2ArangoAggregator as Aggregator
+from tiro.plugins.karez import ArangoAggregator as Aggregator

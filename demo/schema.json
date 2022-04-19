@@ -1,0 +1,240 @@
+{
+  "title": "Room",
+  "type": "object",
+  "properties": {
+    "Rack": {
+      "title": "Rack",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Room_Rack"
+      }
+    },
+    "Server": {
+      "title": "Server",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Room_Server"
+      }
+    },
+    "Telemetry": {
+      "$ref": "#/definitions/Room_Telemetry"
+    },
+    "Attribute": {
+      "$ref": "#/definitions/Room_Attribute"
+    }
+  },
+  "required": [
+    "Rack",
+    "Server",
+    "Telemetry",
+    "Attribute"
+  ],
+  "definitions": {
+    "Server_CPUTemperature": {
+      "title": "Server_CPUTemperature",
+      "type": "object",
+      "properties": {
+        "value": {
+          "minimum": 0,
+          "maximum": 50,
+          "type": "number"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "value",
+        "timestamp"
+      ],
+      "unit": "\u00b0C"
+    },
+    "Server_MemoryTemperature": {
+      "title": "Server_MemoryTemperature",
+      "type": "object",
+      "properties": {
+        "value": {
+          "minimum": 0,
+          "maximum": 50,
+          "type": "number"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "value",
+        "timestamp"
+      ],
+      "unit": "\u00b0C"
+    },
+    "Room_Rack_Server_Telemetry": {
+      "title": "Room_Rack_Server_Telemetry",
+      "type": "object",
+      "properties": {
+        "CPUTemperature": {
+          "$ref": "#/definitions/Server_CPUTemperature"
+        },
+        "MemoryTemperature": {
+          "$ref": "#/definitions/Server_MemoryTemperature"
+        }
+      },
+      "required": [
+        "CPUTemperature",
+        "MemoryTemperature"
+      ]
+    },
+    "Room_Rack_Server": {
+      "title": "Room_Rack_Server",
+      "type": "object",
+      "properties": {
+        "Telemetry": {
+          "$ref": "#/definitions/Room_Rack_Server_Telemetry"
+        }
+      },
+      "required": [
+        "Telemetry"
+      ]
+    },
+    "Rack_BackTemperature": {
+      "title": "Rack_BackTemperature",
+      "type": "object",
+      "properties": {
+        "value": {
+          "minimum": 0,
+          "maximum": 50,
+          "type": "number"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "value",
+        "timestamp"
+      ],
+      "unit": "\u00b0C"
+    },
+    "Room_Rack_Telemetry": {
+      "title": "Room_Rack_Telemetry",
+      "type": "object",
+      "properties": {
+        "BackTemperature": {
+          "$ref": "#/definitions/Rack_BackTemperature"
+        }
+      },
+      "required": [
+        "BackTemperature"
+      ]
+    },
+    "Room_Rack": {
+      "title": "Room_Rack",
+      "type": "object",
+      "properties": {
+        "Server": {
+          "title": "Server",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Room_Rack_Server"
+          }
+        },
+        "Telemetry": {
+          "$ref": "#/definitions/Room_Rack_Telemetry"
+        }
+      },
+      "required": [
+        "Server",
+        "Telemetry"
+      ]
+    },
+    "Room_Server_Telemetry": {
+      "title": "Room_Server_Telemetry",
+      "type": "object",
+      "properties": {
+        "CPUTemperature": {
+          "$ref": "#/definitions/Server_CPUTemperature"
+        }
+      },
+      "required": [
+        "CPUTemperature"
+      ]
+    },
+    "Room_Server": {
+      "title": "Room_Server",
+      "type": "object",
+      "properties": {
+        "Telemetry": {
+          "$ref": "#/definitions/Room_Server_Telemetry"
+        }
+      },
+      "required": [
+        "Telemetry"
+      ]
+    },
+    "Room_Temperature": {
+      "title": "Room_Temperature",
+      "type": "object",
+      "properties": {
+        "value": {
+          "minimum": 0,
+          "maximum": 50,
+          "type": "number"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "value",
+        "timestamp"
+      ],
+      "unit": "\u00b0C"
+    },
+    "Room_Telemetry": {
+      "title": "Room_Telemetry",
+      "type": "object",
+      "properties": {
+        "Temperature": {
+          "$ref": "#/definitions/Room_Temperature"
+        }
+      },
+      "required": [
+        "Temperature"
+      ]
+    },
+    "Room_Site": {
+      "title": "Room_Site",
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "value",
+        "timestamp"
+      ],
+      "unit": null
+    },
+    "Room_Attribute": {
+      "title": "Room_Attribute",
+      "type": "object",
+      "properties": {
+        "Site": {
+          "$ref": "#/definitions/Room_Site"
+        }
+      },
+      "required": [
+        "Site"
+      ]
+    }
+  }
+}

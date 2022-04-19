@@ -38,4 +38,5 @@ def schema_show(
         with open(output, 'w') as f:
             json.dump(mocker.dict(), f, indent=2)
     else:
-        print(mocker.json(indent=2))
+        print(mocker.dict())
+#

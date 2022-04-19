@@ -16,6 +16,18 @@ services:
       DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_PLATFORM_BUCKET}
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
 
+  storage-arangodb:
+    image: arangodb/arangodb:3.8.6
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "8529:8529"
+    volumes:
+      - ./data/arangodb:/var/lib/arangodb3
+    environment:
+      ARANGO_ROOT_PASSWORD: ${ARANGODB_PASSWORD}
+    command: arangod --server.endpoint tcp://0.0.0.0:8529
+
   telegraf:
     image: telegraf
     restart: always
@@ -48,7 +60,12 @@ services:
     volumes:
       - ./karez_mock.yaml:/tiro/karez_mock.yaml
       - ./karez_plugins:/tiro/plugins
+      - ./scenario.py:/tiro/scenario.py
+      - ./use1.yaml:/tiro/use1.yaml
+      - ./data/karez-logs:/tiro/logs
     command: karez deploy -c karez_mock.yaml -p plugins -a nats://nats-server:4222
     depends_on:
       - mock-server
       - nats-server
+      - storage-influxdb
+      - storage-arangodb
