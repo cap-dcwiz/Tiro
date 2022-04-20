@@ -1,10 +1,11 @@
 import re
 from collections.abc import Iterable
+from copy import copy
 from datetime import datetime, timedelta
 from inspect import get_annotations
-from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable
+from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable, Literal
 
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
@@ -104,8 +105,11 @@ class Entity:
             for p in schema["properties"].values():
                 p.pop("title", None)
 
+    data_point_info: dict[str, DataPointInfo] = {}
+
     def __init_subclass__(cls, **kwargs):
-        cls.data_point_info: dict[str, DataPointInfo] = {}
+        super().__init_subclass__(**kwargs)
+        cls.data_point_info = copy(cls.data_point_info)
         cls.child_info: dict[str, EntityList] = {}
         for k, v in get_annotations(cls).items():
             if isinstance(v, DataPointInfo):
@@ -211,6 +215,23 @@ class Entity:
             return list(self._used_data_points)
         else:
             return list(self.data_point_info.keys())
+
+    @classmethod
+    def use_selection_model(cls, name_prefix=""):
+        telemetry_names = tuple(k for k, v in cls.data_point_info.items() if isinstance(v, Telemetry))
+        attribute_names = tuple(k for k, v in cls.data_point_info.items() if isinstance(v, Attribute))
+        name = f"{name_prefix}.{cls.__name__}".strip(".")
+        model_kwargs = dict()
+        if telemetry_names:
+            model_kwargs["telemetry"] = Optional[list[Literal[telemetry_names]]], Field(None, unique_items=True)
+        if attribute_names:
+            model_kwargs["attribute"] = Optional[list[Literal[attribute_names]]], Field(None, unique_items=True)
+        for k, v in cls.child_info.items():
+            model_kwargs[k] = Optional[v.cls.use_selection_model(name_prefix=name)], Field(None)
+        # children = tuple(v.cls.use_selection_model(name_prefix=name) for v in cls.child_info.values())
+        # if children:
+        #     model_kwargs["children"] = Optional[list[Union[children]]], Field(...)
+        return create_model(name, **model_kwargs)
 
     @classmethod
     def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Iterable[dict]:
