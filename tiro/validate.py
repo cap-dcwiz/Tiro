@@ -1,12 +1,12 @@
 import json
 from collections import deque
-from copy import copy
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any, Type, Optional
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
+from jsonschema import validate
 from pydantic import BaseModel, ValidationError
 
 from tiro.utils import PATH_SEP, split_path, insert_data_point_to_dict
@@ -39,12 +39,18 @@ class ValidationResult:
 
 class Validator:
     def __init__(self,
-                 entity: Entity,
+                 entity: Entity = None,
+                 schema: dict = None,
                  retention: int = 0,
                  log: bool = True,
                  log_size: int = 100
                  ):
-        self.model: Type[BaseModel] = entity.model()
+        if entity:
+            self.model: Type[BaseModel] = entity.model()
+            self.schema = None
+        else:
+            self.model = None
+            self.schema = schema
         self._data = {}
         self.retention: Optional[timedelta] = timedelta(seconds=retention) if retention > 0 else None
         self.data_create_time: datetime = datetime.now()
@@ -72,20 +78,8 @@ class Validator:
 
     def collect(self, path: str, value: Any):
         self.validate_retention()
-        # self._insert_data(self._data, path, value)
         insert_data_point_to_dict(path, value, self._data)
         self._collect_count += 1
-
-    # @classmethod
-    # def _insert_data(cls, data: dict, path: str | list[str], value: Any):
-    #     path = split_path(path)
-    #     component = path.pop(0)
-    #     if not path:
-    #         data[component] = copy(value)
-    #     else:
-    #         if component not in data:
-    #             data[component] = {}
-    #         cls._insert_data(data[component], path, value)
 
     def validate(self) -> ValidationResult:
         period_start = self.data_create_time
@@ -93,9 +87,12 @@ class Validator:
         if period_end - period_start > self.retention:
             period_end = period_start + self.retention
         try:
-            self.model.parse_obj(self._data)
-            res = ValidationResult(period_start, period_end, True, None)
-        except ValidationError as e:
+            if self.model:
+                self.model.parse_obj(self._data)
+                res = ValidationResult(period_start, period_end, True, None)
+            elif self.schema:
+                validate(instance=self._data, schema=self.schema)
+        except Exception as e:
             res = ValidationResult(period_start, period_end, False, e)
         if self.log and self.log[0].start == period_start:
             self.log[0] = res

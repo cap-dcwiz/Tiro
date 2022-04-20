@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 import httpx as httpx
@@ -10,9 +11,9 @@ from karez.connector import RestfulConnectorBase
 from karez.converter import ConverterBase
 from karez.dispatcher import DispatcherBase
 from tiro.graphdb import ArangoAgent
+from tiro.model import Entity
 from tiro.utils import prepare_scenario
 from tiro.validate import Validator
-from tiro.model import Entity
 
 
 class DispatcherForMockServer(DispatcherBase):
@@ -100,16 +101,24 @@ class ValidationAggregator(AggregatorBase):
     @classmethod
     def config_entities(cls):
         yield from super(ValidationAggregator, cls).config_entities()
-        yield ConfigEntity("scenario", "Scenario file")
-        yield ConfigEntity("uses", "Configuration files for use cases")
+        yield OptionalConfigEntity("scenario", None,
+                                   "Scenario file (either scenario/uses or schema file must be provided)")
+        yield OptionalConfigEntity("uses", None, "Configuration files for use cases")
+        yield OptionalConfigEntity("Schema", None,
+                                   "JSON Schema file (either scenario/uses or schema file must be provided)")
         yield OptionalConfigEntity("retention", 60, "Time window to receive data points")
         yield OptionalConfigEntity("log_file", None, "Log file to record validation results")
 
     def process(self, payload):
         if not self.validator:
-            uses = self.config.uses.split(",")
-            scenario = prepare_scenario(self.config.scenario, uses)
-            self.validator = Validator(scenario, retention=self.config.retention, log=False)
+            if self.config.scenario:
+                uses = self.config.uses.split(",")
+                scenario = prepare_scenario(self.config.scenario, uses)
+                self.validator = Validator(scenario, retention=self.config.retention, log=False)
+            else:
+                with open(self.config.schema, "r") as f:
+                    schema = json.load(f)
+                self.validator = Validator(schema=schema, retention=self.config.retention, log=False)
         self.validator.collect(payload["path"], payload["result"])
         print(f"[bold]\[{self.TYPE}-{self.name}][/bold] "
               f"Collection size: {self.validator.current_collection_size}",

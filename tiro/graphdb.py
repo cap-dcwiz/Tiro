@@ -2,8 +2,8 @@ from datetime import datetime
 
 from arango import ArangoClient
 
-from tiro.utils import PATH_SEP, insert_data_point_to_dict
-from tiro.model import Entity
+from .utils import PATH_SEP, insert_data_point_to_dict
+from .model import Entity
 
 QUERY_AQL = """
 FOR v, e, p IN 1..10 OUTBOUND @start_vertex GRAPH @graph_name

@@ -6,8 +6,8 @@ from uuid import uuid1
 from faker import Faker
 from fastapi import FastAPI, HTTPException
 
-from tiro.utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
-from tiro.model import Entity, DataPointInfo, Telemetry
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
+from .model import Entity, DataPointInfo, Telemetry
 
 
 class MockedItem:
