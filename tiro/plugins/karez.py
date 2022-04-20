@@ -10,10 +10,10 @@ from karez.config import OptionalConfigEntity, ConfigEntity
 from karez.connector import RestfulConnectorBase
 from karez.converter import ConverterBase
 from karez.dispatcher import DispatcherBase
-from tiro.graphdb import ArangoAgent
-from tiro.model import Entity
-from tiro.utils import prepare_scenario
-from tiro.validate import Validator
+from tiro.plugins.graphdb import ArangoAgent
+from tiro.core.model import Entity
+from tiro.core.utils import prepare_scenario
+from tiro.core.validate import Validator
 
 
 class DispatcherForMockServer(DispatcherBase):

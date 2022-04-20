@@ -2,7 +2,7 @@ from random import randint
 
 from pydantic import confloat, conint
 
-from tiro.model import Entity, Telemetry, Attribute, EntityList
+from tiro.core.model import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
 

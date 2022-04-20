@@ -4,7 +4,7 @@ from faker import Faker
 from pydantic import confloat
 
 from tiro.assets.data_hall import ServerBase, RackBase, RoomBase
-from tiro.model import EntityList
+from tiro.core.model import EntityList
 
 temperature_type = confloat(ge=0, le=50)
 faker = Faker()

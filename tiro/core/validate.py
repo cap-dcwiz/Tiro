@@ -6,11 +6,11 @@ from typing import Any, Type, Optional
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
-from jsonschema import validate
-from pydantic import BaseModel, ValidationError
+from jsonschema import validate, ValidationError as JSONSchemaValidatorError
+from pydantic import BaseModel, ValidationError as PydanticValidationError
 
-from tiro.utils import PATH_SEP, split_path, insert_data_point_to_dict
-from tiro.model import Entity
+from .utils import insert_data_point_to_dict
+from .model import Entity
 
 
 @dataclass
@@ -18,7 +18,7 @@ class ValidationResult:
     start: datetime
     end: datetime
     valid: bool
-    exception: Optional[ValidationError]
+    exception: Optional[JSONSchemaValidatorError | PydanticValidationError]
 
     def __str__(self):
         msg = f"Validation Period: {self.start} -- {self.end}\n"
@@ -29,12 +29,26 @@ class ValidationResult:
         return msg
 
     def json(self):
-        return json.dumps(dict(
+        return json.dumps(self.info)
+
+    def info(self):
+        return dict(
             start=self.start.isoformat(),
             end=self.end.isoformat(),
             valid=self.valid,
-            exception=self.exception.errors() if self.exception else None
-        ))
+            exception=self.serialise_exception()
+        )
+
+    def serialise_exception(self):
+        if self.exception is None:
+            return None
+        elif isinstance(self.exception, PydanticValidationError):
+            return self.exception.errors()
+        elif isinstance(self.exception, JSONSchemaValidatorError):
+            return dict(message=self.exception.message,
+                        path=self.exception.json_path,
+                        description=str(self.exception)
+                        )
 
 
 class Validator:
@@ -89,9 +103,9 @@ class Validator:
         try:
             if self.model:
                 self.model.parse_obj(self._data)
-                res = ValidationResult(period_start, period_end, True, None)
             elif self.schema:
                 validate(instance=self._data, schema=self.schema)
+            res = ValidationResult(period_start, period_end, True, None)
         except Exception as e:
             res = ValidationResult(period_start, period_end, False, e)
         if self.log and self.log[0].start == period_start:

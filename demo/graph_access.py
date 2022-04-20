@@ -1,8 +1,8 @@
 from arango import ArangoClient
 from rich import print
 
-from tiro.graphdb import ArangoAgent
-from tiro.utils import prepare_scenario
+from tiro.plugins.graphdb import ArangoAgent
+from tiro.core.utils import prepare_scenario
 
 scenario = prepare_scenario("scenario:scenario", uses=["./use1.yaml"])
 

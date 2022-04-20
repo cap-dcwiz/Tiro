@@ -6,8 +6,8 @@ import typer
 import uvicorn
 from rich import print
 
-from tiro.mock import MockApp
-from tiro.utils import prepare_scenario
+from tiro.core.mock import MockApp
+from tiro.core.utils import prepare_scenario
 
 app = typer.Typer()
 

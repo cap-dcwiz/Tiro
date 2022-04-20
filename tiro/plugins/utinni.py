@@ -1,4 +1,4 @@
-from tiro.utils import prepare_scenario
+from tiro.core.utils import prepare_scenario
 from utinni.pump import InfluxDBDataPump
 
 

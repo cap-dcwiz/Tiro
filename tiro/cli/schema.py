@@ -6,8 +6,8 @@ from rich import print
 import typer
 from typer import Typer
 
-from tiro.mock import Mocker
-from ..utils import prepare_scenario
+from tiro.core.mock import Mocker
+from tiro.core.utils import prepare_scenario
 
 app = Typer()
 

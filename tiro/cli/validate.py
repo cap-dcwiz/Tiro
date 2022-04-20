@@ -4,8 +4,8 @@ from rich import print
 import typer
 import uvicorn
 
-from tiro.utils import prepare_scenario
-from tiro.validate import RestfulValidationApp, Validator
+from tiro.core.utils import prepare_scenario
+from tiro.core.validate import RestfulValidationApp, Validator
 
 app = typer.Typer()
 

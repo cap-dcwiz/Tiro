@@ -1,7 +1,7 @@
 from faker import Faker
 from pydantic import conint, confloat
 
-from tiro.model import Telemetry, Entity, Attribute
+from tiro.core.model import Telemetry, Entity, Attribute
 
 temperature_type = confloat(ge=0, le=50)
 

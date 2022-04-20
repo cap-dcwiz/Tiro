@@ -1,14 +1,11 @@
-import json
-import time
-from pprint import pprint
 from random import randint, choice
 
 from faker import Faker
 from pydantic import confloat, conint
 
-from tiro.mock import Mocker
-from tiro.validate import Validator
-from tiro.model import Entity, Telemetry, Attribute, EntityList
+from tiro.core.mock import Mocker
+from tiro.core.validate import Validator
+from tiro.core.model import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
 faker = Faker()
@@ -51,22 +48,22 @@ class Room(Entity):
 
 scenario = Room()
 scenario.Rack.FrontTemperature.use()
-scenario.Server.MemoryTemperature.use()
+# scenario.Server.MemoryTemperature.use()
 scenario.requires(
-    "Site",
+    # "Site",
     "Rack.BackTemperature",
     "Rack.Server.CPUTemperature",
     "Rack.Server.MemoryTemperature",
-    "Server.CPUTemperature",
-    "Temperature"
+    # "Server.CPUTemperature",
+    # "Temperature"
 )
 
 mocker = Mocker(scenario)
 
 data_points = list(mocker.list_data_points())
 
-with Validator(schema=scenario.model().schema(), retention=60) as validator:
-    for i in range(1000):
+with Validator(schema=scenario.model().schema(), retention=1) as validator:
+    for i in range(10):
         path = choice(data_points)
         value = mocker.gen_data_point(path)
         validator.collect(path, value)
