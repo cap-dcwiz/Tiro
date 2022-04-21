@@ -1,9 +1,0 @@
-- Site
-- Rack:
-    - BackTemperature
-    - Server:
-        - CPUTemperature
-        - MemoryTemperature
-- Server:
-    - CPUTemperature
-- Temperature

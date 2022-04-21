@@ -9,8 +9,8 @@ from fastapi.responses import PlainTextResponse
 from jsonschema import validate, ValidationError as JSONSchemaValidatorError
 from pydantic import BaseModel, ValidationError as PydanticValidationError
 
+from . import Entity
 from .utils import insert_data_point_to_dict
-from .model import Entity
 
 
 @dataclass
@@ -29,7 +29,7 @@ class ValidationResult:
         return msg
 
     def json(self):
-        return json.dumps(self.info)
+        return json.dumps(self.info())
 
     def info(self):
         return dict(

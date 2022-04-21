@@ -2,6 +2,7 @@ from random import randint
 
 from pydantic import confloat, conint
 
+from tiro import Scenario
 from tiro.core.model import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
@@ -39,19 +40,20 @@ class Room(Entity):
 
 
 yaml = """
-- Site
-- Rack:
-    - BackTemperature
+- Room:
+    - Site
+    - Rack:
+        - BackTemperature
+        - Server:
+            - CPUTemperature
+            - MemoryTemperature
     - Server:
         - CPUTemperature
-        - MemoryTemperature
-- Server:
-    - CPUTemperature
-- Temperature
+    - Temperature
 """
 
-scenario = Room()
-scenario.Rack.FrontTemperature.use()
+scenario = Scenario(Room)
+scenario.Room.Rack.FrontTemperature.use()
 scenario.requires(yaml=yaml)
 
 print(scenario.model(hide_data_points=False).schema_json(indent=2))

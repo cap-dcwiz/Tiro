@@ -1,0 +1,10 @@
+- Room:
+    - Site
+    - Rack:
+        - BackTemperature
+        - Server:
+            - CPUTemperature
+            - MemoryTemperature
+    - Server:
+        - CPUTemperature
+    - Temperature

@@ -15,15 +15,14 @@ PyYAML = "^6.0"
 httpx = "^0.22.0"
 rich = "^12.2.0"
 nats-py = "^2.1.0"
-influxdb-client = "^1.27.0"
-python-arango = "^7.3.2"
 karez = {path = "deps/karez-0.2.16-py3-none-any.whl"}
-json-schema-for-humans = "^0.40.2"
 jsonschema = "^4.4.0"
 
 [tool.poetry.dev-dependencies]
 utinni = {path = "deps/utinni-0.2.1-py3-none-any.whl"}
 jupyterlab = "^3.3.4"
+influxdb-client = "^1.28.0"
+python-arango = "^7.3.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

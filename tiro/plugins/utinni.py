@@ -1,16 +1,23 @@
-from tiro.core.utils import prepare_scenario
+from pathlib import Path
+from typing import Optional
+
+from tiro import Scenario
 from utinni.pump import InfluxDBDataPump
 
 
 class TiroTSPump(InfluxDBDataPump):
-    def __init__(self, *args, scenario=None, scenario_path=None, uses=None, **kwargs):
+    def __init__(self, *args,
+                 scenario: Scenario | str | Path,
+                 uses: Optional[list[str | Path]] = None,
+                 **kwargs):
         super(TiroTSPump, self).__init__(*args, **kwargs)
-        if scenario:
+        uses = uses or []
+        if isinstance(scenario, Scenario):
             self.scenario = scenario
+            for use in uses:
+                self.scenario.requires(use)
         else:
-            if not scenario_path:
-                raise RuntimeError("Either scenario or scenario_path must be specified.")
-            self.scenario = prepare_scenario(scenario_path, uses)
+            self.scenario = Scenario.from_yaml(scenario, *uses)
 
     def gen_table(self, pattern, column="asset_path", agg_fn="mean"):
         paths = list(self.scenario.match_data_points(pattern))

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from arango import ArangoClient
 
+from tiro import Scenario
 from tiro.core.utils import PATH_SEP, insert_data_point_to_dict
 from tiro.core.model import Entity
 
@@ -19,12 +20,12 @@ FOR v, e, p IN 1..10 OUTBOUND @start_vertex GRAPH @graph_name
 
 
 class ArangoAgent:
-    def __init__(self, scenario: Entity,
+    def __init__(self, scenario: Scenario,
                  db_name: str,
                  graph_name: str = "scenario",
                  client: ArangoClient = None,
                  auth_info: dict = None):
-        self.scenario = scenario
+        self.entity: Entity = scenario.root
         self.db_name = db_name
         self.graph_name = graph_name
         self.client: ArangoClient = client or ArangoClient(hosts="http://localhost:8529")
@@ -33,7 +34,7 @@ class ArangoAgent:
 
     def parse_doc_to_graph_components(self, doc):
         path = doc["path"].split(PATH_SEP)
-        root_name = self.scenario.name
+        root_name = self.entity.name
         path.insert(0, root_name)
         edges = []
         vertices = {}
@@ -109,7 +110,7 @@ class ArangoAgent:
 
         edges_info = dict()
         vertices_info = set()
-        for e_type, f_type, t_type in self.scenario.all_required_edges():
+        for e_type, f_type, t_type in self.entity.all_required_edges():
             e_info = edges_info.get(e_type, dict(from_set=set(), to_set=set()))
             e_info["from_set"].add(f_type)
             e_info["to_set"].add(t_type)
@@ -130,7 +131,7 @@ class ArangoAgent:
         return self
 
     def collect_raw(self, path, data):
-        for item in self.scenario.decompose_data(path, data):
+        for item in Scenario.decompose_data(path, data):
             self.update(item)
 
     def update(self, item):
@@ -149,14 +150,14 @@ class ArangoAgent:
     def capture_status(self, pattern=None, paths=None):
         if paths:
             if pattern:
-                paths.extend(self.scenario.match_data_points(pattern))
+                paths.extend(self.entity.match_data_points(pattern))
         else:
             if pattern:
-                paths = list(self.scenario.match_data_points(pattern))
+                paths = list(self.entity.match_data_points(pattern))
             else:
-                paths = list(self.scenario.uses)
+                paths = list(self.entity.uses)
         db = self.db(create=False)
-        start_vertex = f"{self.scenario.name}/000"
+        start_vertex = f"{self.entity.name}/000"
         cursor = db.aql.execute(QUERY_AQL,
                                 bind_vars=dict(
                                     start_vertex=start_vertex,

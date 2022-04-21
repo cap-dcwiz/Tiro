@@ -1,4 +1,5 @@
 from datetime import timedelta
+from pathlib import Path
 
 from dynaconf import Dynaconf
 
@@ -10,8 +11,8 @@ conf = Dynaconf(settings_files=["./utinni_config.toml"])
 context = Context(**conf.on_request)
 
 context.add_pump("tiro",
-                 TiroTSPump(scenario_path="scenario:scenario",
-                            uses=["use1.yaml"],
+                 TiroTSPump(scenario=Path("../demo/config/scenario.yaml"),
+                            uses=[Path("../demo/config/use1.yaml")],
                             **conf.influxdb))
 
 table = context.tiro_table(".*Server%(CPU|Memory)Temperature")

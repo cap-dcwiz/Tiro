@@ -2,14 +2,18 @@ import re
 from collections.abc import Iterable
 from copy import copy
 from datetime import datetime, timedelta
+from functools import partial
+from importlib import import_module
 from inspect import get_annotations
+from pathlib import Path
+from random import randint
 from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable, Literal
 
 from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, split_path, concat_path, snake_to_camel
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -130,13 +134,17 @@ class Entity:
         self._used_data_points: set[str] = set()
         self.uses = set()
 
+    @classmethod
+    def many(cls, *args, **kwargs) -> EntityList:
+        return EntityList(cls, *args, **kwargs)
+
     @property
     def name(self) -> str:
         return self.__class__.__name__
 
     @property
     def unique_name(self) -> str:
-        if self.parent:
+        if self.parent and "_" not in self.name:
             return f"{self.parent.unique_name}_{self.__class__.__name__}"
         else:
             return self.name
@@ -151,9 +159,11 @@ class Entity:
         elif isinstance(d, str):
             yield concat_path(prefix, d)
 
-    def requires(self, *paths: str, yaml: str = None) -> "Entity":
+    def requires(self, *paths: str, yaml: str | Path = None) -> "Entity":
         paths = list(paths)
         if yaml:
+            if isinstance(yaml, Path):
+                yaml = yaml.open().read()
             paths.extend(self._parse_yaml(safe_load(yaml)))
         for path in paths:
             self.uses.add(path)
@@ -234,56 +244,9 @@ class Entity:
         return create_model(name, **model_kwargs)
 
     @classmethod
-    def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Iterable[dict]:
-        path = split_path(path)
-        info = info or dict(path="", asset_path="")
-        pre_path = info["path"]
-        pre_asset_path = info["asset_path"]
-        len_prefix = len(path)
-        data_point_types = set(camel_to_snake(x.__name__) for x in DataPointInfo.SUB_CLASSES)
-        if len_prefix == 0:
-            for k, v in value.items():
-                if k in data_point_types:
-                    for sub_k, sub_v in v.items():
-                        yield info | \
-                              dict(type=k,
-                                   field=sub_k,
-                                   path=concat_path(pre_path, snake_to_camel(sub_k))) | \
-                              sub_v
-                elif "type" in info:
-                    yield info | dict(field=k)
-                else:
-                    for sub_k, sub_v in v.items():
-                        _info = info | {k: sub_k} | \
-                                dict(path=concat_path(pre_path, snake_to_camel(k)),
-                                     asset_path=concat_path(pre_asset_path, snake_to_camel(k), sub_k))
-                        yield from cls.decompose_data(path, sub_v, _info)
-        elif len_prefix == 1:
-            for name in data_point_types:
-                if path[0] == name:
-                    for k, v in value.items():
-                        yield info | \
-                              dict(type=name,
-                                   field=k,
-                                   path=concat_path(pre_path, snake_to_camel(k))) | v
-                    return
-            for k, v in value.items():
-                _info = info | {snake_to_camel(path[0]): k} | \
-                        dict(path=concat_path(pre_path, snake_to_camel(path[0])),
-                             asset_path=concat_path(pre_asset_path, snake_to_camel(path[0]), k))
-                yield from cls.decompose_data(path[1:], v, _info)
-        else:
-            for name in data_point_types:
-                if path[0] == name:
-                    yield info | \
-                          dict(type=name,
-                               field=path[1],
-                               path=concat_path(pre_path, snake_to_camel(path[1]))) | value
-                    return
-            _info = info | {snake_to_camel(path[0]): path[1]} | \
-                    dict(path=concat_path(pre_path, snake_to_camel(path[0])),
-                         asset_path=concat_path(pre_asset_path, snake_to_camel(path[0]), path[1]))
-            yield from cls.decompose_data(path[2:], value, _info)
+    def children_selection_model(cls):
+        # TODO
+        raise NotImplementedError
 
     def all_required_paths(self, prefix=None):
         prefix = prefix or ""
@@ -305,3 +268,52 @@ class Entity:
         for path in self.all_required_paths():
             if re.fullmatch(pattern, path):
                 yield path
+
+    @classmethod
+    def create(cls, name: str,
+               *entities,
+               base_class: Optional[str] = None,
+               library_path: str = "tiro.assets",
+               **entity_dict) -> Type["Entity"]:
+        if base_class:
+            base_class, _, base_name = base_class.rpartition(".")
+            if not base_class:
+                base = getattr(import_module(library_path), base_name)
+            else:
+                base = getattr(import_module(f"{library_path}.{base_class}"), base_name)
+        else:
+            base = Entity
+        ann = {}
+        for item in entities:
+            if isinstance(item, type) and issubclass(item, Entity):
+                item = item.many(faking_number=1)
+            ann[item.cls.__name__] = item
+        for k, v in entity_dict.items():
+            if isinstance(v, type) and issubclass(v, Entity):
+                v = v.many(faking_number=1)
+            ann[k] = v
+        return type(name, (base,), dict(__annotations__=ann))
+
+    @classmethod
+    def create_from_define_string(cls,
+                                  name: str,
+                                  defs: dict,
+                                  prefix: str = "") -> EntityList:
+        meta_start = "$"
+        if prefix:
+            name = f"{prefix}_{name}"
+        children = {k: cls.create_from_define_string(k, v, prefix=name)
+                    for k, v in defs.items()
+                    if not k.startswith(meta_start)}
+        entity = cls.create(name, base_class=defs[f"{meta_start}type"], **children)
+        list_args = {}
+        if f"{meta_start}number" in defs:
+            number = defs[f"{meta_start}number"]
+            if isinstance(number, str) and "-" in number:
+                min_num, max_num = number.split("-")
+                list_args["faking_number"] = partial(randint, int(min_num), int(max_num))
+            else:
+                list_args["faking_number"] = int(number)
+        else:
+            list_args["faking_number"] = 1
+        return entity.many(**list_args)

@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 from typing import Optional, Union
 from uuid import uuid1
 
@@ -162,7 +161,7 @@ class MockedDataPoint(MockedItem):
 
 
 class Mocker:
-    def __init__(self, entity: Entity):
+    def __init__(self, entity: Optional[Entity] = None):
         self.entity: MockedEntity = MockedEntity(None, entity)
         self.entity_cache: Optional[dict[str, MockedEntity]] = None
 
@@ -193,9 +192,9 @@ class Mocker:
 
 
 class MockApp(FastAPI):
-    def __init__(self, entity: Entity, *args, **kwargs):
+    def __init__(self, mocker: Mocker, *args, **kwargs):
         super(MockApp, self).__init__(*args, **kwargs)
-        self.mocker: Mocker = Mocker(entity)
+        self.mocker: Mocker = mocker
 
         @self.get("/hierarchy")
         def get_hierarchy():

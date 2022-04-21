@@ -48,20 +48,20 @@ converters:
 aggregators:
   - type: tiro_validate
     category: validation_data
-    scenario: scenario:scenario
-    uses: use1.yaml
+    scenario: config/scenario.yaml
+    uses: config/use1.yaml
     retention: 60
     log_file: logs/validation.log
   - type: arango_db
     category: graph_data
-    scenario: scenario:scenario
-    uses: use1.yaml
+    scenario: config/scenario.yaml
+    uses: config/use1.yaml
     db_name: tiro_test
     graph_name: scenario
 #    hosts: http://localhost:8529
     hosts: http://storage-arangodb:8529
     auth:
-      password: 12345678
+      password: arangodb_password
 #  - type: echo
 #    category: attribute2
 

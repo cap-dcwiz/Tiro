@@ -1,54 +1,15 @@
 import json
 from datetime import datetime
+from pathlib import Path
 
-import httpx as httpx
 from arango import ArangoClient
 from rich import print, print_json
 
 from karez.aggregator.base import AggregatorBase
-from karez.config import OptionalConfigEntity, ConfigEntity
-from karez.connector import RestfulConnectorBase
-from karez.converter import ConverterBase
-from karez.dispatcher import DispatcherBase
-from tiro.plugins.graphdb import ArangoAgent
-from tiro.core.model import Entity
-from tiro.core.utils import prepare_scenario
+from karez.config import ConfigEntity, OptionalConfigEntity
+from tiro import Scenario
 from tiro.core.validate import Validator
-
-
-class DispatcherForMockServer(DispatcherBase):
-    @classmethod
-    def role_description(cls) -> str:
-        return "Dispatcher for Tiro Mock server"
-
-    @classmethod
-    def config_entities(cls):
-        yield from super(DispatcherForMockServer, cls).config_entities()
-        yield OptionalConfigEntity("base_url", "http://localhost:8000", "URL of the Tiro Mock Server")
-
-    def load_entities(self) -> list:
-        return httpx.get(f"{self.config.base_url}/points/").json()
-
-
-class ConnectorForMockServer(RestfulConnectorBase):
-    @classmethod
-    def role_description(cls):
-        return "Connector to fetch telemetries and attributes from a Tiro mock server."
-
-    async def fetch_data(self, client, entities):
-        for entity in entities:
-            r = await client.get(f"/points/{entity}")
-            data = dict(path=entity, result=r.json())
-            return [self.update_meta(data, category=entity.split(".")[-2].lower())]
-
-
-class TiroConverter(ConverterBase):
-    @classmethod
-    def role_description(cls):
-        return "Converter to format Tiro data points"
-
-    def convert(self, payload):
-        yield from Entity.decompose_data(payload["path"], payload["result"])
+from tiro.plugins.arango import ArangoAgent
 
 
 class ArangoAggregator(AggregatorBase):
@@ -73,8 +34,8 @@ class ArangoAggregator(AggregatorBase):
     @property
     def agent(self):
         if not self._agent:
-            uses = self.config.uses.split(",")
-            scenario = prepare_scenario(self.config.scenario, uses)
+            uses = map(Path, self.config.uses.split(","))
+            scenario = Scenario.from_yaml(Path(self.config.scenario), *uses)
             self._agent = ArangoAgent(scenario,
                                       self.config.db_name,
                                       self.config.graph_name,
@@ -112,9 +73,9 @@ class ValidationAggregator(AggregatorBase):
     def process(self, payload):
         if not self.validator:
             if self.config.scenario:
-                uses = self.config.uses.split(",")
-                scenario = prepare_scenario(self.config.scenario, uses)
-                self.validator = Validator(scenario, retention=self.config.retention, log=False)
+                uses = map(Path, self.config.uses.split(","))
+                scenario = Scenario.from_yaml(Path(self.config.scenario), *uses)
+                self.validator = scenario.validator(retention=self.config.retention, log=False)
             else:
                 with open(self.config.schema, "r") as f:
                     schema = json.load(f)

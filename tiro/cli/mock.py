@@ -6,22 +6,21 @@ import typer
 import uvicorn
 from rich import print
 
+from tiro import Scenario
 from tiro.core.mock import MockApp
-from tiro.core.utils import prepare_scenario
 
 app = typer.Typer()
 
 
 @app.command("serve")
 def mock(
-        scenario_path: str,
+        scenario_path: Path,
         uses: list[Path],
         host: str = typer.Option("127.0.0.1", "--host", "-h"),
         port: int = typer.Option(8000, "--port", "-p"),
 ):
-    scenario = prepare_scenario(scenario_path, uses)
-    mock_app = MockApp(scenario)
-    uvicorn.run(mock_app, host=host, port=port)
+    scenario = Scenario.from_yaml(scenario_path, *uses)
+    uvicorn.run(MockApp(scenario.mocker()), host=host, port=port)
 
 
 @app.command("push")

@@ -10,11 +10,11 @@ services:
       - ./data/influxdb:/var/lib/influxdb2
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
-      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
-      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG}
-      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_PLATFORM_BUCKET}
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+      DOCKER_INFLUXDB_INIT_USERNAME: tiro
+      DOCKER_INFLUXDB_INIT_PASSWORD: tiro_password
+      DOCKER_INFLUXDB_INIT_ORG: tiro
+      DOCKER_INFLUXDB_INIT_BUCKET: tiro
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: influxdb_token
 
   storage-arangodb:
     image: arangodb/arangodb:3.8.6
@@ -25,14 +25,14 @@ services:
     volumes:
       - ./data/arangodb:/var/lib/arangodb3
     environment:
-      ARANGO_ROOT_PASSWORD: ${ARANGODB_PASSWORD}
+      ARANGO_ROOT_PASSWORD: arangodb_password
     command: arangod --server.endpoint tcp://0.0.0.0:8529
 
   telegraf:
     image: telegraf
     restart: always
     volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf
+      - ./config/telegraf.conf:/etc/telegraf/telegraf.conf
 
   nats-server:
     image: nats
@@ -47,9 +47,8 @@ services:
     image: tiro_mock
     restart: always
     volumes:
-      - ./scenario.py:/tiro/scenario.py
-      - ./use1.yaml:/tiro/use1.yaml
-    command: tiro mock serve scenario:scenario use1.yaml -h 0.0.0.0
+      - ./config:/tiro/config
+    command: tiro mock serve config/scenario.yaml config/use1.yaml -h 0.0.0.0
 
   karze-roles:
     build:
@@ -58,12 +57,10 @@ services:
     image: tiro_mock
     restart: always
     volumes:
-      - ./karez_mock.yaml:/tiro/karez_mock.yaml
       - ./karez_plugins:/tiro/plugins
-      - ./scenario.py:/tiro/scenario.py
-      - ./use1.yaml:/tiro/use1.yaml
       - ./data/karez-logs:/tiro/logs
-    command: karez deploy -c karez_mock.yaml -p plugins -a nats://nats-server:4222
+      - ./config:/tiro/config
+    command: karez deploy -c config/karez_mock.yaml -p plugins -a nats://nats-server:4222
     depends_on:
       - mock-server
       - nats-server

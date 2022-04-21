@@ -6,19 +6,19 @@ from rich import print
 import typer
 from typer import Typer
 
+from tiro import Scenario
 from tiro.core.mock import Mocker
-from tiro.core.utils import prepare_scenario
 
 app = Typer()
 
 
 @app.command("show")
 def schema_show(
-        scenario_path: str,
+        scenario_path: Path,
         uses: list[Path],
         output: Optional[Path] = typer.Option(None, "--output", "-o")
 ):
-    scenario = prepare_scenario(scenario_path, uses)
+    scenario = Scenario.from_yaml(scenario_path, *uses)
     if output:
         with open(output, "w") as f:
             json.dump(scenario.model().schema(), f, indent=2)
@@ -27,13 +27,13 @@ def schema_show(
 
 
 @app.command("example")
-def schema_show(
-        scenario_path: str,
+def schema_example(
+        scenario_path: Path,
         uses: list[Path],
         output: Optional[Path] = typer.Option(None, "--output", "-o")
 ):
-    scenario = prepare_scenario(scenario_path, uses)
-    mocker = Mocker(scenario)
+    scenario = Scenario.from_yaml(scenario_path, *uses)
+    mocker = scenario.mocker()
     if output:
         with open(output, 'w') as f:
             json.dump(mocker.dict(), f, indent=2)

@@ -10,7 +10,7 @@ def temperature_faker():
     return Faker().pyfloat(right_digits=2, min_value=10, max_value=30)
 
 
-class ServerBase(Entity):
+class Server(Entity):
     # Telemetries
     CPUTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
     MemoryTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
@@ -20,13 +20,13 @@ class ServerBase(Entity):
     ModelName: Attribute(str)
 
 
-class RackBase(Entity):
+class Rack(Entity):
     # Telemetries
     FrontTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
     BackTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
 
 
-class RoomBase(Entity):
+class Room(Entity):
     # Telemetries
     Temperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
 
