@@ -1,3 +1,6 @@
+$asset_library_path: .
+$asset_library_name: assets
+
 Room:
     $type: data_hall.Room
     Rack:

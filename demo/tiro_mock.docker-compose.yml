@@ -48,6 +48,7 @@ services:
     restart: always
     volumes:
       - ./config:/tiro/config
+      - ./assets:/tiro/assets
     command: tiro mock serve config/scenario.yaml config/use1.yaml -h 0.0.0.0
 
   karze-roles:
@@ -60,6 +61,7 @@ services:
       - ./karez_plugins:/tiro/plugins
       - ./data/karez-logs:/tiro/logs
       - ./config:/tiro/config
+      - ./assets:/tiro/assets
     command: karez deploy -c config/karez_mock.yaml -p plugins -a nats://nats-server:4222
     depends_on:
       - mock-server

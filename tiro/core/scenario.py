@@ -1,28 +1,45 @@
 from collections.abc import Iterable
 from pathlib import Path
+from typing import Type, Optional
 
 from yaml import safe_load
 
 from tiro.core import Entity
 from tiro.core.mock import Mocker
 from tiro.core.model import DataPointInfo
-from tiro.core.utils import split_path, camel_to_snake, concat_path, snake_to_camel
+from tiro.core.utils import split_path, camel_to_snake, concat_path, snake_to_camel, YAML_META_CHAR
 from tiro.core.validate import Validator
 
 
 class Scenario:
-    def __init__(self, *entities, **kw_entities):
+    def __init__(self,
+                 *entities: Entity | Type[Entity],
+                 asset_library_path: Optional[str] = None,
+                 asset_library_name: str = "tiro.assets",
+                 **kw_entities: dict[str, Entity | Type[Entity]]):
         self.root: Entity = Entity.create("Scenario",
                                           *entities,
                                           base_class=None,
+                                          asset_library_path=asset_library_path,
+                                          asset_library_name=asset_library_name,
                                           **kw_entities)()
 
     @classmethod
-    def from_yaml(cls, scenario_data: Path | str, *uses: Path | str):
+    def from_yaml(cls,
+                  scenario_data: Path | str,
+                  *uses: Path | str):
         if isinstance(scenario_data, Path):
             scenario_data = scenario_data.open().read()
         defs = safe_load(scenario_data)
-        ins = cls(**{k: Entity.create_from_define_string(k, v) for k, v in defs.items()})
+        asset_library_path = defs.get(f"{YAML_META_CHAR}asset_library_path", None)
+        asset_library_name = defs.get(f"{YAML_META_CHAR}asset_library_name", "tiro.assets")
+        ins = cls(
+            **{k: Entity.create_from_define_string(
+                k, v,
+                asset_library_path=asset_library_path,
+                asset_library_name=asset_library_name,
+            ) for k, v in defs.items() if not k.startswith(YAML_META_CHAR)}
+        )
         for use in uses:
             if isinstance(use, Path):
                 use = use.open().read()

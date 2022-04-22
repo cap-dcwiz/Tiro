@@ -449,7 +449,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 name = "influxdb-client"
 version = "1.28.0"
 description = "InfluxDB 2.0 Python client library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -1243,7 +1243,7 @@ python-versions = ">=3.8"
 name = "pyjwt"
 version = "2.3.0"
 description = "JSON Web Token implementation in Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -1287,7 +1287,7 @@ python-versions = ">=3.7"
 name = "python-arango"
 version = "7.3.3"
 description = "Python Driver for ArangoDB"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1324,7 +1324,7 @@ numpy-style = ["docstring_parser (>=0.7)"]
 
 [[package]]
 name = "pytz"
-version = "2021.3"
+version = "2022.1"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
@@ -1381,7 +1381,7 @@ py = {version = "*", markers = "implementation_name == \"pypy\""}
 name = "requests"
 version = "2.27.1"
 description = "Python HTTP for Humans."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 
@@ -1399,7 +1399,7 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 name = "requests-toolbelt"
 version = "0.9.1"
 description = "A utility belt for advanced users of python-requests"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1439,7 +1439,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 name = "rx"
 version = "3.2.0"
 description = "Reactive Extensions (Rx) for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.0"
 
@@ -1607,7 +1607,7 @@ python-versions = ">=3.7"
 name = "urllib3"
 version = "1.26.9"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
@@ -1716,7 +1716,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "161d6de27a0a4743d86b089f8882200125232900a11c90853afae3efc42ab993"
+content-hash = "b9ae92145e8b65932bc0a5629d2d0bf81b94c45ca53552cdd2c4294b71bd14ba"
 
 [metadata.files]
 aiofiles = [
@@ -2370,8 +2370,8 @@ pytkdocs = [
     {file = "pytkdocs-0.16.1.tar.gz", hash = "sha256:e2ccf6dfe9dbbceb09818673f040f1a7c32ed0bffb2d709b06be6453c4026045"},
 ]
 pytz = [
-    {file = "pytz-2021.3-py2.py3-none-any.whl", hash = "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c"},
-    {file = "pytz-2021.3.tar.gz", hash = "sha256:acad2d8b20a1af07d4e4c9d2e9285c5ed9104354062f275f3fcd88dcef4f1326"},
+    {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},
+    {file = "pytz-2022.1.tar.gz", hash = "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7"},
 ]
 pywin32 = [
     {file = "pywin32-303-cp310-cp310-win32.whl", hash = "sha256:6fed4af057039f309263fd3285d7b8042d41507343cd5fa781d98fcc5b90e8bb"},

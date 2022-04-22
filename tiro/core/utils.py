@@ -2,6 +2,7 @@ from copy import copy
 from typing import Any
 
 PATH_SEP = "."
+YAML_META_CHAR = "$"
 
 
 def concat_path(*components):

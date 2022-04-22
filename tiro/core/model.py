@@ -1,4 +1,5 @@
 import re
+import sys
 from collections.abc import Iterable
 from copy import copy
 from datetime import datetime, timedelta
@@ -13,7 +14,7 @@ from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -270,17 +271,22 @@ class Entity:
                 yield path
 
     @classmethod
-    def create(cls, name: str,
-               *entities,
+    def create(cls,
+               name: str,
+               *entities: Union["Entity", Type["Entity"]],
                base_class: Optional[str] = None,
-               library_path: str = "tiro.assets",
-               **entity_dict) -> Type["Entity"]:
+               asset_library_path: Optional[str] = None,
+               asset_library_name: str = "tiro.assets",
+               **entity_dict: dict[str, Union["Entity", Type["Entity"]]]
+               ) -> Type["Entity"]:
         if base_class:
+            if asset_library_path and asset_library_path not in sys.path:
+                sys.path.insert(0, asset_library_path)
             base_class, _, base_name = base_class.rpartition(".")
             if not base_class:
-                base = getattr(import_module(library_path), base_name)
+                base = getattr(import_module(asset_library_name), base_name)
             else:
-                base = getattr(import_module(f"{library_path}.{base_class}"), base_name)
+                base = getattr(import_module(f"{asset_library_name}.{base_class}"), base_name)
         else:
             base = Entity
         ann = {}
@@ -298,17 +304,28 @@ class Entity:
     def create_from_define_string(cls,
                                   name: str,
                                   defs: dict,
-                                  prefix: str = "") -> EntityList:
-        meta_start = "$"
+                                  prefix: str = "",
+                                  asset_library_path: Optional[str] = None,
+                                  asset_library_name: str = "tiro.assets") -> EntityList:
         if prefix:
             name = f"{prefix}_{name}"
-        children = {k: cls.create_from_define_string(k, v, prefix=name)
-                    for k, v in defs.items()
-                    if not k.startswith(meta_start)}
-        entity = cls.create(name, base_class=defs[f"{meta_start}type"], **children)
+        children = {
+            k: cls.create_from_define_string(
+                k, v,
+                prefix=name,
+                asset_library_path=asset_library_path,
+                asset_library_name=asset_library_name
+            )
+            for k, v in defs.items() if not k.startswith(YAML_META_CHAR)
+        }
+        entity = cls.create(name,
+                            base_class=defs[f"{YAML_META_CHAR}type"],
+                            asset_library_path=asset_library_path,
+                            asset_library_name=asset_library_name,
+                            **children)
         list_args = {}
-        if f"{meta_start}number" in defs:
-            number = defs[f"{meta_start}number"]
+        if f"{YAML_META_CHAR}number" in defs:
+            number = defs[f"{YAML_META_CHAR}number"]
             if isinstance(number, str) and "-" in number:
                 min_num, max_num = number.split("-")
                 list_args["faking_number"] = partial(randint, int(min_num), int(max_num))
