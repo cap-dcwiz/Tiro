@@ -11,6 +11,13 @@ theme:
     - navigation.top
     - navigation.instant
 
+nav:
+  - About: about.md
+  - Concepts: concepts.md
+  - Quickstart: quickstart.md
+  - License: license.md
+  - Reference: reference/
+
 plugins:
   - search
   - section-index

@@ -1,1 +1,1 @@
---8<-- "README.md"
+--8<-- "docs/about.md"
