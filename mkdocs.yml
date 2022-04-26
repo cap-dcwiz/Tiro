@@ -1,0 +1,42 @@
+site_name: Tiro
+repo_url: https://github.com/cap-dcwiz/Tiro
+repo_name: cap-dcwiz/Tiro
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - content.code.annotate
+    - navigation.tabs
+    - navigation.top
+    - navigation.instant
+
+plugins:
+  - search
+  - section-index
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mkdocstrings:
+      watch:
+        - tiro
+
+markdown_extensions:
+  - admonition
+  - mkdocs-typer
+  - attr_list
+  - md_in_html
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.keys
+  - pymdownx.superfences
+  - pymdownx.magiclink
+  - pymdownx.pathconverter
+  - pymdownx.snippets:
+      check_paths: true
+  - toc:
+      permalink: true

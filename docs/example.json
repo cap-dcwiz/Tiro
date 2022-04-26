@@ -1,0 +1,1279 @@
+{
+  "Room": {
+    "febfb042-c581-11ec-9ae1-aa966665d395": {
+      "Rack": {
+        "febfb09c-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "febfb100-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 19.8,
+                  "timestamp": "2022-04-27T00:57:46.349955",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fec10c1c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.72,
+                  "timestamp": "2022-04-27T00:57:46.220628",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fec26d78-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 19.39,
+                  "timestamp": "2022-04-27T00:57:46.248598",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fec3e22a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 20.27,
+                  "timestamp": "2022-04-27T00:57:47.464633",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fec53a9e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.25,
+                  "timestamp": "2022-04-27T00:57:47.538945",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fec68fe8-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.11,
+                  "timestamp": "2022-04-27T00:57:47.041298",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 15.81,
+              "timestamp": "2022-04-27T00:57:46.969668",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "fec93ba8-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "fec93c20-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.14,
+                  "timestamp": "2022-04-27T00:57:47.598152",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fecac158-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 12.29,
+                  "timestamp": "2022-04-27T00:57:47.283442",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fecc60ee-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 10.61,
+                  "timestamp": "2022-04-27T00:57:47.320965",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fece0b06-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 10.69,
+                  "timestamp": "2022-04-27T00:57:47.220110",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fecf8c88-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.92,
+                  "timestamp": "2022-04-27T00:57:47.752512",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed11030-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 16.19,
+                  "timestamp": "2022-04-27T00:57:47.785000",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed2b43a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.87,
+                  "timestamp": "2022-04-27T00:57:47.207673",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed4281a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 11.31,
+                  "timestamp": "2022-04-27T00:57:47.625203",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed57f6c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.31,
+                  "timestamp": "2022-04-27T00:57:47.092426",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed6d920-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 28.83,
+                  "timestamp": "2022-04-27T00:57:47.903363",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed82e56-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 28.34,
+                  "timestamp": "2022-04-27T00:57:47.964502",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fed9860c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 17.6,
+                  "timestamp": "2022-04-27T00:57:47.051655",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fedaea1a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 20.85,
+                  "timestamp": "2022-04-27T00:57:47.726744",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fedc4f54-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.62,
+                  "timestamp": "2022-04-27T00:57:47.994940",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "feddbb82-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 12.9,
+                  "timestamp": "2022-04-27T00:57:47.153873",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fedf132e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.42,
+                  "timestamp": "2022-04-27T00:57:47.439353",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fee06b0c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 25.53,
+                  "timestamp": "2022-04-27T00:57:47.075892",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fee1cb32-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 25.76,
+                  "timestamp": "2022-04-27T00:57:47.721448",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 13.95,
+              "timestamp": "2022-04-27T00:57:47.576876",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "fee47c7e-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "fee47d14-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 18.34,
+                  "timestamp": "2022-04-27T00:57:47.881386",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fee5d588-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.48,
+                  "timestamp": "2022-04-27T00:57:47.092851",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fee72cee-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.28,
+                  "timestamp": "2022-04-27T00:57:47.865311",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fee8818e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.89,
+                  "timestamp": "2022-04-27T00:57:47.794976",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fee9d840-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.82,
+                  "timestamp": "2022-04-27T00:57:47.779644",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "feeb2f9c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.14,
+                  "timestamp": "2022-04-27T00:57:47.780594",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "feec8838-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 28.24,
+                  "timestamp": "2022-04-27T00:57:47.824200",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "feeddcec-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.38,
+                  "timestamp": "2022-04-27T00:57:47.917868",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "feef33e4-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 12.64,
+                  "timestamp": "2022-04-27T00:57:47.165319",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef089a6-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.82,
+                  "timestamp": "2022-04-27T00:57:47.615981",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef1df22-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.92,
+                  "timestamp": "2022-04-27T00:57:47.067378",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef3387c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.74,
+                  "timestamp": "2022-04-27T00:57:47.559542",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef492e4-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 14.91,
+                  "timestamp": "2022-04-27T00:57:47.916870",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef5e900-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.88,
+                  "timestamp": "2022-04-27T00:57:47.068944",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef76cd0-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 27.5,
+                  "timestamp": "2022-04-27T00:57:47.292310",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fef902e8-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.3,
+                  "timestamp": "2022-04-27T00:57:47.928899",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fefa87ee-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.59,
+                  "timestamp": "2022-04-27T00:57:47.723072",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fefc1546-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 23.6,
+                  "timestamp": "2022-04-27T00:57:47.971096",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "fefdaf28-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 27.89,
+                  "timestamp": "2022-04-27T00:57:47.809033",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 19.41,
+              "timestamp": "2022-04-27T00:57:47.449088",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff0060d8-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff00616e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.51,
+                  "timestamp": "2022-04-27T00:57:47.117512",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff01c108-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.12,
+                  "timestamp": "2022-04-27T00:57:47.072042",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff032552-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.3,
+                  "timestamp": "2022-04-27T00:57:47.026679",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff047b50-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.57,
+                  "timestamp": "2022-04-27T00:57:47.827156",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff05d2e8-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 16.82,
+                  "timestamp": "2022-04-27T00:57:47.947650",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff0726ac-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.4,
+                  "timestamp": "2022-04-27T00:57:47.676510",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff087bba-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.7,
+                  "timestamp": "2022-04-27T00:57:47.675570",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff09ce98-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 28.82,
+                  "timestamp": "2022-04-27T00:57:47.417585",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff0b22ac-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.73,
+                  "timestamp": "2022-04-27T00:57:47.547992",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff0c7850-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 19.63,
+                  "timestamp": "2022-04-27T00:57:47.290488",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff0dcd04-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.67,
+                  "timestamp": "2022-04-27T00:57:47.761117",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff0f221c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 10.45,
+                  "timestamp": "2022-04-27T00:57:47.999988",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff10764e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.55,
+                  "timestamp": "2022-04-27T00:57:47.625142",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff11cb8e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 20.88,
+                  "timestamp": "2022-04-27T00:57:47.310255",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff131e6c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 17.29,
+                  "timestamp": "2022-04-27T00:57:47.361573",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff1471ea-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.94,
+                  "timestamp": "2022-04-27T00:57:47.749521",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff15c7b6-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 25.16,
+                  "timestamp": "2022-04-27T00:57:47.977825",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff171b20-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.97,
+                  "timestamp": "2022-04-27T00:57:47.151796",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 25.44,
+              "timestamp": "2022-04-27T00:57:47.151683",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff19d0ea-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff19d180-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.37,
+                  "timestamp": "2022-04-27T00:57:47.326047",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff1b2904-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.49,
+                  "timestamp": "2022-04-27T00:57:47.149460",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff1c81f0-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.4,
+                  "timestamp": "2022-04-27T00:57:47.637442",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff1df4f4-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 10.91,
+                  "timestamp": "2022-04-27T00:57:47.657122",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff1f6708-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.29,
+                  "timestamp": "2022-04-27T00:57:47.702518",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff20dd4a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.14,
+                  "timestamp": "2022-04-27T00:57:47.066029",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff22425c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 17.41,
+                  "timestamp": "2022-04-27T00:57:47.280632",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff23977e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 25.29,
+                  "timestamp": "2022-04-27T00:57:47.769257",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff24fccc-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 27.79,
+                  "timestamp": "2022-04-27T00:57:47.951966",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff2655b8-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.4,
+                  "timestamp": "2022-04-27T00:57:47.023904",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff27ae40-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.99,
+                  "timestamp": "2022-04-27T00:57:47.042139",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff2903b2-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.47,
+                  "timestamp": "2022-04-27T00:57:47.897023",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff2a5992-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 18.82,
+                  "timestamp": "2022-04-27T00:57:47.198269",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff2baf5e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.51,
+                  "timestamp": "2022-04-27T00:57:47.050978",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff2d06ce-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.8,
+                  "timestamp": "2022-04-27T00:57:47.487842",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 20.41,
+              "timestamp": "2022-04-27T00:57:47.458304",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff2fb342-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff2fb3ce-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 12.5,
+                  "timestamp": "2022-04-27T00:57:47.812719",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff310a44-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 18.36,
+                  "timestamp": "2022-04-27T00:57:47.769295",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff325eee-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 11.9,
+                  "timestamp": "2022-04-27T00:57:47.010946",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff33b474-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 17.57,
+                  "timestamp": "2022-04-27T00:57:47.480287",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff350d10-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.29,
+                  "timestamp": "2022-04-27T00:57:47.554760",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff366228-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 27.34,
+                  "timestamp": "2022-04-27T00:57:47.574299",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff37b880-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 19.71,
+                  "timestamp": "2022-04-27T00:57:47.960868",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 13.5,
+              "timestamp": "2022-04-27T00:57:47.852628",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff3a62d8-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff3a6346-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.41,
+                  "timestamp": "2022-04-27T00:57:47.812151",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff3bc4c0-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 10.29,
+                  "timestamp": "2022-04-27T00:57:47.337169",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 11.95,
+              "timestamp": "2022-04-27T00:57:47.556693",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff3e6e96-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff3e6f04-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 12.67,
+                  "timestamp": "2022-04-27T00:57:47.246146",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff3fc4c6-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.14,
+                  "timestamp": "2022-04-27T00:57:47.893401",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff411984-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.34,
+                  "timestamp": "2022-04-27T00:57:47.209441",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 21.56,
+              "timestamp": "2022-04-27T00:57:47.181657",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff43cec2-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff43cf26-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.96,
+                  "timestamp": "2022-04-27T00:57:47.645131",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff452358-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.45,
+                  "timestamp": "2022-04-27T00:57:47.340340",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff467898-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 16.54,
+                  "timestamp": "2022-04-27T00:57:47.927309",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff47cca2-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 24.75,
+                  "timestamp": "2022-04-27T00:57:47.680573",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff492192-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 12.26,
+                  "timestamp": "2022-04-27T00:57:47.324122",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff4a79ac-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 17.77,
+                  "timestamp": "2022-04-27T00:57:47.396006",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff4bd78e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 18.32,
+                  "timestamp": "2022-04-27T00:57:47.104445",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff4d2f1c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 14.92,
+                  "timestamp": "2022-04-27T00:57:47.265763",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff4e838a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 28.73,
+                  "timestamp": "2022-04-27T00:57:47.377994",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff4fd91a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 20.13,
+                  "timestamp": "2022-04-27T00:57:47.683478",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff512ca2-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.64,
+                  "timestamp": "2022-04-27T00:57:47.956648",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff52821e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 18.16,
+                  "timestamp": "2022-04-27T00:57:47.038821",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff53d75e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.69,
+                  "timestamp": "2022-04-27T00:57:47.831795",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff552ce4-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.52,
+                  "timestamp": "2022-04-27T00:57:47.752686",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff5680a8-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.36,
+                  "timestamp": "2022-04-27T00:57:47.795453",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff57d46c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.73,
+                  "timestamp": "2022-04-27T00:57:47.535091",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 12.67,
+              "timestamp": "2022-04-27T00:57:47.390285",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff5a7d3e-c581-11ec-9ae1-aa966665d395": {
+          "Server": {
+            "ff5a7dac-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.53,
+                  "timestamp": "2022-04-27T00:57:47.302601",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff5bd418-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.25,
+                  "timestamp": "2022-04-27T00:57:47.101584",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff5d284a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 27.75,
+                  "timestamp": "2022-04-27T00:57:47.119991",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff5e7d76-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 16.98,
+                  "timestamp": "2022-04-27T00:57:47.868295",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff5fd252-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 11.24,
+                  "timestamp": "2022-04-27T00:57:48.616242",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff61272e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 26.42,
+                  "timestamp": "2022-04-27T00:57:48.751152",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff627b88-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 25.98,
+                  "timestamp": "2022-04-27T00:57:48.956320",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff63cf88-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 13.61,
+                  "timestamp": "2022-04-27T00:57:48.541823",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff65254a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 18.47,
+                  "timestamp": "2022-04-27T00:57:48.684088",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff667922-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 20.12,
+                  "timestamp": "2022-04-27T00:57:48.197596",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff67d966-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 27.21,
+                  "timestamp": "2022-04-27T00:57:48.037157",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff692cf8-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 15.85,
+                  "timestamp": "2022-04-27T00:57:48.479095",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff6a8148-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 20.2,
+                  "timestamp": "2022-04-27T00:57:48.738372",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff6bd49e-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 22.37,
+                  "timestamp": "2022-04-27T00:57:48.988257",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff6d2d76-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 28.57,
+                  "timestamp": "2022-04-27T00:57:48.171234",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff6e8b26-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 21.98,
+                  "timestamp": "2022-04-27T00:57:48.022980",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff6fec5a-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 29.2,
+                  "timestamp": "2022-04-27T00:57:48.712925",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff71417c-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 11.3,
+                  "timestamp": "2022-04-27T00:57:48.505810",
+                  "unit": "\u00b0C"
+                }
+              }
+            },
+            "ff729518-c581-11ec-9ae1-aa966665d395": {
+              "Telemetry": {
+                "CPUTemperature": {
+                  "value": 14.73,
+                  "timestamp": "2022-04-27T00:57:48.595503",
+                  "unit": "\u00b0C"
+                }
+              }
+            }
+          },
+          "Telemetry": {
+            "BackTemperature": {
+              "value": 20.5,
+              "timestamp": "2022-04-27T00:57:47.537012",
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "Server": {
+        "ff753d86-c581-11ec-9ae1-aa966665d395": {
+          "Telemetry": {
+            "CPUTemperature": {
+              "value": 14.98,
+              "timestamp": "2022-04-27T00:57:48.164164",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff7692f8-c581-11ec-9ae1-aa966665d395": {
+          "Telemetry": {
+            "CPUTemperature": {
+              "value": 27.1,
+              "timestamp": "2022-04-27T00:57:48.878105",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff77e8a6-c581-11ec-9ae1-aa966665d395": {
+          "Telemetry": {
+            "CPUTemperature": {
+              "value": 23.17,
+              "timestamp": "2022-04-27T00:57:48.147828",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff794af2-c581-11ec-9ae1-aa966665d395": {
+          "Telemetry": {
+            "CPUTemperature": {
+              "value": 25.75,
+              "timestamp": "2022-04-27T00:57:48.351548",
+              "unit": "\u00b0C"
+            }
+          }
+        },
+        "ff7aa3fc-c581-11ec-9ae1-aa966665d395": {
+          "Telemetry": {
+            "CPUTemperature": {
+              "value": 15.89,
+              "timestamp": "2022-04-27T00:57:48.326576",
+              "unit": "\u00b0C"
+            }
+          }
+        }
+      },
+      "Telemetry": {
+        "Temperature": {
+          "value": 15.51,
+          "timestamp": "2022-04-27T00:57:46.845906",
+          "unit": "\u00b0C"
+        }
+      }
+    }
+  }
+}
