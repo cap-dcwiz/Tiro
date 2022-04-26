@@ -2,13 +2,14 @@ $asset_library_path: ../demo
 $asset_library_name: assets
 
 Room:
-    $type: data_hall.Room
-    Rack:
-        $type: data_hall.Rack
-        $number: 10
-        Server:
-            $type: data_hall.Server
-            $number: 2-20
+  $type: data_hall.Room
+  Rack:
+    $type: data_hall.Rack
+    $number: 10
     Server:
-        $type: data_hall.Server
-        $number: 5
+      $type: data_hall.Server
+      $number: 2-20
+  Server:
+    $type: data_hall.Server
+    $number: 5
+    $ids: ["S1", "S2", "S3", "S4", "S5", "S6"]

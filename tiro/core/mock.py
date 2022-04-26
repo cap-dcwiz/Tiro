@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Optional, Union
 from uuid import uuid1
 
@@ -16,10 +17,10 @@ class MockedItem:
 
 
 class MockedEntity(MockedItem):
-    def __init__(self, entity_type, *args, **kwargs):
+    def __init__(self, entity_type, *args, uuid=None, **kwargs):
         super(MockedEntity, self).__init__(*args, **kwargs)
         self.children: dict[str, dict[str, MockedEntity]] = {}
-        self.uuid: Optional[str] = str(uuid1())
+        self.uuid: Optional[str] = uuid or str(uuid1())
         self.entity_type = entity_type
         self._initialised = False
         self._path = None
@@ -40,11 +41,21 @@ class MockedEntity(MockedItem):
         if not self._initialised or regenerate:
             self.children = {}
             for k, v in self.prototype.children.items():
-                num = self.prototype.child_info[k].number_faker()
-                entity_type = camel_to_snake(k)
                 _children = {}
-                for _ in range(num):
-                    entity = MockedEntity(entity_type=entity_type, prototype=v, parent=self)
+                entity_type = camel_to_snake(k)
+                prototype = self.prototype.child_info[k]
+                number = prototype.number_faker()
+                if prototype.ids and number > len(prototype.ids):
+                    logging.warning(
+                        f"Faking number ({number})is greater the length of predefined IDs ({len(prototype.ids)}."
+                        f"Only {len(prototype.ids)} instances will be generated."
+                    )
+                if prototype.ids:
+                    uuids = prototype.ids[:number]
+                else:
+                    uuids = [None for _ in range(number)]
+                for uuid in uuids:
+                    entity = MockedEntity(entity_type=entity_type, prototype=v, parent=self, uuid=uuid)
                     _children[entity.uuid] = entity.generate()
                 self.children[entity_type] = _children
             self._initialised = True

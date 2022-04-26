@@ -1,6 +1,7 @@
 from random import randint
 
 from pydantic import confloat, conint
+from rich import print_json
 
 from tiro import Scenario
 from tiro.core.model import Entity, Telemetry, Attribute, EntityList
@@ -56,4 +57,4 @@ scenario = Scenario(Room)
 scenario.Room.Rack.FrontTemperature.use()
 scenario.requires(yaml=yaml)
 
-print(scenario.model(hide_data_points=False).schema_json(indent=2))
+print_json(scenario.model(hide_data_points=False).schema_json())

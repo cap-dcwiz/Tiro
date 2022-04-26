@@ -36,6 +36,7 @@ class Scenario:
         ins = cls(
             **{k: Entity.create_from_define_string(
                 k, v,
+                prefix="Scenario",
                 asset_library_path=asset_library_path,
                 asset_library_name=asset_library_name,
             ) for k, v in defs.items() if not k.startswith(YAML_META_CHAR)}

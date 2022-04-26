@@ -47,19 +47,22 @@ class Attribute(DataPointInfo):
 class EntityList:
     def __init__(self,
                  cls: Type["Entity"],
-                 min_items: Optional[int] = None,
-                 max_items: Optional[int] = None,
-                 faking_number: Optional[Callable | int] = None):
+                 faking_number: Optional[Callable | int] = None,
+                 ids: Optional[list[str]] = None
+                 ):
         self.cls = cls
-        self.min_items = min_items
-        self.max_items = max_items
+        self.ids = ids
+        if self.ids is not None:
+            if faking_number is None:
+                faking_number = len(self.ids)
+            elif isinstance(faking_number, int) and faking_number > len(self.ids):
+                raise RuntimeError("When ids is provided, faking_number must be less than the length of ids.")
         if isinstance(faking_number, int):
             self.number_faker = lambda: faking_number
         else:
             self.number_faker = faking_number
 
     def new_entity(self, parent: Optional["Entity"] = None):
-        # return self.cls(parent, min_items=self.min_items, max_items=self.max_items)
         return self.cls(parent)
 
 
@@ -146,9 +149,10 @@ class Entity:
     @property
     def unique_name(self) -> str:
         if self.parent and "_" not in self.name:
-            return f"{self.parent.unique_name}_{self.__class__.__name__}"
+            unique_name = f"{self.parent.unique_name}_{self.__class__.__name__}"
         else:
-            return self.name
+            unique_name = self.name
+        return unique_name
 
     def _parse_yaml(self, d, prefix="") -> Iterable[str]:
         if isinstance(d, list):
@@ -201,13 +205,20 @@ class Entity:
                                hide_data_points: bool = False
                                ) -> dict[str, tuple[type, Any]]:
         fields = {
-            camel_to_snake(name): (Optional[ins.model_list(hide_data_points=hide_data_points)], ...)
+            camel_to_snake(name): (
+                Optional[
+                    ins.model_list(self.child_info[name], hide_data_points=hide_data_points)
+                ], ...)
             for name, ins in self.children.items()
         }
         return fields
 
-    def model_list(self, hide_data_points: bool = False) -> Type[dict[str, BaseModel]]:
-        return dict[str, self.model(hide_data_points=hide_data_points)]
+    def model_list(self, entity_list, hide_data_points: bool = False) -> Type[dict[str, BaseModel]]:
+        if entity_list.ids:
+            str_type = Literal[tuple(entity_list.ids)]
+        else:
+            str_type = str
+        return dict[str_type, self.model(hide_data_points=hide_data_points)]
 
     def model(self, hide_data_points: bool = False) -> Type[BaseModel]:
         fields: dict[str, tuple[type, Any]] = self._create_entities_model(hide_data_points=hide_data_points)
@@ -333,4 +344,6 @@ class Entity:
                 list_args["faking_number"] = int(number)
         else:
             list_args["faking_number"] = 1
+        if f"{YAML_META_CHAR}ids" in defs:
+            list_args["ids"] = defs[f"{YAML_META_CHAR}ids"]
         return entity.many(**list_args)
