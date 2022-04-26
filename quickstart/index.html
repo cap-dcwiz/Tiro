@@ -938,13 +938,13 @@
 <h2 id="defining-a-scenario-and-multiple-use-cases">Defining a scenario and multiple use cases<a class="headerlink" href="#defining-a-scenario-and-multiple-use-cases" title="Permanent link">&para;</a></h2>
 <p>To use tiro tools, first, we need to define a scenario (<a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/config/scenario.yaml">example</a>) file and several uses files (<a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/config/use1.yaml">exmaple</a>).</p>
 <h2 id="generating-data-schema-and-examples">Generating data schema and examples<a class="headerlink" href="#generating-data-schema-and-examples" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>tiro schema show config/scenario.yaml config/use1.yaml -o ../docs/schema.json
+<div class="highlight"><pre><span></span><code>tiro schema show config/scenario.yaml config/use1.yaml -o schema.json
 </code></pre></div>
-<p>This command will generate the schema and save it to <a href="https://github.com/cap-dcwiz/Tiro/blob/main/docs/schema.json">this file</a>. Or, without the <code>-o</code> option, it will print the generated schema to stdout.</p>
+<p>This command will generate the schema and save it to <a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/schema.json">this file</a>. Or, without the <code>-o</code> option, it will print the generated schema to stdout.</p>
 <p>Usually, the schema can be a little bit difficult for human to read. In such cases, the following command can generate an example that matches the schema.</p>
-<div class="highlight"><pre><span></span><code>tiro schema example config/scenario.yaml config/use1.yaml -o ../docs/example.json
+<div class="highlight"><pre><span></span><code>tiro schema example config/scenario.yaml config/use1.yaml -o example.json
 </code></pre></div>
-<p>The generated json example can be viewed <a href="https://github.com/cap-dcwiz/Tiro/blob/main/docs/example.json">here</a>. Again, without the <code>-o</code> option, it will print the generated example to stdout.</p>
+<p>The generated json example can be viewed <a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/example.json">here</a>. Again, without the <code>-o</code> option, it will print the generated example to stdout.</p>
 <h2 id="mock-data-generater">Mock data generater<a class="headerlink" href="#mock-data-generater" title="Permanent link">&para;</a></h2>
 <p>The following command will setup a web server that generates mock data for each data point required by at least one use case.</p>
 <div class="highlight"><pre><span></span><code>tiro mock serve config/scenario.yaml config/use1.yaml -p <span class="m">8000</span>
@@ -955,7 +955,7 @@
 <p>Sometimes, one may want to find out whether the data collection procedure can successfully retrieve all the data points it requires. This usually happens when the application and data collection procedure are developed by different teams. In this case, a validator server can be setup to validate the collected data.</p>
 <div class="highlight"><pre><span></span><code>tiro validate serve config/scenario.yaml config/use1.yaml -p <span class="m">8001</span> -r <span class="m">60</span>
 </code></pre></div>
-<p>Again, once the server has started, the documentation can be accessed on <a href="http://127.0.0.1:8001/docs">http://127.0.0.1:8001/docs</a>. The server will continuously receive data points, and validate the collected data every 60 seconds. Basically, it will assemble all the data points received within the minutes and combine them into a json like the <a href="https://github.com/cap-dcwiz/Tiro/blob/main/docs/example.json">example</a>, and validate the json against the <a href="https://github.com/cap-dcwiz/Tiro/blob/main/docs/schema.json">schema</a>. If the validation is passed, it should indicate that all the required data points has been collected. The interval can be adjust.</p>
+<p>Again, once the server has started, the documentation can be accessed on <a href="http://127.0.0.1:8001/docs">http://127.0.0.1:8001/docs</a>. The server will continuously receive data points, and validate the collected data every 60 seconds. Basically, it will assemble all the data points received within the minutes and combine them into a json like the <a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/example.json">example</a>, and validate the json against the <a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/schema.json">schema</a>. If the validation is passed, it should indicate that all the required data points has been collected. The interval can be adjust.</p>
 <p>Alternatively, there also a Karez aggregator that can work as a validator, check <a href="https://github.com/cap-dcwiz/Tiro/blob/main/demo/config/karez_mock.yaml">here</a> for more details.</p>
 <h2 id="karez-plugins">Karez plugins<a class="headerlink" href="#karez-plugins" title="Permanent link">&para;</a></h2>
 <p>There several Karez plugins can be find in the project:</p>
