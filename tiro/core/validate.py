@@ -28,10 +28,10 @@ class ValidationResult:
             msg += f"Failed!\n{str(self.exception)}"
         return msg
 
-    def json(self):
+    def json(self) -> str:
         return json.dumps(self.info())
 
-    def info(self):
+    def info(self) -> dict:
         return dict(
             start=self.start.isoformat(),
             end=self.end.isoformat(),
@@ -39,7 +39,7 @@ class ValidationResult:
             exception=self.serialise_exception()
         )
 
-    def serialise_exception(self):
+    def serialise_exception(self) -> Optional[dict]:
         if self.exception is None:
             return None
         elif isinstance(self.exception, PydanticValidationError):
@@ -52,6 +52,12 @@ class ValidationResult:
 
 
 class Validator:
+    """
+    Validator receives data points and
+    validate the JSON combined from all received data points in a short period
+    against the given scenario or JSON schema.
+    """
+
     def __init__(self,
                  entity: Entity = None,
                  schema: dict = None,
@@ -71,7 +77,7 @@ class Validator:
         self.log: deque[ValidationResult] = deque(maxlen=log_size if log else 1)
         self._collect_count = 0
 
-    def reset_data(self):
+    def reset_data(self) -> None:
         self._collect_count = 0
         self._data = {}
         if self.retention:

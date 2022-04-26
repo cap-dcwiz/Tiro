@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Optional, Union
+from typing import Optional, Union, Type
 from uuid import uuid1
 
 from faker import Faker
@@ -17,13 +17,15 @@ class MockedItem:
 
 
 class MockedEntity(MockedItem):
-    def __init__(self, entity_type, *args, uuid=None, **kwargs):
+    """Mock data generator for an entity class"""
+
+    def __init__(self, entity_type: Type[Entity], *args, uuid=None, **kwargs):
         super(MockedEntity, self).__init__(*args, **kwargs)
         self.children: dict[str, dict[str, MockedEntity]] = {}
         self.uuid: Optional[str] = uuid or str(uuid1())
-        self.entity_type = entity_type
-        self._initialised = False
-        self._path = None
+        self.entity_type: Type[Entity] = entity_type
+        self._initialised: bool = False
+        self._path: Optional[str] = None
 
         for dp_type in DataPointInfo.SUB_CLASSES:
             setattr(self, camel_to_snake(dp_type.__name__), {})
@@ -60,13 +62,14 @@ class MockedEntity(MockedItem):
                 self.children[entity_type] = _children
             self._initialised = True
         if include_data_points:
-            self.generate_data_points(change_attrs=change_attrs or regenerate)
+            self._generate_data_points(change_attrs=change_attrs or regenerate)
         return self
 
     def dict(self,
              regenerate=False,
              include_data_points=True,
              change_attrs=False) -> dict:
+        """Generate a complete tree starting from current entity"""
         self.generate(regenerate=regenerate,
                       include_data_points=include_data_points,
                       change_attrs=change_attrs)
@@ -90,7 +93,7 @@ class MockedEntity(MockedItem):
                     res |= {dp_type_name: list(dps.keys())}
         return res
 
-    def generate_data_points(self, **kwargs):
+    def _generate_data_points(self, **kwargs) -> None:
         for dp_type in DataPointInfo.SUB_CLASSES:
             dps = getattr(self, camel_to_snake(dp_type.__name__))
             for v in dps.values():
@@ -177,6 +180,7 @@ class Mocker:
         self.entity_cache: Optional[dict[str, MockedEntity]] = None
 
     def dict(self, regenerate: bool = False, **kwargs) -> dict:
+        """Generate a complete dictionary for the tree starting from the given entity."""
         if regenerate:
             self.entity_cache = None
         return self.entity.dict(regenerate=regenerate, **kwargs)
@@ -185,12 +189,13 @@ class Mocker:
              regenerate: bool = False,
              include_data_points=True,
              change_attrs=False, **kwargs) -> str:
+        """Generate a complete dictionary for the tree starting from the entity and return the coded json string."""
         d = self.dict(regenerate=regenerate,
                       include_data_points=include_data_points,
                       change_attrs=change_attrs)
         return json.dumps(d, **kwargs)
 
-    def gen_data_point(self, path: str, change_attr: bool = False):
+    def gen_data_point(self, path: str, change_attr: bool = False) -> dict:
         path, _, dp_name = path.rpartition(PATH_SEP)
         path, _, _ = path.rpartition(PATH_SEP)
         return self.entity.get_child(path).gen_data_point(dp_name, change_attrs=change_attr)

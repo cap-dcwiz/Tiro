@@ -37,14 +37,17 @@ class DataPointInfo:
 
 
 class Telemetry(DataPointInfo):
+    """Data point that dynamically changes."""
     pass
 
 
 class Attribute(DataPointInfo):
+    """Data point that seldom changes"""
     pass
 
 
 class EntityList:
+    """Holding the information of a list of entity with the same type"""
     def __init__(self,
                  cls: Type["Entity"],
                  faking_number: Optional[Callable | int] = None,
@@ -62,11 +65,13 @@ class EntityList:
         else:
             self.number_faker = faking_number
 
-    def new_entity(self, parent: Optional["Entity"] = None):
+    def new_entity(self, parent: Optional["Entity"] = None) -> "Entity":
+        """Generate an entity instance"""
         return self.cls(parent)
 
 
 class DataPoint(GenericModel, Generic[DPT]):
+    """Base Pydantic Model to representing a data point"""
     value: DPT
     timestamp: datetime
     _unit: Optional[str] = None
@@ -80,6 +85,7 @@ class DataPoint(GenericModel, Generic[DPT]):
 
 
 class RequireHelper:
+    """Helper class for requiring children or data points"""
     def __init__(self, component: str, parent: Union["RequireHelper", "Entity"]):
         self.component = component
         self.parent = parent
@@ -140,6 +146,7 @@ class Entity:
 
     @classmethod
     def many(cls, *args, **kwargs) -> EntityList:
+        """Return a list of the entities with the same type"""
         return EntityList(cls, *args, **kwargs)
 
     @property
@@ -154,22 +161,27 @@ class Entity:
             unique_name = self.name
         return unique_name
 
-    def _parse_yaml(self, d, prefix="") -> Iterable[str]:
+    def _parse_use_yaml(self, d, prefix="") -> Iterable[str]:
         if isinstance(d, list):
             for item in d:
-                yield from self._parse_yaml(item, prefix=prefix)
+                yield from self._parse_use_yaml(item, prefix=prefix)
         elif isinstance(d, dict):
             for k, v in d.items():
-                yield from self._parse_yaml(v, prefix=concat_path(prefix, k))
+                yield from self._parse_use_yaml(v, prefix=concat_path(prefix, k))
         elif isinstance(d, str):
             yield concat_path(prefix, d)
 
     def requires(self, *paths: str, yaml: str | Path = None) -> "Entity":
+        """
+        Mark a series of data points are required in a use case.
+        A path is a string like Scenario.Room.Server.CPUTemperature.
+        Alternatively, a yaml string or path can be provided.
+        """
         paths = list(paths)
         if yaml:
             if isinstance(yaml, Path):
                 yaml = yaml.open().read()
-            paths.extend(self._parse_yaml(safe_load(yaml)))
+            paths.extend(self._parse_use_yaml(safe_load(yaml)))
         for path in paths:
             self.uses.add(path)
             if PATH_SEP in path:
@@ -186,6 +198,7 @@ class Entity:
         return self
 
     def _create_date_points_model(self, dp_type: Type[DataPoint]) -> Optional[Type[BaseModel]]:
+        """Dynamically generate Pydantic model for all data points in the entity."""
         info = {k: v for k, v in self.data_point_info.items()
                 if isinstance(v, dp_type) and k in self._used_data_points}
         if not info:
@@ -204,6 +217,7 @@ class Entity:
     def _create_entities_model(self,
                                hide_data_points: bool = False
                                ) -> dict[str, tuple[type, Any]]:
+        """Dynamically generate Pydantic model for the entity type."""
         fields = {
             camel_to_snake(name): (
                 Optional[
@@ -214,6 +228,7 @@ class Entity:
         return fields
 
     def model_list(self, entity_list, hide_data_points: bool = False) -> Type[dict[str, BaseModel]]:
+        """Return a type representing a dict of entities"""
         if entity_list.ids:
             str_type = Literal[tuple(entity_list.ids)]
         else:
@@ -221,6 +236,7 @@ class Entity:
         return dict[str_type, self.model(hide_data_points=hide_data_points)]
 
     def model(self, hide_data_points: bool = False) -> Type[BaseModel]:
+        """Generate a complete Pydantic model for a model tree staring from current entity."""
         fields: dict[str, tuple[type, Any]] = self._create_entities_model(hide_data_points=hide_data_points)
         if not hide_data_points:
             for dp_type in DataPointInfo.SUB_CLASSES:
@@ -255,19 +271,14 @@ class Entity:
         #     model_kwargs["children"] = Optional[list[Union[children]]], Field(...)
         return create_model(name, **model_kwargs)
 
-    @classmethod
-    def children_selection_model(cls):
-        # TODO
-        raise NotImplementedError
-
-    def all_required_paths(self, prefix=None):
+    def all_required_paths(self, prefix=None) -> Iterable[str]:
         prefix = prefix or ""
         for name, child in self.children.items():
             yield from child.all_required_paths(concat_path(prefix, name))
         for dp in self._used_data_points:
             yield concat_path(prefix, dp)
 
-    def all_required_edges(self, self_name=None):
+    def all_required_edges(self, self_name=None) -> Iterable[tuple[str, str, str]]:
         self_name = self_name or self.name
         for child_name, child in self.children.items():
             yield "is_parent_of", self_name, child_name
@@ -275,7 +286,7 @@ class Entity:
         for dp_name in self._used_data_points:
             yield "has_data_point", self_name, self.data_point_info[dp_name].__class__.__name__
 
-    def match_data_points(self, pattern):
+    def match_data_points(self, pattern: str) -> Iterable[str]:
         pattern = pattern.replace("%", "\.")
         for path in self.all_required_paths():
             if re.fullmatch(pattern, path):
@@ -290,6 +301,7 @@ class Entity:
                asset_library_name: str = "tiro.assets",
                **entity_dict: dict[str, Union["Entity", Type["Entity"]]]
                ) -> Type["Entity"]:
+        """Dynamically create the entity class according to the entity name defined in an asset library"""
         if base_class:
             if asset_library_path and asset_library_path not in sys.path:
                 sys.path.insert(0, asset_library_path)
@@ -318,6 +330,7 @@ class Entity:
                                   prefix: str = "",
                                   asset_library_path: Optional[str] = None,
                                   asset_library_name: str = "tiro.assets") -> EntityList:
+        """Dynamically create the entity from a dictionary containing model infos"""
         if prefix:
             name = f"{prefix}_{name}"
         children = {
