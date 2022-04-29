@@ -15,7 +15,6 @@ PyYAML = "^6.0"
 httpx = "^0.22.0"
 rich = "^12.2.0"
 nats-py = "^2.1.0"
-karez = {path = "deps/karez-0.2.16-py3-none-any.whl"}
 jsonschema = "^4.4.0"
 influxdb-client = "^1.28.0"
 python-arango = "^7.3.3"
@@ -27,10 +26,11 @@ mkdocs-section-index = "^0.3.4"
 mkdocstrings = "^0.18.1"
 mkdocs-typer = "^0.0.2"
 Markdown = "^3.3.6"
+karez = {git = "ssh://git@github.com/cap-dcwiz/Karez.git", rev = "main"}
 
 [tool.poetry.dev-dependencies]
-utinni = {path = "deps/utinni-0.2.1-py3-none-any.whl"}
 jupyterlab = "^3.3.4"
+utinni = {git = "ssh://git@github.com/cap-dcwiz/Utinni.git", rev = "main"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
