@@ -63,16 +63,19 @@ class Validator:
                  schema: dict = None,
                  retention: int = 0,
                  log: bool = True,
-                 log_size: int = 100
+                 log_size: int = 100,
+                 validate_path_only: bool = False,
+                 require_all_children: bool = True,
                  ):
         if entity:
-            self.model: Type[BaseModel] = entity.model()
+            self.model: Type[BaseModel] = entity.model(hide_dp_values=validate_path_only,
+                                                       require_all_children=require_all_children)
             self.schema = None
         else:
             self.model = None
             self.schema = schema
         self._data = {}
-        self.retention: Optional[timedelta] = timedelta(seconds=retention) if retention > 0 else None
+        self.retention: Optional[timedelta] = timedelta(seconds=retention if retention > 0 else 1e9)
         self.data_create_time: datetime = datetime.now()
         self.log: deque[ValidationResult] = deque(maxlen=log_size if log else 1)
         self._collect_count = 0
@@ -91,8 +94,7 @@ class Validator:
         self.reset_data()
 
     def validate_retention(self):
-        if self.retention is not None and \
-                datetime.now() - self.data_create_time > self.retention:
+        if datetime.now() - self.data_create_time > self.retention:
             self.validate()
             self.reset_data()
 

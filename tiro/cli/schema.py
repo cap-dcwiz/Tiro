@@ -16,14 +16,16 @@ app = Typer()
 def schema_show(
         scenario_path: Path,
         uses: list[Path],
-        output: Optional[Path] = typer.Option(None, "--output", "-o")
+        output: Optional[Path] = typer.Option(None, "--output", "-o"),
+        all_children: Optional[bool] = typer.Option(True, "--all-children", "-a",
+                                                    help="Require all claimed children for each asset")
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     if output:
         with open(output, "w") as f:
             json.dump(scenario.model().schema(), f, indent=2)
     else:
-        print(scenario.model().schema_json(indent=2))
+        print(scenario.model(require_all_children=all_children).schema_json(indent=2))
 
 
 @app.command("example")

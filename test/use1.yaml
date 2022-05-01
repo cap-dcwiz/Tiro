@@ -1,11 +1,12 @@
 - Room:
     - Site
-#    - Rack:
-#        - FrontTemperature
-#        - BackTemperature
-#        - Server:
-#            - CPUTemperature
-#            - MemoryTemperature
+    - Rack:
+        - FrontTemperature
+        - BackTemperature
+        - Server:
+            - CPUTemperature
+            - MemoryTemperature
     - Server:
         - CPUTemperature
+        - MemoryTemperature
     - Temperature

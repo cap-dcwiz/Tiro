@@ -57,4 +57,4 @@ scenario = Scenario(Room)
 scenario.Room.Rack.FrontTemperature.use()
 scenario.requires(yaml=yaml)
 
-print_json(scenario.model(hide_data_points=False).schema_json())
+print_json(scenario.model(hide_dp_values=True).schema_json())

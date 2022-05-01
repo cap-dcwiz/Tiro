@@ -7,7 +7,7 @@ from yaml import safe_load
 from tiro.core import Entity
 from tiro.core.mock import Mocker
 from tiro.core.model import DataPointInfo
-from tiro.core.utils import split_path, camel_to_snake, concat_path, snake_to_camel, YAML_META_CHAR
+from tiro.core.utils import split_path, concat_path, snake_to_camel, YAML_META_CHAR, PATH_SEP
 from tiro.core.validate import Validator
 
 
@@ -64,7 +64,7 @@ class Scenario:
         pre_path = info["path"]
         pre_asset_path = info["asset_path"]
         len_prefix = len(path)
-        data_point_types = set(camel_to_snake(x.__name__) for x in DataPointInfo.SUB_CLASSES)
+        data_point_types = DataPointInfo.SUB_CLASS_NAMES
         if len_prefix == 0:
             for k, v in value.items():
                 if k in data_point_types:
@@ -108,3 +108,37 @@ class Scenario:
                     dict(path=concat_path(pre_path, snake_to_camel(path[0])),
                          asset_path=concat_path(pre_asset_path, snake_to_camel(path[0]), path[1]))
             yield from cls.decompose_data(path[2:], value, _info)
+
+    @staticmethod
+    def asset_path_to_path(path: str | list[str]) -> str:
+        path = split_path(path)
+        return f"{PATH_SEP.join(path[i] for i in range(0, len(path), 2))}{PATH_SEP}{path[-1]}"
+
+    @classmethod
+    def asset_path_to_tags(cls, path: str | list[str], tags=None) -> dict:
+        tags = tags or dict(path=cls.asset_path_to_path(path), asset_path=path)
+        path = split_path(path)
+        component = path.pop(0)
+        if component in DataPointInfo.SUB_CLASS_NAMES:
+            tags |= dict(type=component, field=path[-1])
+        else:
+            uuid = path.pop(0)
+            tags |= {component: uuid}
+            cls.asset_path_to_tags(path, tags)
+        return tags
+
+    def guess_missing_paths(self, existing_paths=None):
+        validator = self.validator(validate_path_only=True,
+                                   require_all_children=False)
+        if existing_paths:
+            for path in existing_paths:
+                validator.collect(path, value={})
+        res = validator.validate()
+        while not res.valid:
+            for error in res.exception.errors():
+                missing_path = PATH_SEP.join(error["loc"])
+                dp_info = self.query_data_point_info(self.asset_path_to_path(missing_path))
+                if dp_info:
+                    yield missing_path
+                validator.collect(missing_path, value={})
+            res = validator.validate()

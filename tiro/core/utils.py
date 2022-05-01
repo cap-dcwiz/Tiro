@@ -1,6 +1,7 @@
 from copy import copy
 from typing import Any
 
+
 PATH_SEP = "."
 YAML_META_CHAR = "$"
 
@@ -9,7 +10,7 @@ def concat_path(*components):
     return PATH_SEP.join(components).strip(PATH_SEP)
 
 
-def split_path(path):
+def split_path(path: str | list[str]) -> list[str]:
     if isinstance(path, str):
         if path:
             path = path.split(PATH_SEP)
@@ -41,3 +42,4 @@ def insert_data_point_to_dict(path: str | list[str], value: Any, data: dict):
         if component not in data:
             data[component] = {}
         insert_data_point_to_dict(path, value, data[component])
+

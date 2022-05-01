@@ -14,7 +14,7 @@ from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR, split_path
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -59,7 +59,8 @@ class DataPoint(GenericModel, Generic[DPT]):
 
 
 class DataPointInfo:
-    SUB_CLASSES = []
+    SUB_CLASSES = set()
+    SUB_CLASS_NAMES = set()
 
     def __init__(self,
                  type: Any,
@@ -74,13 +75,17 @@ class DataPointInfo:
         self.default = default
 
     def __init_subclass__(cls, **kwargs):
-        cls.SUB_CLASSES.append(cls)
+        cls.SUB_CLASSES.add(cls)
+        cls.SUB_CLASS_NAMES.add(cls.__name__)
 
-    def default_value(self, cls: Type[DataPoint]) -> Optional[DataPoint]:
+    def default_object(self, cls: Optional[Type[DataPoint]] = None) -> Optional[DataPoint | dict]:
         if self.default is None:
             return None
         else:
-            return cls(value=self.default, timestamp=datetime.utcnow(), _unit=self.unit)
+            if cls:
+                return cls(value=self.default, timestamp=datetime.utcnow(), _unit=self.unit)
+            else:
+                return dict(value=self.default, timestamp=datetime.utcnow().isoformat(), unit=self.unit)
 
 
 class Telemetry(DataPointInfo):
@@ -208,65 +213,70 @@ class Entity:
                         self.children[path] = self.child_info[path].new_entity(self)
         return self
 
-    def _create_date_points_model(self, dp_type: Type[DataPoint]) -> tuple[Optional[Type[BaseModel]], bool]:
+    def _create_date_points_model(self, dp_category: Type[DataPoint], hide_dp_values: bool) -> tuple[
+        Optional[Type[BaseModel]], bool]:
         """Dynamically generate Pydantic model for all data points in the entity."""
         info = {k: v for k, v in self.data_point_info.items()
-                if isinstance(v, dp_type) and k in self._used_data_points}
+                if isinstance(v, dp_category) and k in self._used_data_points}
         if not info:
             return None, False
         sub_models: dict[str, tuple[type, Any]] = {}
         is_optional = True
         for dp_name, dp_info in info.items():
             dp_model_name = f"{self.name}_{dp_name}"
-            model_cache = self.__class__.cached_data_point_model
-            if dp_model_name not in model_cache:
-                model_cache[dp_model_name] = type(f"{self.name}_{dp_name}",
-                                                  (DataPoint[dp_info.type],),
-                                                  dict(_unit=dp_info.unit))
-            dp_type = model_cache[dp_model_name]
-            if dp_info.default is not None:
-                sub_models[camel_to_snake(dp_name)] = Optional[dp_type], dp_info.default_value(dp_type)
+            if hide_dp_values:
+                dp_type = dict
+            else:
+                model_cache = self.__class__.cached_data_point_model
+                if dp_model_name not in model_cache:
+                    model_cache[dp_model_name] = type(f"{self.name}_{dp_name}",
+                                                      (DataPoint[dp_info.type],),
+                                                      dict(_unit=dp_info.unit))
+                dp_type = model_cache[dp_model_name]
+            if dp_info.default is not None and not hide_dp_values:
+                sub_models[camel_to_snake(dp_name)] = Optional[dp_type], dp_info.default_object(dp_type)
             else:
                 is_optional = False
                 sub_models[camel_to_snake(dp_name)] = dp_type, ...
-        return create_model(f"{self.unique_name}_{dp_type.__name__}", **sub_models), is_optional
+        return create_model(f"{self.unique_name}_{dp_category.__name__}", **sub_models), is_optional
 
     def _create_entities_model(self,
-                               hide_data_points: bool = False
+                               hide_dp_values: bool,
+                               require_all_children: bool
                                ) -> tuple[dict[str, tuple[type, Any]], bool]:
         """Dynamically generate Pydantic model for the entity type."""
         fields = {}
         is_optional = True
         for name, ins in self.children.items():
-            sub_model_list_values, sub_is_optional = ins._model(hide_data_points=hide_data_points)
+            sub_model_list_values, sub_is_optional = ins._model(hide_dp_values=hide_dp_values,
+                                                                require_all_children=require_all_children)
             child_info = self.child_info[name]
             if child_info.ids:
                 sub_model_list = dict[Literal[tuple(child_info.ids)], sub_model_list_values]
             else:
                 sub_model_list = dict[str, sub_model_list_values]
-            if sub_is_optional:
+            if sub_is_optional and not require_all_children:
                 fields[camel_to_snake(name)] = Optional[sub_model_list], {}
             else:
                 is_optional = False
                 fields[camel_to_snake(name)] = sub_model_list, ...
         return fields, is_optional
 
-    def _model(self, hide_data_points) -> tuple[Type[BaseModel], bool]:
+    def _model(self, hide_dp_values: bool, require_all_children: bool) -> tuple[Type[BaseModel], bool]:
         """Generate a complete Pydantic model for a model tree staring from current entity."""
-        fields, is_optional = self._create_entities_model(hide_data_points=hide_data_points)
-        if not hide_data_points:
-            for dp_type in DataPointInfo.SUB_CLASSES:
-                dp_model, sub_is_optional = self._create_date_points_model(dp_type)
-                if dp_model:
-                    if sub_is_optional:
-                        dp_model = Optional[dp_model]
-                    else:
-                        is_optional = False
-                    fields |= {camel_to_snake(dp_type.__name__): (dp_model, ...)}
+        fields, is_optional = self._create_entities_model(hide_dp_values=hide_dp_values,
+                                                          require_all_children=require_all_children)
+        for dp_category in DataPointInfo.SUB_CLASSES:
+            dp_model, sub_is_optional = self._create_date_points_model(dp_category, hide_dp_values=hide_dp_values)
+            if dp_model:
+                if sub_is_optional:
+                    dp_model = Optional[dp_model]
+                is_optional &= sub_is_optional
+                fields |= {camel_to_snake(dp_category.__name__): (dp_model, ...)}
         return create_model(self.unique_name, config=self.Config, **fields), is_optional
 
-    def model(self, hide_data_points: bool=False):
-        return self._model(hide_data_points=hide_data_points)[0]
+    def model(self, hide_dp_values: bool = False, require_all_children: bool = True):
+        return self._model(hide_dp_values=hide_dp_values, require_all_children=require_all_children)[0]
 
     def __getattr__(self, item: str) -> RequireHelper:
         return RequireHelper(item, self)
@@ -276,6 +286,14 @@ class Entity:
             return list(self._used_data_points)
         else:
             return list(self.data_point_info.keys())
+
+    def query_data_point_info(self, path: str | list[str]):
+        path = split_path(path)
+        if path[0] in self.children.keys():
+            return self.children[path[0]].query_data_point_info(path[1:])
+        elif path[0] in DataPointInfo.SUB_CLASS_NAMES:
+            print(path)
+            return self.data_point_info[path[1]]
 
     @classmethod
     def use_selection_model(cls, name_prefix=""):
