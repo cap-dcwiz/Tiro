@@ -3,6 +3,8 @@
         - BackTemperature
         - Server:
             - CPUTemperature
+            - MemoryTemperature
     - Server:
         - CPUTemperature
+        - MemoryTemperature
     - Temperature

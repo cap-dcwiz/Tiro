@@ -18,9 +18,16 @@ def mock(
         uses: list[Path],
         host: str = typer.Option("127.0.0.1", "--host", "-h"),
         port: int = typer.Option(8000, "--port", "-p"),
+        skip_defaults: bool = typer.Option(True, "--skip-defaults", "-s"),
+        use_defaults: bool = typer.Option(True, "--use-defaults", "-u"),
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
-    uvicorn.run(MockApp(scenario.mocker()), host=host, port=port)
+    mock_app = MockApp(scenario.mocker(),
+                       host=host,
+                       port=port,
+                       skip_defaults=skip_defaults,
+                       use_defaults=use_defaults)
+    uvicorn.run(mock_app)
 
 
 @app.command("push")

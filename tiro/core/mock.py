@@ -261,11 +261,16 @@ class Mocker:
 
 
 class MockApp(FastAPI):
-    def __init__(self, mocker: Mocker, *args, skip_default: bool = True, use_default: bool=True, **kwargs):
+    def __init__(self,
+                 mocker: Mocker,
+                 *args,
+                 skip_defaults: bool = True,
+                 use_defaults: bool = True,
+                 **kwargs):
         super(MockApp, self).__init__(*args, **kwargs)
         self.mocker: Mocker = mocker
-        self.skip_default: bool = skip_default
-        self.use_default: bool = use_default
+        self.skip_defaults: bool = skip_defaults
+        self.use_defaults: bool = use_defaults
 
         @self.get("/hierarchy")
         def get_hierarchy():
@@ -277,11 +282,11 @@ class MockApp(FastAPI):
 
         @self.get("/points/")
         def list_points():
-            return self.mocker.list_data_points(skip_default=self.skip_default)
+            return self.mocker.list_data_points(skip_default=self.skip_defaults)
 
         @self.get("/points/{path:str}")
         def get_point(path):
             try:
-                return self.mocker.gen_data_point(path, use_default=self.use_default)
+                return self.mocker.gen_data_point(path, use_default=self.use_defaults)
             except KeyError as e:
                 raise HTTPException(status_code=404, detail=str(e))
