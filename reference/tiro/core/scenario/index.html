@@ -978,7 +978,7 @@ Scenario        </code>
         <span class="n">pre_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
         <span class="n">pre_asset_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;asset_path&quot;</span><span class="p">]</span>
         <span class="n">len_prefix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">data_point_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">)</span>
+        <span class="n">data_point_types</span> <span class="o">=</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span>
         <span class="k">if</span> <span class="n">len_prefix</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data_point_types</span><span class="p">:</span>
@@ -1022,12 +1022,48 @@ Scenario        </code>
                     <span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">concat_path</span><span class="p">(</span><span class="n">pre_path</span><span class="p">,</span> <span class="n">snake_to_camel</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
                          <span class="n">asset_path</span><span class="o">=</span><span class="n">concat_path</span><span class="p">(</span><span class="n">pre_asset_path</span><span class="p">,</span> <span class="n">snake_to_camel</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
             <span class="k">yield from</span> <span class="bp">cls</span><span class="o">.</span><span class="n">decompose_data</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">value</span><span class="p">,</span> <span class="n">_info</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">asset_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span><span class="si">}{</span><span class="n">PATH_SEP</span><span class="si">}{</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">asset_path_to_tags</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">asset_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">asset_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="p">:</span>
+            <span class="n">tags</span> <span class="o">|=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">component</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uuid</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">tags</span> <span class="o">|=</span> <span class="p">{</span><span class="n">component</span><span class="p">:</span> <span class="n">uuid</span><span class="p">}</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">asset_path_to_tags</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tags</span>
+
+    <span class="k">def</span> <span class="nf">guess_missing_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_paths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">validator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="n">validate_path_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">require_all_children</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">existing_paths</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">existing_paths</span><span class="p">:</span>
+                <span class="n">validator</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">{})</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">errors</span><span class="p">():</span>
+                <span class="n">missing_path</span> <span class="o">=</span> <span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">])</span>
+                <span class="n">dp_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">asset_path_to_path</span><span class="p">(</span><span class="n">missing_path</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">dp_info</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">missing_path</span>
+                <span class="n">validator</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">missing_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">{})</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
 </code></pre></div>
         </details>
 
 
 
   <div class="doc doc-children">
+
+
 
 
 
@@ -1066,7 +1102,7 @@ Scenario        </code>
     <span class="n">pre_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
     <span class="n">pre_asset_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;asset_path&quot;</span><span class="p">]</span>
     <span class="n">len_prefix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">data_point_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">)</span>
+    <span class="n">data_point_types</span> <span class="o">=</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span>
     <span class="k">if</span> <span class="n">len_prefix</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data_point_types</span><span class="p">:</span>
@@ -1115,6 +1151,7 @@ Scenario        </code>
     </div>
 
   </div>
+
 
 
 

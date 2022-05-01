@@ -639,20 +639,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tiro.core.model.Entity.model" class="md-nav__link">
-    model()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tiro.core.model.Entity.model_list" class="md-nav__link">
-    model_list()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#tiro.core.model.Entity.requires" class="md-nav__link">
     requires()
   </a>
@@ -1033,20 +1019,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tiro.core.model.Entity.model" class="md-nav__link">
-    model()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tiro.core.model.Entity.model_list" class="md-nav__link">
-    model_list()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#tiro.core.model.Entity.requires" class="md-nav__link">
     requires()
   </a>
@@ -1244,26 +1216,40 @@ DataPointInfo        </code>
         <details class="quote">
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DataPointInfo</span><span class="p">:</span>
-    <span class="n">SUB_CLASSES</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">SUB_CLASSES</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">SUB_CLASS_NAMES</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="nb">type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
                  <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">faker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">time_var</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)):</span>
+                 <span class="n">time_var</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                 <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faker</span> <span class="o">=</span> <span class="n">faker</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_var</span> <span class="o">=</span> <span class="n">time_var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
 
     <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">default_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataPoint</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span> <span class="n">_unit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span> <span class="n">unit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -1298,12 +1284,14 @@ overridden to extend subclasses.</p>
         <details class="quote">
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
 
   </div>
+
 
 
 
@@ -1352,6 +1340,7 @@ Entity        </code>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">DataPointInfo</span><span class="p">):</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
                     <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">EntityList</span><span class="p">):</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
@@ -1420,53 +1409,70 @@ Entity        </code>
                         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">new_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">_create_date_points_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_create_date_points_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">],</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Dynamically generate Pydantic model for all data points in the entity.&quot;&quot;&quot;</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dp_type</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">}</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dp_category</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">info</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
         <span class="n">sub_models</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">dp_name</span><span class="p">,</span> <span class="n">dp_info</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">dp_model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">model_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">cached_data_point_model</span>
-            <span class="k">if</span> <span class="n">dp_model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_cache</span><span class="p">:</span>
-                <span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                                  <span class="p">(</span><span class="n">DataPoint</span><span class="p">[</span><span class="n">dp_info</span><span class="o">.</span><span class="n">type</span><span class="p">],),</span>
-                                                  <span class="nb">dict</span><span class="p">(</span><span class="n">_unit</span><span class="o">=</span><span class="n">dp_info</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
-            <span class="n">sub_models</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_name</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">sub_models</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hide_dp_values</span><span class="p">:</span>
+                <span class="n">dp_type</span> <span class="o">=</span> <span class="nb">dict</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">cached_data_point_model</span>
+                <span class="k">if</span> <span class="n">dp_model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_cache</span><span class="p">:</span>
+                    <span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                                      <span class="p">(</span><span class="n">DataPoint</span><span class="p">[</span><span class="n">dp_info</span><span class="o">.</span><span class="n">type</span><span class="p">],),</span>
+                                                      <span class="nb">dict</span><span class="p">(</span><span class="n">_unit</span><span class="o">=</span><span class="n">dp_info</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
+                <span class="n">dp_type</span> <span class="o">=</span> <span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">dp_info</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">hide_dp_values</span><span class="p">:</span>
+                <span class="n">sub_models</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">dp_type</span><span class="p">],</span> <span class="n">dp_info</span><span class="o">.</span><span class="n">default_object</span><span class="p">(</span><span class="n">dp_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">sub_models</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">dp_type</span><span class="p">,</span> <span class="o">...</span>
+        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">sub_models</span><span class="p">),</span> <span class="n">is_optional</span>
 
     <span class="k">def</span> <span class="nf">_create_entities_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                               <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+                               <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                               <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span>
+                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Dynamically generate Pydantic model for the entity type.&quot;&quot;&quot;</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="p">(</span>
-                <span class="n">Optional</span><span class="p">[</span>
-                    <span class="n">ins</span><span class="o">.</span><span class="n">model_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)</span>
-                <span class="p">],</span> <span class="o">...</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">fields</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sub_model_list_values</span><span class="p">,</span> <span class="n">sub_is_optional</span> <span class="o">=</span> <span class="n">ins</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">,</span>
+                                                                <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)</span>
+            <span class="n">child_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">child_info</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+                <span class="n">sub_model_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">child_info</span><span class="o">.</span><span class="n">ids</span><span class="p">)],</span> <span class="n">sub_model_list_values</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sub_model_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">sub_model_list_values</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sub_is_optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">require_all_children</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">sub_model_list</span><span class="p">],</span> <span class="p">{}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sub_model_list</span><span class="p">,</span> <span class="o">...</span>
+        <span class="k">return</span> <span class="n">fields</span><span class="p">,</span> <span class="n">is_optional</span>
 
-    <span class="k">def</span> <span class="nf">model_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a type representing a dict of entities&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
-            <span class="n">str_type</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">)]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">str_type</span> <span class="o">=</span> <span class="nb">str</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">[</span><span class="n">str_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)]</span>
-
-    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Generate a complete Pydantic model for a model tree staring from current entity.&quot;&quot;&quot;</span>
-        <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_entities_model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">hide_data_points</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
-                <span class="n">dp_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_type</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
-                    <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
-        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span>
+        <span class="n">fields</span><span class="p">,</span> <span class="n">is_optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_entities_model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">,</span>
+                                                          <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dp_category</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
+            <span class="n">dp_model</span><span class="p">,</span> <span class="n">sub_is_optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_category</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sub_is_optional</span><span class="p">:</span>
+                    <span class="n">dp_model</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">dp_model</span><span class="p">]</span>
+                <span class="n">is_optional</span> <span class="o">&amp;=</span> <span class="n">sub_is_optional</span>
+                <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">),</span> <span class="n">is_optional</span>
+
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">,</span> <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RequireHelper</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">RequireHelper</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -1476,6 +1482,14 @@ Entity        </code>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">query_data_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">elif</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">use_selection_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -1634,6 +1648,7 @@ overridden to extend subclasses.</p>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">DataPointInfo</span><span class="p">):</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
                 <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">EntityList</span><span class="p">):</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
@@ -1804,68 +1819,6 @@ overridden to extend subclasses.</p>
 
 
 
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="tiro.core.model.Entity.model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
-
-
-<a href="#tiro.core.model.Entity.model" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Generate a complete Pydantic model for a model tree staring from current entity.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>tiro/core/model.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generate a complete Pydantic model for a model tree staring from current entity.&quot;&quot;&quot;</span>
-    <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_entities_model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">hide_data_points</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
-            <span class="n">dp_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_type</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
-                <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="tiro.core.model.Entity.model_list" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">model_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
-
-
-<a href="#tiro.core.model.Entity.model_list" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Return a type representing a dict of entities</p>
-
-        <details class="quote">
-          <summary>Source code in <code>tiro/core/model.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Return a type representing a dict of entities&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
-        <span class="n">str_type</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">)]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">str_type</span> <span class="o">=</span> <span class="nb">str</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">[</span><span class="n">str_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)]</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
 
 
   <div class="doc doc-object doc-method">
@@ -1950,6 +1903,7 @@ EntityList        </code>
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">EntityList</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Holding the information of a list of entity with the same type&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Entity&quot;</span><span class="p">],</span>
                  <span class="n">faking_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2043,6 +1997,7 @@ RequireHelper        </code>
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RequireHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Helper class for requiring children or data points&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;RequireHelper&quot;</span><span class="p">,</span> <span class="s2">&quot;Entity&quot;</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>

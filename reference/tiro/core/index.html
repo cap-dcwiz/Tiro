@@ -934,20 +934,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tiro.core.model.Entity.model" class="md-nav__link">
-    model()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tiro.core.model.Entity.model_list" class="md-nav__link">
-    model_list()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#tiro.core.model.Entity.requires" class="md-nav__link">
     requires()
   </a>
@@ -1149,11 +1135,11 @@ MockedEntity            (<span title="tiro.core.mock.MockedItem">MockedItem</spa
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MockedEntity</span><span class="p">(</span><span class="n">MockedItem</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Mock data generator for an entity class&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Entity</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MockedEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MockedEntity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">uuid</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid1</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Entity</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">entity_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialised</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -1167,9 +1153,10 @@ MockedEntity            (<span title="tiro.core.mock.MockedItem">MockedItem</spa
                 <span class="n">dps</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">MockedDataPoint</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">regenerate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MockedEntity&quot;</span><span class="p">:</span>
+                 <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">include_data_points</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">change_attrs</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">use_default</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MockedEntity&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialised</span> <span class="ow">or</span> <span class="n">regenerate</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1188,46 +1175,62 @@ MockedEntity            (<span title="tiro.core.mock.MockedItem">MockedItem</spa
                     <span class="n">uuids</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
                 <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">uuids</span><span class="p">:</span>
                     <span class="n">entity</span> <span class="o">=</span> <span class="n">MockedEntity</span><span class="p">(</span><span class="n">entity_type</span><span class="o">=</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">prototype</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="n">uuid</span><span class="p">)</span>
-                    <span class="n">_children</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+                    <span class="n">_children</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
+                                                             <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
+                                                             <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                                                             <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">entity_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">_children</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_initialised</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">include_data_points</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_generate_data_points</span><span class="p">(</span><span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span> <span class="ow">or</span> <span class="n">regenerate</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_generate_data_points</span><span class="p">(</span><span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span> <span class="ow">or</span> <span class="n">regenerate</span><span class="p">,</span> <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-             <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-             <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-             <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+             <span class="n">regenerate</span><span class="p">,</span>
+             <span class="n">include_data_points</span><span class="p">,</span>
+             <span class="n">change_attrs</span><span class="p">,</span>
+             <span class="n">skip_default</span><span class="p">,</span>
+             <span class="n">use_default</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Generate a complete tree starting from current entity&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
                       <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
-                      <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span>
+                      <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                      <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">{</span><span class="n">uuid</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
-                                     <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
-                                     <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">_values</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">_sub_value</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
+                                        <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
+                                        <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                                        <span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">,</span>
+                                        <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">_sub_value</span><span class="p">:</span>
+                        <span class="n">_values</span> <span class="o">|=</span> <span class="p">{</span><span class="n">uuid</span><span class="p">:</span> <span class="n">_sub_value</span><span class="p">}</span>
+                <span class="k">if</span> <span class="n">_values</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_values</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
             <span class="n">dp_type_name</span> <span class="o">=</span> <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="n">dps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_type_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">dps</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">include_data_points</span><span class="p">:</span>
-                    <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span>
-                        <span class="n">dp_type_name</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dps</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                        <span class="p">}</span>
+                    <span class="n">_values</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dps</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_default</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span>
                     <span class="p">}</span>
+                    <span class="k">if</span> <span class="n">_values</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">dp_type_name</span><span class="p">:</span> <span class="n">_values</span><span class="p">}</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">dp_type_name</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">dps</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
         <span class="k">return</span> <span class="n">res</span>
 
-    <span class="k">def</span> <span class="nf">_generate_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_generate_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
             <span class="n">dps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">MockedDataPoint</span>
             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dps</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="n">v</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">search_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;MockedEntity&quot;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">uuid</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">:</span>
@@ -1249,30 +1252,44 @@ MockedEntity            (<span title="tiro.core.mock.MockedItem">MockedItem</spa
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
 
     <span class="k">def</span> <span class="nf">list_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;MockedEntity&quot;</span><span class="p">]:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">include_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">use_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">yield from</span> <span class="n">c</span><span class="o">.</span><span class="n">list_entities</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">list_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;MockedDataPoint&quot;</span><span class="p">]:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">list_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_default</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;MockedDataPoint&quot;</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">include_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">use_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
             <span class="n">dp_type_name</span> <span class="o">=</span> <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="n">dps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_type_name</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">yield</span> <span class="n">concat_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">dp_type_name</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">v</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_default</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">concat_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">dp_type_name</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">v</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">yield from</span> <span class="n">c</span><span class="o">.</span><span class="n">list_data_points</span><span class="p">()</span>
+                <span class="k">yield from</span> <span class="n">c</span><span class="o">.</span><span class="n">list_data_points</span><span class="p">(</span><span class="n">skip_default</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">gen_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataPointTypes</span><span class="p">]:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">gen_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">include_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                      <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
             <span class="n">dps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">dp_name</span> <span class="ow">in</span> <span class="n">dps</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">dps</span><span class="p">[</span><span class="n">dp_name</span><span class="p">]</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot find data points </span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">unique_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">dp</span> <span class="o">=</span> <span class="n">dps</span><span class="p">[</span><span class="n">dp_name</span><span class="p">]</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">dp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot find data points </span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">unique_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span> <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MockedEntity&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
@@ -1303,7 +1320,7 @@ MockedEntity            (<span title="tiro.core.mock.MockedItem">MockedItem</spa
 
 
 <h4 id="tiro.core.mock.MockedEntity.dict" class="doc doc-heading">
-<code class="highlight language-python"><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">,</span> <span class="n">include_data_points</span><span class="p">,</span> <span class="n">change_attrs</span><span class="p">,</span> <span class="n">skip_default</span><span class="p">,</span> <span class="n">use_default</span><span class="p">)</span></code>
 
 
 <a href="#tiro.core.mock.MockedEntity.dict" class="headerlink" title="Permanent link">&para;</a></h4>
@@ -1315,29 +1332,41 @@ MockedEntity            (<span title="tiro.core.mock.MockedItem">MockedItem</spa
         <details class="quote">
           <summary>Source code in <code>tiro/core/mock.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-         <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-         <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-         <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+         <span class="n">regenerate</span><span class="p">,</span>
+         <span class="n">include_data_points</span><span class="p">,</span>
+         <span class="n">change_attrs</span><span class="p">,</span>
+         <span class="n">skip_default</span><span class="p">,</span>
+         <span class="n">use_default</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generate a complete tree starting from current entity&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
                   <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
-                  <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span>
+                  <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                  <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-        <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">{</span><span class="n">uuid</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
-                                 <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
-                                 <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_values</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">_sub_value</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
+                                    <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
+                                    <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                                    <span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">,</span>
+                                    <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">_sub_value</span><span class="p">:</span>
+                    <span class="n">_values</span> <span class="o">|=</span> <span class="p">{</span><span class="n">uuid</span><span class="p">:</span> <span class="n">_sub_value</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">_values</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_values</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
         <span class="n">dp_type_name</span> <span class="o">=</span> <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="n">dps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_type_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dps</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">include_data_points</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span>
-                    <span class="n">dp_type_name</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dps</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                    <span class="p">}</span>
+                <span class="n">_values</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dps</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_default</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span>
                 <span class="p">}</span>
+                <span class="k">if</span> <span class="n">_values</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">dp_type_name</span><span class="p">:</span> <span class="n">_values</span><span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">|=</span> <span class="p">{</span><span class="n">dp_type_name</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">dps</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
     <span class="k">return</span> <span class="n">res</span>
@@ -1388,32 +1417,51 @@ Mocker        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="p">:</span> <span class="n">MockedEntity</span> <span class="o">=</span> <span class="n">MockedEntity</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">entity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">entity_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MockedEntity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+             <span class="n">include_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">change_attrs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+             <span class="n">skip_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">use_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Generate a complete dictionary for the tree starting from the given entity.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">regenerate</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">entity_cache</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
+                                <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
+                                <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                                <span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">,</span>
+                                <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
              <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-             <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-             <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+             <span class="n">include_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">change_attrs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+             <span class="n">skip_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">use_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Generate a complete dictionary for the tree starting from the entity and return the coded json string.&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
                       <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
-                      <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span>
+                      <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                      <span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">,</span>
+                      <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">gen_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">change_attr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">gen_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="n">change_attr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">use_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="n">path</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dp_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="n">PATH_SEP</span><span class="p">)</span>
         <span class="n">path</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="n">PATH_SEP</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">get_child</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">gen_data_point</span><span class="p">(</span><span class="n">dp_name</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">get_child</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">gen_data_point</span><span class="p">(</span><span class="n">dp_name</span><span class="p">,</span>
+                                                          <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attr</span><span class="p">,</span>
+                                                          <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">list_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">list_entities</span><span class="p">()]</span>
 
-    <span class="k">def</span> <span class="nf">list_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">list_data_points</span><span class="p">()]</span>
+    <span class="k">def</span> <span class="nf">list_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">list_data_points</span><span class="p">(</span><span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">)]</span>
 </code></pre></div>
         </details>
 
@@ -1435,7 +1483,7 @@ Mocker        </code>
 
 
 <h4 id="tiro.core.mock.Mocker.dict" class="doc doc-heading">
-<code class="highlight language-python"><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
 <a href="#tiro.core.mock.Mocker.dict" class="headerlink" title="Permanent link">&para;</a></h4>
@@ -1446,11 +1494,21 @@ Mocker        </code>
 
         <details class="quote">
           <summary>Source code in <code>tiro/core/mock.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+         <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="n">include_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="n">change_attrs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="n">skip_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="n">use_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+         <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generate a complete dictionary for the tree starting from the given entity.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">regenerate</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">entity_cache</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
+                            <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
+                            <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                            <span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">,</span>
+                            <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1465,7 +1523,7 @@ Mocker        </code>
 
 
 <h4 id="tiro.core.mock.Mocker.json" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#tiro.core.mock.Mocker.json" class="headerlink" title="Permanent link">&para;</a></h4>
@@ -1478,12 +1536,17 @@ Mocker        </code>
           <summary>Source code in <code>tiro/core/mock.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
          <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-         <span class="n">include_data_points</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-         <span class="n">change_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+         <span class="n">include_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="n">change_attrs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="n">skip_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="n">use_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generate a complete dictionary for the tree starting from the entity and return the coded json string.&quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">regenerate</span><span class="o">=</span><span class="n">regenerate</span><span class="p">,</span>
                   <span class="n">include_data_points</span><span class="o">=</span><span class="n">include_data_points</span><span class="p">,</span>
-                  <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">)</span>
+                  <span class="n">change_attrs</span><span class="o">=</span><span class="n">change_attrs</span><span class="p">,</span>
+                  <span class="n">skip_default</span><span class="o">=</span><span class="n">skip_default</span><span class="p">,</span>
+                  <span class="n">use_default</span><span class="o">=</span><span class="n">use_default</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -1657,26 +1720,40 @@ DataPointInfo        </code>
         <details class="quote">
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DataPointInfo</span><span class="p">:</span>
-    <span class="n">SUB_CLASSES</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">SUB_CLASSES</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">SUB_CLASS_NAMES</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="nb">type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
                  <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">faker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">time_var</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)):</span>
+                 <span class="n">time_var</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                 <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">faker</span> <span class="o">=</span> <span class="n">faker</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_var</span> <span class="o">=</span> <span class="n">time_var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
 
     <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">default_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataPoint</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span> <span class="n">_unit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span> <span class="n">unit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -1711,12 +1788,14 @@ overridden to extend subclasses.</p>
         <details class="quote">
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="bp">cls</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
 
   </div>
+
 
 
 
@@ -1765,6 +1844,7 @@ Entity        </code>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">DataPointInfo</span><span class="p">):</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
                     <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">EntityList</span><span class="p">):</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
@@ -1833,53 +1913,70 @@ Entity        </code>
                         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">new_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">_create_date_points_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_create_date_points_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">],</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Dynamically generate Pydantic model for all data points in the entity.&quot;&quot;&quot;</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dp_type</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">}</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dp_category</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">info</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
         <span class="n">sub_models</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">dp_name</span><span class="p">,</span> <span class="n">dp_info</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">dp_model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">model_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">cached_data_point_model</span>
-            <span class="k">if</span> <span class="n">dp_model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_cache</span><span class="p">:</span>
-                <span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                                  <span class="p">(</span><span class="n">DataPoint</span><span class="p">[</span><span class="n">dp_info</span><span class="o">.</span><span class="n">type</span><span class="p">],),</span>
-                                                  <span class="nb">dict</span><span class="p">(</span><span class="n">_unit</span><span class="o">=</span><span class="n">dp_info</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
-            <span class="n">sub_models</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_name</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">sub_models</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hide_dp_values</span><span class="p">:</span>
+                <span class="n">dp_type</span> <span class="o">=</span> <span class="nb">dict</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">cached_data_point_model</span>
+                <span class="k">if</span> <span class="n">dp_model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_cache</span><span class="p">:</span>
+                    <span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                                      <span class="p">(</span><span class="n">DataPoint</span><span class="p">[</span><span class="n">dp_info</span><span class="o">.</span><span class="n">type</span><span class="p">],),</span>
+                                                      <span class="nb">dict</span><span class="p">(</span><span class="n">_unit</span><span class="o">=</span><span class="n">dp_info</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
+                <span class="n">dp_type</span> <span class="o">=</span> <span class="n">model_cache</span><span class="p">[</span><span class="n">dp_model_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">dp_info</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">hide_dp_values</span><span class="p">:</span>
+                <span class="n">sub_models</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">dp_type</span><span class="p">],</span> <span class="n">dp_info</span><span class="o">.</span><span class="n">default_object</span><span class="p">(</span><span class="n">dp_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">sub_models</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">dp_type</span><span class="p">,</span> <span class="o">...</span>
+        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">sub_models</span><span class="p">),</span> <span class="n">is_optional</span>
 
     <span class="k">def</span> <span class="nf">_create_entities_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                               <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+                               <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                               <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span>
+                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Dynamically generate Pydantic model for the entity type.&quot;&quot;&quot;</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="p">(</span>
-                <span class="n">Optional</span><span class="p">[</span>
-                    <span class="n">ins</span><span class="o">.</span><span class="n">model_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)</span>
-                <span class="p">],</span> <span class="o">...</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">fields</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sub_model_list_values</span><span class="p">,</span> <span class="n">sub_is_optional</span> <span class="o">=</span> <span class="n">ins</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">,</span>
+                                                                <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)</span>
+            <span class="n">child_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">child_info</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+                <span class="n">sub_model_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">child_info</span><span class="o">.</span><span class="n">ids</span><span class="p">)],</span> <span class="n">sub_model_list_values</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sub_model_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">sub_model_list_values</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sub_is_optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">require_all_children</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">sub_model_list</span><span class="p">],</span> <span class="p">{}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_optional</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sub_model_list</span><span class="p">,</span> <span class="o">...</span>
+        <span class="k">return</span> <span class="n">fields</span><span class="p">,</span> <span class="n">is_optional</span>
 
-    <span class="k">def</span> <span class="nf">model_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a type representing a dict of entities&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
-            <span class="n">str_type</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">)]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">str_type</span> <span class="o">=</span> <span class="nb">str</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">[</span><span class="n">str_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)]</span>
-
-    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Generate a complete Pydantic model for a model tree staring from current entity.&quot;&quot;&quot;</span>
-        <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_entities_model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">hide_data_points</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
-                <span class="n">dp_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_type</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
-                    <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
-        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span>
+        <span class="n">fields</span><span class="p">,</span> <span class="n">is_optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_entities_model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">,</span>
+                                                          <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dp_category</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
+            <span class="n">dp_model</span><span class="p">,</span> <span class="n">sub_is_optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_category</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sub_is_optional</span><span class="p">:</span>
+                    <span class="n">dp_model</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">dp_model</span><span class="p">]</span>
+                <span class="n">is_optional</span> <span class="o">&amp;=</span> <span class="n">sub_is_optional</span>
+                <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">),</span> <span class="n">is_optional</span>
+
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">,</span> <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RequireHelper</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">RequireHelper</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -1889,6 +1986,14 @@ Entity        </code>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">query_data_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">elif</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">use_selection_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -2047,6 +2152,7 @@ overridden to extend subclasses.</p>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">DataPointInfo</span><span class="p">):</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
                 <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">EntityList</span><span class="p">):</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
@@ -2217,68 +2323,6 @@ overridden to extend subclasses.</p>
 
 
 
-  <div class="doc doc-object doc-method">
-
-
-
-<h4 id="tiro.core.model.Entity.model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
-
-
-<a href="#tiro.core.model.Entity.model" class="headerlink" title="Permanent link">&para;</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Generate a complete Pydantic model for a model tree staring from current entity.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>tiro/core/model.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generate a complete Pydantic model for a model tree staring from current entity.&quot;&quot;&quot;</span>
-    <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_entities_model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">hide_data_points</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">dp_type</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">:</span>
-            <span class="n">dp_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_type</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
-                <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h4 id="tiro.core.model.Entity.model_list" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">model_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
-
-
-<a href="#tiro.core.model.Entity.model_list" class="headerlink" title="Permanent link">&para;</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Return a type representing a dict of entities</p>
-
-        <details class="quote">
-          <summary>Source code in <code>tiro/core/model.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">hide_data_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Return a type representing a dict of entities&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
-        <span class="n">str_type</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">entity_list</span><span class="o">.</span><span class="n">ids</span><span class="p">)]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">str_type</span> <span class="o">=</span> <span class="nb">str</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">[</span><span class="n">str_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">hide_data_points</span><span class="o">=</span><span class="n">hide_data_points</span><span class="p">)]</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
 
 
   <div class="doc doc-object doc-method">
@@ -2363,6 +2407,7 @@ EntityList        </code>
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">EntityList</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Holding the information of a list of entity with the same type&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Entity&quot;</span><span class="p">],</span>
                  <span class="n">faking_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2456,6 +2501,7 @@ RequireHelper        </code>
           <summary>Source code in <code>tiro/core/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RequireHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Helper class for requiring children or data points&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;RequireHelper&quot;</span><span class="p">,</span> <span class="s2">&quot;Entity&quot;</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
@@ -2647,7 +2693,7 @@ Scenario        </code>
         <span class="n">pre_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
         <span class="n">pre_asset_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;asset_path&quot;</span><span class="p">]</span>
         <span class="n">len_prefix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">data_point_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">)</span>
+        <span class="n">data_point_types</span> <span class="o">=</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span>
         <span class="k">if</span> <span class="n">len_prefix</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data_point_types</span><span class="p">:</span>
@@ -2691,12 +2737,48 @@ Scenario        </code>
                     <span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">concat_path</span><span class="p">(</span><span class="n">pre_path</span><span class="p">,</span> <span class="n">snake_to_camel</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
                          <span class="n">asset_path</span><span class="o">=</span><span class="n">concat_path</span><span class="p">(</span><span class="n">pre_asset_path</span><span class="p">,</span> <span class="n">snake_to_camel</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
             <span class="k">yield from</span> <span class="bp">cls</span><span class="o">.</span><span class="n">decompose_data</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">value</span><span class="p">,</span> <span class="n">_info</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">asset_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span><span class="si">}{</span><span class="n">PATH_SEP</span><span class="si">}{</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">asset_path_to_tags</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">asset_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">asset_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="p">:</span>
+            <span class="n">tags</span> <span class="o">|=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">component</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uuid</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">tags</span> <span class="o">|=</span> <span class="p">{</span><span class="n">component</span><span class="p">:</span> <span class="n">uuid</span><span class="p">}</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">asset_path_to_tags</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tags</span>
+
+    <span class="k">def</span> <span class="nf">guess_missing_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_paths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">validator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="n">validate_path_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">require_all_children</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">existing_paths</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">existing_paths</span><span class="p">:</span>
+                <span class="n">validator</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">{})</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">errors</span><span class="p">():</span>
+                <span class="n">missing_path</span> <span class="o">=</span> <span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">])</span>
+                <span class="n">dp_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">asset_path_to_path</span><span class="p">(</span><span class="n">missing_path</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">dp_info</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">missing_path</span>
+                <span class="n">validator</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">missing_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">{})</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
 </code></pre></div>
         </details>
 
 
 
   <div class="doc doc-children">
+
+
 
 
 
@@ -2735,7 +2817,7 @@ Scenario        </code>
     <span class="n">pre_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
     <span class="n">pre_asset_path</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;asset_path&quot;</span><span class="p">]</span>
     <span class="n">len_prefix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">data_point_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASSES</span><span class="p">)</span>
+    <span class="n">data_point_types</span> <span class="o">=</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span>
     <span class="k">if</span> <span class="n">len_prefix</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data_point_types</span><span class="p">:</span>
@@ -2784,6 +2866,7 @@ Scenario        </code>
     </div>
 
   </div>
+
 
 
 
@@ -2963,16 +3046,19 @@ against the given scenario or JSON schema.</p>
                  <span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">retention</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                  <span class="n">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">log_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+                 <span class="n">log_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                 <span class="n">validate_path_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="p">):</span>
         <span class="k">if</span> <span class="n">entity</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">hide_dp_values</span><span class="o">=</span><span class="n">validate_path_only</span><span class="p">,</span>
+                                                       <span class="n">require_all_children</span><span class="o">=</span><span class="n">require_all_children</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">retention</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">retention</span><span class="p">)</span> <span class="k">if</span> <span class="n">retention</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">retention</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">retention</span> <span class="k">if</span> <span class="n">retention</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1e9</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_create_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">:</span> <span class="n">deque</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">]</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="n">log_size</span> <span class="k">if</span> <span class="n">log</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collect_count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -2991,8 +3077,7 @@ against the given scenario or JSON schema.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_data</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">validate_retention</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">retention</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_create_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">retention</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_create_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">retention</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset_data</span><span class="p">()</span>
 
