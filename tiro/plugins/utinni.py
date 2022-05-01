@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Literal
 
 from tiro import Scenario
 from utinni.pump import InfluxDBDataPump
@@ -19,6 +19,10 @@ class TiroTSPump(InfluxDBDataPump):
         else:
             self.scenario = Scenario.from_yaml(scenario, *uses)
 
-    def gen_table(self, pattern, column="asset_path", agg_fn="mean"):
+    def gen_table(self,
+                  pattern: str,
+                  column: str = "asset_path",
+                  agg_fn: Literal["mean", "max", "min"] = "mean"
+                  ):
         paths = list(self.scenario.match_data_points(pattern))
         return super(TiroTSPump, self).gen_table(column=column, agg_fn=agg_fn, path=paths)

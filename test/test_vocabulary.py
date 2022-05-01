@@ -11,7 +11,7 @@ temperature_type = confloat(ge=0, le=50)
 
 class Server(Entity):
     # Telemetries
-    CPUTemperature: Telemetry(temperature_type, "°C", )
+    CPUTemperature: Telemetry(temperature_type, "°C", ) = 10
     MemoryTemperature: Telemetry(temperature_type, "°C")
     FanSpeed: Telemetry(conint(ge=0, le=10000))
 

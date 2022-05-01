@@ -13,7 +13,7 @@ def temperature_faker():
 
 class Server(Entity):
     # Telemetries
-    CPUTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
+    CPUTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker) = 0
     MemoryTemperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
     FanSpeed: Telemetry(conint(ge=0, le=10000), faker=lambda: faker.pyint(0, 10000))
 
