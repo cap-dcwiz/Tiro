@@ -1,5 +1,5 @@
 from karez.converter import ConverterBase
-from tiro import Scenario
+from tiro.core import Scenario
 
 
 class TiroConverter(ConverterBase):

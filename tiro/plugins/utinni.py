@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional, Literal
 
-from tiro import Scenario
+from tiro.core import Scenario
 from utinni.pump import InfluxDBDataPump
 
 

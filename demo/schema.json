@@ -40,12 +40,18 @@
       "type": "object",
       "properties": {
         "CPUTemperature": {
-          "$ref": "#/definitions/Scenario_Room_Rack_Server_CPUTemperature"
+          "title": "Cputemperature",
+          "default": {
+            "value": 0.0,
+            "timestamp": "2022-05-01T18:28:16.101730"
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/Scenario_Room_Rack_Server_CPUTemperature"
+            }
+          ]
         }
-      },
-      "required": [
-        "CPUTemperature"
-      ]
+      }
     },
     "Scenario_Room_Rack_Server": {
       "title": "Scenario_Room_Rack_Server",
@@ -138,12 +144,18 @@
       "type": "object",
       "properties": {
         "CPUTemperature": {
-          "$ref": "#/definitions/Scenario_Room_Server_CPUTemperature"
+          "title": "Cputemperature",
+          "default": {
+            "value": 0.0,
+            "timestamp": "2022-05-01T18:28:16.102886"
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/Scenario_Room_Server_CPUTemperature"
+            }
+          ]
         }
-      },
-      "required": [
-        "CPUTemperature"
-      ]
+      }
     },
     "Scenario_Room_Server": {
       "title": "Scenario_Room_Server",

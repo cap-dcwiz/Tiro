@@ -5,7 +5,8 @@ from typing import Type
 
 from yaml import safe_load
 
-from tiro.core.model import Entity
+from .model import Entity
+from .scenario import Scenario
 
 
 def create_entity(name: str,

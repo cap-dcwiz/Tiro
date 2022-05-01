@@ -4,11 +4,10 @@ from typing import Type, Optional
 
 from yaml import safe_load
 
-from tiro.core import Entity
-from tiro.core.mock import Mocker
-from tiro.core.model import DataPointInfo
-from tiro.core.utils import split_path, concat_path, snake_to_camel, YAML_META_CHAR, PATH_SEP
-from tiro.core.validate import Validator
+from .mock import Mocker
+from .model import DataPointInfo, Entity
+from .utils import split_path, concat_path, snake_to_camel, YAML_META_CHAR, PATH_SEP
+from .validate import Validator
 
 
 class Scenario:

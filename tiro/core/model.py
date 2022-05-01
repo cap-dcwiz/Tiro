@@ -85,7 +85,7 @@ class DataPointInfo:
             if cls:
                 return cls(value=self.default, timestamp=datetime.utcnow(), _unit=self.unit)
             else:
-                return dict(value=self.default, timestamp=datetime.utcnow().isoformat(), unit=self.unit)
+                return dict(value=self.default, timestamp=datetime.utcnow(), unit=self.unit)
 
 
 class Telemetry(DataPointInfo):

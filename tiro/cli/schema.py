@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from rich import print
@@ -6,10 +7,15 @@ from rich import print
 import typer
 from typer import Typer
 
-from tiro import Scenario
-from tiro.core.mock import Mocker
+from tiro.core import Scenario
 
 app = Typer()
+
+
+def json_default(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))
 
 
 @app.command("show")
@@ -23,7 +29,7 @@ def schema_show(
     scenario = Scenario.from_yaml(scenario_path, *uses)
     if output:
         with open(output, "w") as f:
-            json.dump(scenario.model().schema(), f, indent=2)
+            json.dump(scenario.model().schema(), f, indent=2, default=json_default)
     else:
         print(scenario.model(require_all_children=all_children).schema_json(indent=2))
 

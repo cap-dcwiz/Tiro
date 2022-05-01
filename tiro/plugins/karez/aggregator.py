@@ -7,7 +7,7 @@ from rich import print, print_json
 
 from karez.aggregator.base import AggregatorBase
 from karez.config import ConfigEntity, OptionalConfigEntity
-from tiro import Scenario
+from tiro.core import Scenario
 from tiro.core.validate import Validator
 from tiro.plugins.arango import ArangoAgent
 

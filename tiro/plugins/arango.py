@@ -2,7 +2,7 @@ from datetime import datetime
 
 from arango import ArangoClient
 
-from tiro import Scenario
+from tiro.core import Scenario
 from tiro.core.utils import PATH_SEP, insert_data_point_to_dict
 from tiro.core.model import Entity
 

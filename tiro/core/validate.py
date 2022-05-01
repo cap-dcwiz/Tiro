@@ -9,7 +9,7 @@ from fastapi.responses import PlainTextResponse
 from jsonschema import validate, ValidationError as JSONSchemaValidatorError
 from pydantic import BaseModel, ValidationError as PydanticValidationError
 
-from . import Entity
+from .model import Entity
 from .utils import insert_data_point_to_dict
 
 
