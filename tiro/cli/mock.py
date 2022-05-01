@@ -23,11 +23,9 @@ def mock(
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     mock_app = MockApp(scenario.mocker(),
-                       host=host,
-                       port=port,
                        skip_defaults=skip_defaults,
                        use_defaults=use_defaults)
-    uvicorn.run(mock_app)
+    uvicorn.run(mock_app, host=host, port=port)
 
 
 @app.command("push")
