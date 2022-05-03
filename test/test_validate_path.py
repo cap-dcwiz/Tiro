@@ -25,5 +25,5 @@ data_points = list(mocker.list_data_points(skip_default=True))
 #         res = validator.validate()
 
 for path in scenario.guess_missing_paths(existing_paths=data_points):
-    tags = scenario.asset_path_to_tags(path)
+    tags = scenario.data_point_path_to_tags(path)
     print(tags | scenario.query_data_point_info(tags["path"]).default_object())

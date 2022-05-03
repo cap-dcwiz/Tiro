@@ -18,6 +18,15 @@ FOR v, e, p IN 1..10 OUTBOUND @start_vertex GRAPH @graph_name
     }
 """
 
+QUERY_DP_PATHS = """
+FOR v, e, p IN 1..100 OUTBOUND @start_vertex GRAPH @graph_name
+    FILTER HAS(v, "value")
+    LET categories = SLICE(p.edges[*].next_category, 0, -1)
+    LET keys = SLICE(p.vertices[*]._key, 1, -1)
+    LET raw_path = APPEND(INTERLEAVE(categories, keys), [v.type, v.name])
+    RETURN CONCAT_SEPARATOR(".", raw_path)
+"""
+
 
 class ArangoAgent:
     def __init__(self, scenario: Scenario,
@@ -25,6 +34,7 @@ class ArangoAgent:
                  graph_name: str = "scenario",
                  client: ArangoClient = None,
                  auth_info: dict = None):
+        self.scenario: Scenario = scenario
         self.entity: Entity = scenario.root
         self.db_name = db_name
         self.graph_name = graph_name
@@ -147,7 +157,12 @@ class ArangoAgent:
             if not e_collection.has(e_key):
                 e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
 
-    def capture_status(self, pattern=None, paths=None):
+    def capture_status(self,
+                       pattern=None,
+                       paths=None,
+                       flatten=False,
+                       fill_with_default=False,
+                       skip_telemetry_in_tsdb=False):
         if paths:
             if pattern:
                 paths.extend(self.entity.match_data_points(pattern))
@@ -167,6 +182,35 @@ class ArangoAgent:
         data = {}
         for item in cursor:
             path = item.pop("path")
-            path.insert(-1, item.pop("type"))
-            insert_data_point_to_dict(path, item, data)
+            dp_type = item.pop("type")
+            path.insert(-1, dp_type)
+            if skip_telemetry_in_tsdb and dp_type == "Telemetry":
+                continue
+            if flatten:
+                data[PATH_SEP.join(path)] = item
+            else:
+                insert_data_point_to_dict(path, item, data)
+        if fill_with_default:
+            missing_paths = self.scenario.guess_missing_paths(
+                existing_paths=self.all_data_points(),
+                pattern=pattern)
+            for path in missing_paths:
+                default_value = self.scenario.query_data_point_info(
+                    self.scenario.data_point_path_to_path(path)
+                ).default_object()
+                if default_value:
+                    if flatten:
+                        data[path] = default_value
+                    else:
+                        insert_data_point_to_dict(path, default_value, data)
         return data
+
+    def all_data_points(self):
+        db = self.db(create=False)
+        start_vertex = f"{self.entity.name}/000"
+        cursor = db.aql.execute(QUERY_DP_PATHS,
+                                bind_vars=dict(
+                                    start_vertex=start_vertex,
+                                    graph_name=self.graph_name,
+                                ))
+        return list(cursor)

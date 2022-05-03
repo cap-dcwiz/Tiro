@@ -8,3 +8,4 @@
         - CPUTemperature
         - MemoryTemperature
     - Temperature
+    - Site

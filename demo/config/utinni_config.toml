@@ -1,11 +1,17 @@
-[influxdb]
-url="http://localhost:8086"
-token="influxdb_token"
-org="tiro"
-bucket="tiro"
-measurement="mock"
+[pump_init]
+influxdb_url = "http://localhost:8086"
+influxdb_token = "influxdb_token"
+influxdb_org = "tiro"
+influxdb_bucket = "tiro"
+influxdb_measurement = "mock"
+arangodb_db = "tiro_test"
+arangodb_graph = "scenario"
+arangodb_hosts = "http://localhost:8529"
+
+[pump_init.arangodb_auth]
+password = "arangodb_password"
 
 [on_request]
-interpolate=true
-interpolate_limit=5
-interpolate_value_range=[-inf, inf]
+interpolate = true
+interpolate_limit = 5
+interpolate_value_range = [-inf, inf]

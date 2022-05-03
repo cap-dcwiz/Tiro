@@ -109,13 +109,13 @@ class Scenario:
             yield from cls.decompose_data(path[2:], value, _info)
 
     @staticmethod
-    def asset_path_to_path(path: str | list[str]) -> str:
+    def data_point_path_to_path(path: str | list[str]) -> str:
         path = split_path(path)
-        return f"{PATH_SEP.join(path[i] for i in range(0, len(path), 2))}{PATH_SEP}{path[-1]}"
+        return f"{PATH_SEP.join(path[i] for i in range(0, len(path)-2, 2))}{PATH_SEP}{path[-1]}"
 
     @classmethod
-    def asset_path_to_tags(cls, path: str | list[str], tags=None) -> dict:
-        tags = tags or dict(path=cls.asset_path_to_path(path), asset_path=path)
+    def data_point_path_to_tags(cls, path: str | list[str], tags=None) -> dict:
+        tags = tags or dict(path=cls.data_point_path_to_path(path), asset_path=path)
         path = split_path(path)
         component = path.pop(0)
         if component in DataPointInfo.SUB_CLASS_NAMES:
@@ -123,10 +123,10 @@ class Scenario:
         else:
             uuid = path.pop(0)
             tags |= {component: uuid}
-            cls.asset_path_to_tags(path, tags)
+            cls.data_point_path_to_tags(path, tags)
         return tags
 
-    def guess_missing_paths(self, existing_paths=None):
+    def guess_missing_paths(self, existing_paths=None, pattern=None):
         validator = self.validator(validate_path_only=True,
                                    require_all_children=False)
         if existing_paths:
@@ -136,8 +136,10 @@ class Scenario:
         while not res.valid:
             for error in res.exception.errors():
                 missing_path = PATH_SEP.join(error["loc"])
-                dp_info = self.query_data_point_info(self.asset_path_to_path(missing_path))
-                if dp_info:
-                    yield missing_path
+                path = self.data_point_path_to_path(missing_path)
+                if self.path_match(pattern, path):
+                    dp_info = self.query_data_point_info(path)
+                    if dp_info:
+                        yield missing_path
                 validator.collect(missing_path, value={})
             res = validator.validate()

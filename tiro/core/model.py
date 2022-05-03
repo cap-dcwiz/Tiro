@@ -291,9 +291,8 @@ class Entity:
         path = split_path(path)
         if path[0] in self.children.keys():
             return self.children[path[0]].query_data_point_info(path[1:])
-        elif path[0] in DataPointInfo.SUB_CLASS_NAMES:
-            print(path)
-            return self.data_point_info[path[1]]
+        elif path[0] in self.data_point_info:
+            return self.data_point_info[path[0]]
 
     @classmethod
     def use_selection_model(cls, name_prefix=""):
@@ -327,11 +326,16 @@ class Entity:
         for dp_name in self._used_data_points:
             yield "has_data_point", self_name, self.data_point_info[dp_name].__class__.__name__
 
-    def match_data_points(self, pattern: str) -> Iterable[str]:
-        pattern = pattern.replace("%", "\.")
-        for path in self.all_required_paths():
-            if re.fullmatch(pattern, path):
-                yield path
+    def match_data_points(self, pattern: str, paths: list[str] = None) -> Iterable[str]:
+        return filter(partial(self.path_match, pattern),
+                      paths or self.all_required_paths())
+
+    @staticmethod
+    def path_match(pattern: str, path: str) -> bool:
+        if pattern is not None:
+            return bool(re.fullmatch(pattern.replace("%", "\."), path))
+        else:
+            return True
 
     @classmethod
     def create(cls,
