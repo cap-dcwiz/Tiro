@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.13">
     
     
       
@@ -17,10 +17,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.8c5ef100.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e411adfe.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
         
       
     
@@ -1955,8 +1955,15 @@ Entity        </code>
                         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_info</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">new_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">_create_date_points_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp_category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">],</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
-        <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">update_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">defaults</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_create_date_points_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">dp_category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataPoint</span><span class="p">],</span>
+                                  <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span>
+                                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Dynamically generate Pydantic model for all data points in the entity.&quot;&quot;&quot;</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dp_category</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">}</span>
@@ -2012,9 +2019,10 @@ Entity        </code>
             <span class="n">dp_model</span><span class="p">,</span> <span class="n">sub_is_optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_date_points_model</span><span class="p">(</span><span class="n">dp_category</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="o">=</span><span class="n">hide_dp_values</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">dp_model</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">sub_is_optional</span><span class="p">:</span>
-                    <span class="n">dp_model</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">dp_model</span><span class="p">]</span>
+                    <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">dp_model</span><span class="p">],</span> <span class="p">{})}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
                 <span class="n">is_optional</span> <span class="o">&amp;=</span> <span class="n">sub_is_optional</span>
-                <span class="n">fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">dp_category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span> <span class="p">(</span><span class="n">dp_model</span><span class="p">,</span> <span class="o">...</span><span class="p">)}</span>
         <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">),</span> <span class="n">is_optional</span>
 
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_dp_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">require_all_children</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
@@ -2031,11 +2039,11 @@ Entity        </code>
 
     <span class="k">def</span> <span class="nf">query_data_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">elif</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="k">elif</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">use_selection_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -2069,11 +2077,17 @@ Entity        </code>
         <span class="k">for</span> <span class="n">dp_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_data_points</span><span class="p">:</span>
             <span class="k">yield</span> <span class="s2">&quot;has_data_point&quot;</span><span class="p">,</span> <span class="n">self_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_info</span><span class="p">[</span><span class="n">dp_name</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
-    <span class="k">def</span> <span class="nf">match_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">,</span> <span class="s2">&quot;\.&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_required_paths</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">path</span>
+    <span class="k">def</span> <span class="nf">match_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_match</span><span class="p">,</span> <span class="n">pattern</span><span class="p">),</span>
+                      <span class="n">paths</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_required_paths</span><span class="p">())</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">path_match</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">,</span> <span class="s2">&quot;\.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
@@ -2142,6 +2156,8 @@ Entity        </code>
             <span class="n">list_args</span><span class="p">[</span><span class="s2">&quot;faking_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">ids&quot;</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">:</span>
             <span class="n">list_args</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">defs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">ids&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">defaults&quot;</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">:</span>
+            <span class="n">entity</span><span class="o">.</span><span class="n">update_defaults</span><span class="p">(</span><span class="o">**</span><span class="n">defs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">defaults&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="o">**</span><span class="n">list_args</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -2323,6 +2339,8 @@ overridden to extend subclasses.</p>
         <span class="n">list_args</span><span class="p">[</span><span class="s2">&quot;faking_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">ids&quot;</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">:</span>
         <span class="n">list_args</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">defs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">ids&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">defaults&quot;</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">:</span>
+        <span class="n">entity</span><span class="o">.</span><span class="n">update_defaults</span><span class="p">(</span><span class="o">**</span><span class="n">defs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">YAML_META_CHAR</span><span class="si">}</span><span class="s2">defaults&quot;</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="o">**</span><span class="n">list_args</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -2361,6 +2379,7 @@ overridden to extend subclasses.</p>
     </div>
 
   </div>
+
 
 
 
@@ -2415,6 +2434,7 @@ Alternatively, a yaml string or path can be provided.</p>
     </div>
 
   </div>
+
 
 
 
@@ -2781,13 +2801,13 @@ Scenario        </code>
             <span class="k">yield from</span> <span class="bp">cls</span><span class="o">.</span><span class="n">decompose_data</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">value</span><span class="p">,</span> <span class="n">_info</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">asset_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">data_point_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span><span class="si">}{</span><span class="n">PATH_SEP</span><span class="si">}{</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="si">}{</span><span class="n">PATH_SEP</span><span class="si">}{</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">asset_path_to_tags</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">asset_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">asset_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">data_point_path_to_tags</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">data_point_path_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">asset_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">component</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">DataPointInfo</span><span class="o">.</span><span class="n">SUB_CLASS_NAMES</span><span class="p">:</span>
@@ -2795,10 +2815,10 @@ Scenario        </code>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">uuid</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">tags</span> <span class="o">|=</span> <span class="p">{</span><span class="n">component</span><span class="p">:</span> <span class="n">uuid</span><span class="p">}</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">asset_path_to_tags</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">data_point_path_to_tags</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tags</span>
 
-    <span class="k">def</span> <span class="nf">guess_missing_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_paths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">guess_missing_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_paths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">validator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="n">validate_path_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                    <span class="n">require_all_children</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">existing_paths</span><span class="p">:</span>
@@ -2808,9 +2828,11 @@ Scenario        </code>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">errors</span><span class="p">():</span>
                 <span class="n">missing_path</span> <span class="o">=</span> <span class="n">PATH_SEP</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">])</span>
-                <span class="n">dp_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">asset_path_to_path</span><span class="p">(</span><span class="n">missing_path</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">dp_info</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">missing_path</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_point_path_to_path</span><span class="p">(</span><span class="n">missing_path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+                    <span class="n">dp_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_data_point_info</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">dp_info</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">missing_path</span>
                 <span class="n">validator</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">missing_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">{})</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
 </code></pre></div>
@@ -3300,7 +3322,7 @@ against the given scenario or JSON schema.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs", "navigation.top", "navigation.instant"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.748e2769.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ed9748b7.min.js"></script>
       
     
   </body>
