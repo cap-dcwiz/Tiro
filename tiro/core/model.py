@@ -1,7 +1,7 @@
 import re
 import sys
 from collections.abc import Iterable
-from copy import copy
+from copy import copy, deepcopy
 from datetime import datetime, timedelta
 from functools import partial
 from importlib import import_module
@@ -213,6 +213,11 @@ class Entity:
                         self.children[path] = self.child_info[path].new_entity(self)
         return self
 
+    @classmethod
+    def update_defaults(cls, **defaults):
+        for key, value in defaults.items():
+            cls.data_point_info[key].default = value
+
     def _create_date_points_model(self, dp_category: Type[DataPoint], hide_dp_values: bool) -> tuple[
         Optional[Type[BaseModel]], bool]:
         """Dynamically generate Pydantic model for all data points in the entity."""
@@ -404,4 +409,6 @@ class Entity:
             list_args["faking_number"] = 1
         if f"{YAML_META_CHAR}ids" in defs:
             list_args["ids"] = defs[f"{YAML_META_CHAR}ids"]
+        if f"{YAML_META_CHAR}defaults" in defs:
+            entity.update_defaults(**defs[f"{YAML_META_CHAR}defaults"])
         return entity.many(**list_args)

@@ -9,6 +9,8 @@ Room:
         Server:
             $type: data_hall.Server
             $number: 2-20
+            $defaults:
+                CPUTemperature: 20
     Server:
         $type: data_hall.Server
         $number: 5
