@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta, datetime
 from pathlib import Path
 from typing import Optional, Literal
@@ -83,6 +84,9 @@ class TiroTSPump(InfluxDBDataPump):
                   ):
         paths = list(self.scenario.match_data_points(pattern))
         table = super(TiroTSPump, self).gen_table(column=column, agg_fn=agg_fn, path=paths)
+        if not paths:
+            raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern}\"")
+        logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("only_ts", only_ts)
         table.set_meta("fill_with_default", fill_with_default)
         table.set_meta("pattern", pattern)
@@ -90,7 +94,7 @@ class TiroTSPump(InfluxDBDataPump):
 
     def get_data(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
         try:
-            data = super(TiroTSPump, self).get_data(table, fields=None)
+            data = super(TiroTSPump, self).get_data(table, fields=fields)
             if not table.meta["only_ts"]:
                 if fields:
                     missing_fields = set(f for f in fields if f not in data.keys())
@@ -103,7 +107,9 @@ class TiroTSPump(InfluxDBDataPump):
             if not table.meta["only_ts"]:
                 data = self.get_data_from_gdb(table, fields)
             else:
-                raise e from e
+                return {}
+        if len(data) == 1:
+            return data.popitem()[1]
         return data
 
     def get_data_from_gdb(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:

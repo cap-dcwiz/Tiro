@@ -338,7 +338,8 @@ class Entity:
     @staticmethod
     def path_match(pattern: str, path: str) -> bool:
         if pattern is not None:
-            return bool(re.fullmatch(pattern.replace("%", "\."), path))
+            pattern = pattern.replace("%", "\.")
+            return bool(re.fullmatch(f"^{pattern}$", path))
         else:
             return True
 
