@@ -294,10 +294,11 @@ class Entity:
 
     def query_data_point_info(self, path: str | list[str]):
         path = split_path(path)
-        if path[0] in self.children.keys():
-            return self.children[path[0]].query_data_point_info(path[1:])
-        elif path[0] in self.data_point_info:
-            return self.data_point_info[path[0]]
+        if path:
+            if path[0] in self.children.keys():
+                return self.children[path[0]].query_data_point_info(path[1:])
+            elif path[0] in self.data_point_info:
+                return self.data_point_info[path[0]]
 
     @classmethod
     def use_selection_model(cls, name_prefix=""):

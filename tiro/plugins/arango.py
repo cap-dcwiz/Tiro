@@ -28,6 +28,14 @@ FOR v, e, p IN 1..100 OUTBOUND @start_vertex GRAPH @graph_name
 """
 
 
+def encode_key(key: str) -> str:
+    return key.replace(" ", "_")
+
+
+def decode_key(key: str) -> str:
+    return key.replace("_", " ")
+
+
 class ArangoAgent:
     def __init__(self, scenario: Scenario,
                  db_name: str,
@@ -53,13 +61,13 @@ class ArangoAgent:
             if entity_type == root_name:
                 entity_id = "000"
             else:
-                entity_id = doc[entity_type]
+                entity_id = encode_key(doc[entity_type])
             vertices[entity_type] = {
                 "_key": entity_id,
             }
             if i != len(path) - 2:
                 next_type = path[i + 1]
-                next_id = doc[path[i + 1]]
+                next_id = encode_key(doc[path[i + 1]])
                 edges.append((
                     f"is_parent_of",
                     f"{entity_id}_{next_id}",
@@ -71,7 +79,7 @@ class ArangoAgent:
         if final_entity_type == root_name:
             final_entity_id = "000"
         else:
-            final_entity_id = doc[final_entity_type]
+            final_entity_id = encode_key(doc[final_entity_type])
         dp_name = path[-1]
         dp_type = doc['type']
         dp_id = f"{final_entity_id}-{dp_name}"
@@ -181,7 +189,7 @@ class ArangoAgent:
                                 ))
         data = {}
         for item in cursor:
-            path = item.pop("path")
+            path = [decode_key(p) for p in item.pop("path")]
             dp_type = item.pop("type")
             path.insert(-1, dp_type)
             if skip_telemetry_in_tsdb and dp_type == "Telemetry":
@@ -213,4 +221,4 @@ class ArangoAgent:
                                     start_vertex=start_vertex,
                                     graph_name=self.graph_name,
                                 ))
-        return list(cursor)
+        return [decode_key(x) for x in cursor]
