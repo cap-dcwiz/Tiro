@@ -218,8 +218,10 @@ class Entity:
         for key, value in defaults.items():
             cls.data_point_info[key].default = value
 
-    def _create_date_points_model(self, dp_category: Type[DataPoint], hide_dp_values: bool) -> tuple[
-        Optional[Type[BaseModel]], bool]:
+    def _create_date_points_model(self,
+                                  dp_category: Type[DataPoint],
+                                  hide_dp_values: bool
+                                  ) -> tuple[Optional[Type[BaseModel]], bool]:
         """Dynamically generate Pydantic model for all data points in the entity."""
         info = {k: v for k, v in self.data_point_info.items()
                 if isinstance(v, dp_category) and k in self._used_data_points}
@@ -275,9 +277,10 @@ class Entity:
             dp_model, sub_is_optional = self._create_date_points_model(dp_category, hide_dp_values=hide_dp_values)
             if dp_model:
                 if sub_is_optional:
-                    dp_model = Optional[dp_model]
+                    fields |= {camel_to_snake(dp_category.__name__): (Optional[dp_model], {})}
+                else:
+                    fields |= {camel_to_snake(dp_category.__name__): (dp_model, ...)}
                 is_optional &= sub_is_optional
-                fields |= {camel_to_snake(dp_category.__name__): (dp_model, ...)}
         return create_model(self.unique_name, config=self.Config, **fields), is_optional
 
     def model(self, hide_dp_values: bool = False, require_all_children: bool = True):

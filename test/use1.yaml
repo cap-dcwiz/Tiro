@@ -5,7 +5,7 @@
         - BackTemperature
         - Server:
             - CPUTemperature
-            - MemoryTemperature
+#            - MemoryTemperature
     - Server:
         - CPUTemperature
         - MemoryTemperature

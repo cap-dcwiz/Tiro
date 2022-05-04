@@ -5,10 +5,10 @@ Room:
   $type: data_hall.Room
   Rack:
     $type: data_hall.Rack
-    $number: 10
+    $number: 2
     Server:
       $type: data_hall.Server
-      $number: 2-20
+      $number: 2-5
   Server:
     $type: data_hall.Server
     $number: 5
