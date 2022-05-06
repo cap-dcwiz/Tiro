@@ -49,8 +49,8 @@ class Scenario:
     def __getattr__(self, key):
         return getattr(self.root, key)
 
-    def mocker(self):
-        return Mocker(self.root)
+    def mocker(self, *args, **kwargs):
+        return Mocker(self.root, *args, **kwargs)
 
     def validator(self, *args, **kwargs):
         return Validator(self.root, *args, **kwargs)

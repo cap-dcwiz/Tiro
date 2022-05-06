@@ -1,9 +1,11 @@
 from pathlib import Path
+from typing import Optional
 
 import httpx
 import time
 import typer
 import uvicorn
+import yaml
 from rich import print
 
 from tiro.core import Scenario
@@ -16,13 +18,14 @@ app = typer.Typer()
 def mock(
         scenario_path: Path,
         uses: list[Path],
-        host: str = typer.Option("127.0.0.1", "--host", "-h"),
-        port: int = typer.Option(8000, "--port", "-p"),
-        skip_defaults: bool = typer.Option(True, "--skip-defaults", "-s"),
-        use_defaults: bool = typer.Option(True, "--use-defaults", "-u"),
+        host: Optional[str] = typer.Option("127.0.0.1", "--host", "-h"),
+        port: Optional[int] = typer.Option(8000, "--port", "-p"),
+        skip_defaults: Optional[bool] = typer.Option(True, "--skip-defaults", "-s"),
+        use_defaults: Optional[bool] = typer.Option(True, "--use-defaults", "-u"),
+        reference: Optional[Path] = typer.Option(None, "--reference", "-r")
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
-    mock_app = MockApp(scenario.mocker(),
+    mock_app = MockApp(scenario.mocker(reference=reference),
                        skip_defaults=skip_defaults,
                        use_defaults=use_defaults)
     uvicorn.run(mock_app, host=host, port=port)

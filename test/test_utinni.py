@@ -11,7 +11,7 @@ conf = Dynaconf(settings_files=["./utinni_config.toml"])
 context = Context(**conf.on_request)
 
 context.add_pump("tiro",
-                 TiroTSPump(scenario=Path("../demo/config/scenario.yaml"),
+                 TiroTSPump(scenario=Path("../demo/config/scenario1.yaml"),
                             uses=[Path("../demo/config/use1.yaml")],
                             **conf.influxdb))
 

@@ -2,6 +2,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+
+import yaml
 from rich import print
 
 import typer
@@ -38,13 +40,13 @@ def schema_show(
 def schema_example(
         scenario_path: Path,
         uses: list[Path],
+        reference: Optional[Path] = typer.Option(None, "--reference", "-r"),
         output: Optional[Path] = typer.Option(None, "--output", "-o")
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
-    mocker = scenario.mocker()
+    mocker = scenario.mocker(reference=reference)
     if output:
         with open(output, 'w') as f:
             json.dump(mocker.dict(), f, indent=2)
     else:
         print(mocker.dict())
-#

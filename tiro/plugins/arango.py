@@ -29,11 +29,11 @@ FOR v, e, p IN 1..100 OUTBOUND @start_vertex GRAPH @graph_name
 
 
 def encode_key(key: str) -> str:
-    return key.replace(" ", "_")
+    return key.replace(" ", ":$:")
 
 
 def decode_key(key: str) -> str:
-    return key.replace("_", " ")
+    return key.replace(":$:", " ")
 
 
 class ArangoAgent:

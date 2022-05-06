@@ -1,18 +1,55 @@
 import json
 import logging
-from typing import Optional, Union, Type
+from pathlib import Path
+from typing import Optional
 from uuid import uuid1
 
+import yaml
 from faker import Faker
 from fastapi import FastAPI, HTTPException
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path
+from .utils import camel_to_snake, PATH_SEP, concat_path, split_path
 from .model import Entity, DataPointInfo, Telemetry
 
 
+class Reference:
+    def __init__(self, reference=None):
+        reference = reference or {}
+        self.tree = reference.get("tree", None)
+        self.value_range = reference.get("value_range", None)
+
+    def get_children(self, path, tree=None):
+        if self.tree:
+            if tree is None:
+                tree = self.tree
+            path = split_path(path)
+            if path:
+                component = path.pop(0)
+                if component in tree:
+                    return self.get_children(path, tree[component])
+                return []
+            else:
+                if isinstance(tree, dict):
+                    return list(tree.keys())
+                else:
+                    return tree
+
+    def get_value_range(self, path, name):
+        if self.value_range:
+            path = split_path(path)
+            path = [path[i] for i in range(0, len(path), 2)]
+            path.append(name)
+            return self.value_range.get(PATH_SEP.join(path), None)
+
+
 class MockedItem:
-    def __init__(self, prototype: Entity | DataPointInfo, parent: Optional["MockedEntity"] = None):
+    def __init__(self,
+                 prototype: Entity | DataPointInfo,
+                 reference: Reference,
+                 parent: Optional["MockedEntity"] = None
+                 ):
         self.prototype = prototype
+        self.reference = reference
         self.parent = parent
 
 
@@ -29,12 +66,17 @@ class MockedEntity(MockedItem):
 
         for dp_type in DataPointInfo.SUB_CLASSES:
             setattr(self, camel_to_snake(dp_type.__name__), {})
+
+        ref_dps = self.reference.get_children(self.path)
+        if ref_dps is not None:
+            ref_dps = set(ref_dps)
+
         for k in self.prototype.data_points():
             v = self.prototype.data_point_info[k]
             dps = getattr(self, camel_to_snake(v.__class__.__name__))
             k = camel_to_snake(k)
-            if k not in dps:
-                dps[k] = MockedDataPoint(v, parent=self)
+            if ref_dps is None or k in ref_dps and k not in dps:
+                dps[k] = MockedDataPoint(prototype=v, name=k, parent=self, reference=self.reference)
 
     def generate(self,
                  regenerate: bool,
@@ -53,12 +95,19 @@ class MockedEntity(MockedItem):
                         f"Faking number ({number})is greater the length of predefined IDs ({len(prototype.ids)}."
                         f"Only {len(prototype.ids)} instances will be generated."
                     )
-                if prototype.ids:
-                    uuids = prototype.ids[:number]
-                else:
-                    uuids = [None for _ in range(number)]
-                for uuid in uuids:
-                    entity = MockedEntity(entity_type=entity_type, prototype=v, parent=self, uuid=uuid)
+                child_path = f"{self.path}{PATH_SEP}{entity_type}" if self.path else entity_type
+                uuids = self.reference.get_children(child_path)
+                if uuids is None:
+                    if prototype.ids:
+                        uuids = prototype.ids
+                    else:
+                        uuids = [None for _ in range(number)]
+                for uuid in uuids[:number]:
+                    entity = MockedEntity(entity_type=entity_type,
+                                          prototype=v,
+                                          parent=self,
+                                          reference=self.reference,
+                                          uuid=uuid)
                     _children[entity.uuid] = entity.generate(regenerate=regenerate,
                                                              include_data_points=include_data_points,
                                                              change_attrs=change_attrs,
@@ -185,10 +234,13 @@ class MockedEntity(MockedItem):
 
 
 class MockedDataPoint(MockedItem):
-    def __init__(self, *args, **kwargs):
+    _faker = Faker()
+
+    def __init__(self, name, *args, **kwargs):
         super(MockedDataPoint, self).__init__(*args, **kwargs)
         self.cur_value = None
         self.gen_timestamp = None
+        self.name = name
 
     def generate(self, change_attrs, use_default) -> "MockedDataPoint":
         if self.cur_value is None \
@@ -197,8 +249,13 @@ class MockedDataPoint(MockedItem):
             if use_default and self.prototype.default is not None:
                 self.cur_value = self.prototype.default
             else:
-                self.cur_value = self.prototype.faker()
-            self.gen_timestamp = Faker().past_datetime(-self.prototype.time_var).isoformat()
+                value_range = self.reference.get_value_range(self.parent.path, self.name)
+                if value_range is not None:
+                    self.cur_value = self._faker.pyfloat(min_value=value_range["min"],
+                                                         max_value=value_range["max"])
+                else:
+                    self.cur_value = self.prototype.faker()
+            self.gen_timestamp = self._faker.past_datetime(-self.prototype.time_var).isoformat()
         return self
 
     def dict(self) -> dict:
@@ -209,8 +266,14 @@ class MockedDataPoint(MockedItem):
 
 
 class Mocker:
-    def __init__(self, entity: Optional[Entity] = None):
-        self.entity: MockedEntity = MockedEntity(None, entity)
+    def __init__(self,
+                 entity: Optional[Entity] = None,
+                 reference: Optional[Path | dict] = None):
+        if isinstance(reference, Path):
+            reference = yaml.safe_load(reference.open())
+        self.entity: MockedEntity = MockedEntity(entity_type=None,
+                                                 prototype=entity,
+                                                 reference=Reference(reference))
         self.entity_cache: Optional[dict[str, MockedEntity]] = None
 
     def dict(self,

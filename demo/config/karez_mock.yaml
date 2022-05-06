@@ -48,13 +48,13 @@ converters:
 aggregators:
   - type: tiro_validate
     category: validation_data
-    scenario: config/scenario.yaml
+    scenario: config/scenario1.yaml
     uses: config/use1.yaml
     retention: 60
     log_file: logs/validation.log
   - type: arango_db
     category: graph_data
-    scenario: config/scenario.yaml
+    scenario: config/scenario1.yaml
     uses: config/use1.yaml
     db_name: tiro_test
     graph_name: scenario
