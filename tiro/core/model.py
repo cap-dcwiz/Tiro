@@ -82,10 +82,11 @@ class DataPointInfo:
         if self.default is None:
             return None
         else:
+            current_time = datetime.utcnow().isoformat()
             if cls:
-                return cls(value=self.default, timestamp=datetime.utcnow(), _unit=self.unit)
+                return cls(value=self.default, timestamp=current_time, _unit=self.unit)
             else:
-                return dict(value=self.default, timestamp=datetime.utcnow(), unit=self.unit)
+                return dict(value=self.default, timestamp=current_time, unit=self.unit)
 
 
 class Telemetry(DataPointInfo):

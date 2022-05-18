@@ -9,7 +9,7 @@ ENV PYTHONPATH="${PYTHONPATH}:/tiro/" \
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
-COPY demo/deps /tiro/deps
+COPY deps /tiro/deps
 COPY pyproject.toml /tiro/
 COPY tiro /tiro/tiro
 
