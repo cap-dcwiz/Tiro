@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.3.0"
+version = "0.4"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
@@ -27,6 +27,7 @@ mkdocstrings = "^0.18.1"
 mkdocs-typer = "^0.0.2"
 Markdown = "^3.3.6"
 karez = {git = "ssh://git@github.com/cap-dcwiz/Karez.git", rev = "main"}
+pandas = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^3.3.4"
