@@ -37,9 +37,9 @@ class ArangoAggregator(AggregatorBase):
             uses = map(Path, self.config.uses.split(","))
             scenario = Scenario.from_yaml(Path(self.config.scenario), *uses)
             self._agent = ArangoAgent(scenario,
-                                      self.config.db_name,
-                                      self.config.graph_name,
-                                      ArangoClient(hosts=self.config.hosts),
+                                      db_name=self.config.db_name,
+                                      graph_name=self.config.graph_name,
+                                      client=ArangoClient(hosts=self.config.hosts),
                                       auth_info=self.config.auth)
             self._agent.create_graph(clear_database=False, clear_existing=False)
         return self._agent

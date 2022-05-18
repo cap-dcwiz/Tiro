@@ -2,8 +2,6 @@
 influxdb_url = "http://localhost:8086"
 influxdb_token = "influxdb_token"
 influxdb_org = "tiro"
-influxdb_bucket = "tiro"
-influxdb_measurement = "mock"
 arangodb_db = "tiro_test"
 arangodb_graph = "scenario"
 arangodb_hosts = "http://localhost:8529"
@@ -12,6 +10,20 @@ arangodb_hosts = "http://localhost:8529"
 password = "arangodb_password"
 
 [on_request]
+influxdb_bucket = "tiro"
+influxdb_measurement = "mock"
+
 interpolate = true
 interpolate_limit = 5
 interpolate_value_range = [-inf, inf]
+
+[client.influxdb]
+url = "http://localhost:8086"
+token = "influxdb_token"
+org = "tiro"
+
+[client.arangodb]
+db_name = "tiro_test"
+graph_name = "scenario"
+hosts = "http://localhost:8529"
+auth_info = {"password" = "arangodb_password"}

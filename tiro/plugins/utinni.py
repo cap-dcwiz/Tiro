@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Optional, Literal
 
 import pandas as pd
-from arango import ArangoClient
 from utinni.table.table import TimeSeriesPrimaryTable, PrimaryTable
 from utinni.types import ValueType
 
@@ -32,22 +31,13 @@ class TiroTSPump(InfluxDBDataPump):
     def __init__(self, *args,
                  scenario: Scenario | str | Path,
                  uses: Optional[list[str | Path]] = None,
-                 influxdb_url="http://localhost:8086",
-                 influxdb_token="influxdb_token",
-                 influxdb_org="tiro",
-                 influxdb_bucket="tiro",
-                 influxdb_measurement="tiro",
                  arangodb_db="tiro",
                  arangodb_graph="scenario",
                  arangodb_hosts="http://localhost:8529",
                  arangodb_auth=None,
+                 arangodb_agent=None,
                  **kwargs):
         super(TiroTSPump, self).__init__(*args,
-                                         url=influxdb_url,
-                                         token=influxdb_token,
-                                         org=influxdb_org,
-                                         bucket=influxdb_bucket,
-                                         measurement=influxdb_measurement,
                                          **kwargs)
         uses = uses or []
         if isinstance(scenario, Scenario):
@@ -56,11 +46,28 @@ class TiroTSPump(InfluxDBDataPump):
                 self.scenario.requires(use)
         else:
             self.scenario = Scenario.from_yaml(scenario, *uses)
-        self.graph_db_agent = ArangoAgent(scenario,
-                                          db_name=arangodb_db,
-                                          graph_name=arangodb_graph,
-                                          client=ArangoClient(hosts=arangodb_hosts),
-                                          auth_info=arangodb_auth)
+        if arangodb_agent is None:
+            self._arangodb_agent_params = dict(scenario=scenario,
+                                               db_name=arangodb_db,
+                                               graph_name=arangodb_graph,
+                                               auth_info=arangodb_auth,
+                                               hosts=arangodb_hosts)
+        else:
+            self._arangodb_agent_params = None
+            if arangodb_agent.scenario is None:
+                arangodb_agent.set_scenario(scenario)
+        self._arangodb_agent = arangodb_agent
+
+    @property
+    def arangodb_agent(self):
+        if self._arangodb_agent is None:
+            agent = self.context.clients.get("arangodb")
+            if agent is None:
+                agent = ArangoAgent(**self._arangodb_agent_params)
+            if agent.scenario is None:
+                agent.set_scenario(self.scenario)
+            self._arangodb_agent = agent
+        return self._arangodb_agent
 
     def gen_table(self,
                   pattern: str = ".*",
@@ -68,9 +75,9 @@ class TiroTSPump(InfluxDBDataPump):
                   column: str = "asset_path",
                   agg_fn: Literal["mean", "max", "min"] = "mean",
                   only_ts: bool = True,
-                  fill_with_default: bool = False,
+                  fill_with_default: bool = True,
                   as_df: bool = False,
-                  tags: list[str] | str = None,
+                  include_tags: list[str] | str = None,
                   ) -> PrimaryTable:
         if type == "historian":
             return self.gen_historian_table(pattern=pattern,
@@ -79,12 +86,12 @@ class TiroTSPump(InfluxDBDataPump):
                                             only_ts=only_ts,
                                             fill_with_default=fill_with_default)
         elif type == "status":
-            if isinstance(tags, str):
-                tags = [tags]
+            if isinstance(include_tags, str):
+                include_tags = [include_tags]
             return self.gen_status_table(pattern=pattern,
                                          fill_with_default=fill_with_default,
                                          as_df=as_df,
-                                         tags=tags)
+                                         tags=include_tags)
 
     def gen_historian_table(self,
                             pattern: str,
@@ -152,7 +159,7 @@ class TiroTSPump(InfluxDBDataPump):
         pattern = table.meta["pattern"]
         fill_with_default = table.meta["fill_with_default"]
         missing_data = []
-        for path, value in self.graph_db_agent.capture_status(
+        for path, value in self.arangodb_agent.capture_status(
                 pattern=pattern,
                 flatten=True,
                 fill_with_default=fill_with_default,
@@ -191,7 +198,8 @@ class TiroTSPump(InfluxDBDataPump):
                 else:
                     value = {t: v for t, v in tags.items() if t in df_required_tags} | value
                 data.append(value)
-            return pd.DataFrame(data)
+            df = pd.DataFrame(data)
+            return {field: g.drop(columns=["field"]) for field, g in df.groupby("field")}
         else:
             return self.capture_status(pattern=pattern,
                                        flatten=False,
@@ -199,4 +207,4 @@ class TiroTSPump(InfluxDBDataPump):
                                        skip_telemetry_in_tsdb=False)
 
     def capture_status(self, *args, **kwargs):
-        return self.graph_db_agent.capture_status(*args, **kwargs)
+        return self.arangodb_agent.capture_status(*args, **kwargs)

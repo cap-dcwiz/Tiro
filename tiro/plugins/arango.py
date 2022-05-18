@@ -37,18 +37,25 @@ def decode_key(key: str) -> str:
 
 
 class ArangoAgent:
-    def __init__(self, scenario: Scenario,
-                 db_name: str,
+    def __init__(self,
+                 scenario: Scenario = None,
+                 db_name: str = "tiro",
                  graph_name: str = "scenario",
+                 auth_info: dict = None,
+                 hosts: str = "http://localhost:8529",
                  client: ArangoClient = None,
-                 auth_info: dict = None):
+                 ):
         self.scenario: Scenario = scenario
-        self.entity: Entity = scenario.root
+        self.entity: Entity = scenario.root if scenario else None
         self.db_name = db_name
         self.graph_name = graph_name
-        self.client: ArangoClient = client or ArangoClient(hosts="http://localhost:8529")
+        self.client: ArangoClient = client or ArangoClient(hosts=hosts)
         self.graph = None
         self.auth_info = auth_info
+
+    def set_scenario(self, scenario):
+        self.scenario = scenario
+        self.entity = scenario.root
 
     def parse_doc_to_graph_components(self, doc):
         path = doc["path"].split(PATH_SEP)
