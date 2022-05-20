@@ -70,7 +70,7 @@ class TiroTSPump(InfluxDBDataPump):
         return self._arangodb_agent
 
     def gen_table(self,
-                  pattern_or_uses: str = ".*",
+                  pattern_or_uses: Optional[str | dict | Path] = ".*",
                   type: Literal["historian", "status"] = "historian",
                   column: str = "asset_path",
                   agg_fn: Literal["mean", "max", "min"] = "mean",
@@ -94,7 +94,7 @@ class TiroTSPump(InfluxDBDataPump):
                                          tags=include_tags)
 
     def gen_historian_table(self,
-                            pattern_or_uses: str,
+                            pattern_or_uses: str | dict | Path,
                             column: str,
                             agg_fn: Literal["mean", "max", "min"],
                             only_ts: bool,
@@ -112,7 +112,7 @@ class TiroTSPump(InfluxDBDataPump):
         return table
 
     def gen_status_table(self,
-                         pattern_or_uses: str,
+                         pattern_or_uses: str | dict | Path,
                          fill_with_default: bool,
                          as_df: bool,
                          tags: list[str],

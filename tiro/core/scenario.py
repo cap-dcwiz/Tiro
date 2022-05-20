@@ -142,11 +142,12 @@ class Scenario:
         while not res.valid:
             for error in res.exception.errors():
                 missing_path = PATH_SEP.join(error["loc"])
-                path = self.data_point_path_to_path(missing_path)
-                if (valid_paths is not None and path in valid_paths) or \
-                        self.path_match(pattern_or_uses, path):
-                    dp_info = self.query_data_point_info(path)
-                    if dp_info:
-                        yield missing_path
                 validator.collect(missing_path, value={})
+                path = self.data_point_path_to_path(missing_path)
+                if valid_paths is None:
+                    path_is_required = self.path_match(pattern_or_uses, path)
+                else:
+                    path_is_required = path in valid_paths
+                if path_is_required and self.query_data_point_info(path):
+                    yield missing_path
             res = validator.validate()

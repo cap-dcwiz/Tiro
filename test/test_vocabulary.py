@@ -3,7 +3,7 @@ from random import randint
 from pydantic import confloat, conint
 from rich import print_json
 
-from tiro import Scenario
+from tiro.core import Scenario
 from tiro.core.model import Entity, Telemetry, Attribute, EntityList
 
 temperature_type = confloat(ge=0, le=50)
@@ -58,3 +58,5 @@ scenario.Room.Rack.FrontTemperature.use()
 scenario.requires(yaml=yaml)
 
 print_json(scenario.model(hide_dp_values=True).schema_json())
+
+print(scenario.all_required_paths())

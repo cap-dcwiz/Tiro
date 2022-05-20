@@ -1,4 +1,6 @@
 from datetime import datetime
+from pathlib import Path
+from typing import Optional
 
 from arango import ArangoClient
 
@@ -53,11 +55,11 @@ class ArangoAgent:
         self.graph = None
         self.auth_info = auth_info
 
-    def set_scenario(self, scenario):
+    def set_scenario(self, scenario: Scenario):
         self.scenario = scenario
         self.entity = scenario.root
 
-    def parse_doc_to_graph_components(self, doc):
+    def parse_doc_to_graph_components(self, doc: dict):
         path = doc["path"].split(PATH_SEP)
         root_name = self.entity.name
         path.insert(0, root_name)
@@ -113,14 +115,16 @@ class ArangoAgent:
             "edges": edges,
         }
 
-    def db(self, create=False):
+    def db(self, create: bool = False):
         sys_db = self.client.db("_system", **self.auth_info or {})
         if not sys_db.has_database(self.db_name) and create:
             sys_db.create_database(self.db_name)
         db = self.client.db(self.db_name, **self.auth_info or {})
         return db
 
-    def create_graph(self, clear_existing=True, clear_database=False):
+    def create_graph(self,
+                     clear_existing: bool = True,
+                     clear_database: bool = False):
         sys_db = self.client.db("_system")
 
         if clear_database:
@@ -155,11 +159,11 @@ class ArangoAgent:
 
         return self
 
-    def collect_raw(self, path, data):
+    def collect_raw(self, path: str, data: dict):
         for item in Scenario.decompose_data(path, data):
             self.update(item)
 
-    def update(self, item):
+    def update(self, item: dict):
         g_info = self.parse_doc_to_graph_components(item)
         for v_type, v_value in g_info["vertices"].items():
             v_collection = self.graph.vertex_collection(v_type)
@@ -173,11 +177,11 @@ class ArangoAgent:
                 e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
 
     def capture_status(self,
-                       pattern_or_uses=None,
-                       paths=None,
-                       flatten=False,
-                       fill_with_default=False,
-                       skip_telemetry_in_tsdb=False):
+                       pattern_or_uses: Optional[str | dict | Path] = None,
+                       paths: Optional[list[str]] = None,
+                       flatten: bool = False,
+                       fill_with_default: bool = False,
+                       skip_telemetry_in_tsdb: bool = False):
         if paths:
             if pattern_or_uses:
                 paths.extend(self.entity.match_data_points(pattern_or_uses))
