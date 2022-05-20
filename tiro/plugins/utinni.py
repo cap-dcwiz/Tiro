@@ -70,7 +70,7 @@ class TiroTSPump(InfluxDBDataPump):
         return self._arangodb_agent
 
     def gen_table(self,
-                  pattern: str = ".*",
+                  pattern_or_uses: str = ".*",
                   type: Literal["historian", "status"] = "historian",
                   column: str = "asset_path",
                   agg_fn: Literal["mean", "max", "min"] = "mean",
@@ -80,7 +80,7 @@ class TiroTSPump(InfluxDBDataPump):
                   include_tags: list[str] | str = None,
                   ) -> PrimaryTable:
         if type == "historian":
-            return self.gen_historian_table(pattern=pattern,
+            return self.gen_historian_table(pattern_or_uses=pattern_or_uses,
                                             column=column,
                                             agg_fn=agg_fn,
                                             only_ts=only_ts,
@@ -88,31 +88,31 @@ class TiroTSPump(InfluxDBDataPump):
         elif type == "status":
             if isinstance(include_tags, str):
                 include_tags = [include_tags]
-            return self.gen_status_table(pattern=pattern,
+            return self.gen_status_table(pattern_or_uses=pattern_or_uses,
                                          fill_with_default=fill_with_default,
                                          as_df=as_df,
                                          tags=include_tags)
 
     def gen_historian_table(self,
-                            pattern: str,
+                            pattern_or_uses: str,
                             column: str,
                             agg_fn: Literal["mean", "max", "min"],
                             only_ts: bool,
                             fill_with_default: bool,
                             ) -> TimeSeriesPrimaryTable:
-        paths = list(self.scenario.match_data_points(pattern))
+        paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
-            raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern}\"")
+            raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern_or_uses}\"")
         table = super(TiroTSPump, self).gen_table(column=column, agg_fn=agg_fn, path=paths)
         logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("table_type", "historian")
         table.set_meta("only_ts", only_ts)
         table.set_meta("fill_with_default", fill_with_default)
-        table.set_meta("pattern", pattern)
+        table.set_meta("pattern_or_uses", pattern_or_uses)
         return table
 
     def gen_status_table(self,
-                         pattern: str,
+                         pattern_or_uses: str,
                          fill_with_default: bool,
                          as_df: bool,
                          tags: list[str],
@@ -121,7 +121,7 @@ class TiroTSPump(InfluxDBDataPump):
                              pump=self,
                              fields=None,
                              meta=dict(table_type="status",
-                                       pattern=pattern,
+                                       pattern_or_uses=pattern_or_uses,
                                        fill_with_default=fill_with_default,
                                        as_df=as_df,
                                        df_tags=tags))
@@ -156,11 +156,11 @@ class TiroTSPump(InfluxDBDataPump):
     def get_data_from_graph_db(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
         column = table.meta["column"]
         agg_fn = table.meta["agg_fn"]
-        pattern = table.meta["pattern"]
+        pattern_or_uses = table.meta["pattern_or_uses"]
         fill_with_default = table.meta["fill_with_default"]
         missing_data = []
         for path, value in self.arangodb_agent.capture_status(
-                pattern=pattern,
+                pattern_or_uses=pattern_or_uses,
                 flatten=True,
                 fill_with_default=fill_with_default,
                 skip_telemetry_in_tsdb=True,
@@ -179,13 +179,13 @@ class TiroTSPump(InfluxDBDataPump):
         return results
 
     def get_status_data(self, table: PrimaryTable) -> ValueType:
-        pattern = table.meta["pattern"]
+        pattern_or_uses = table.meta["pattern_or_uses"]
         fill_with_default = table.meta["fill_with_default"]
         df_required_tags = table.meta["df_tags"]
         if table.meta["as_df"]:
             data = []
             for path, value in self.capture_status(
-                    pattern=pattern,
+                    pattern_or_uses=pattern_or_uses,
                     flatten=True,
                     fill_with_default=fill_with_default,
                     skip_telemetry_in_tsdb=False,
@@ -201,7 +201,7 @@ class TiroTSPump(InfluxDBDataPump):
             df = pd.DataFrame(data)
             return {field: g.drop(columns=["field"]) for field, g in df.groupby("field")}
         else:
-            return self.capture_status(pattern=pattern,
+            return self.capture_status(pattern_or_uses=pattern_or_uses,
                                        flatten=False,
                                        fill_with_default=fill_with_default,
                                        skip_telemetry_in_tsdb=False)

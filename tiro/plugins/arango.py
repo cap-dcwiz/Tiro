@@ -173,17 +173,17 @@ class ArangoAgent:
                 e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
 
     def capture_status(self,
-                       pattern=None,
+                       pattern_or_uses=None,
                        paths=None,
                        flatten=False,
                        fill_with_default=False,
                        skip_telemetry_in_tsdb=False):
         if paths:
-            if pattern:
-                paths.extend(self.entity.match_data_points(pattern))
+            if pattern_or_uses:
+                paths.extend(self.entity.match_data_points(pattern_or_uses))
         else:
-            if pattern:
-                paths = list(self.entity.match_data_points(pattern))
+            if pattern_or_uses:
+                paths = list(self.entity.match_data_points(pattern_or_uses))
             else:
                 paths = list(self.entity.uses)
         db = self.db(create=False)
@@ -208,7 +208,7 @@ class ArangoAgent:
         if fill_with_default:
             missing_paths = self.scenario.guess_missing_paths(
                 existing_paths=self.all_data_points(),
-                pattern=pattern)
+                pattern_or_uses=pattern_or_uses)
             for path in missing_paths:
                 default_value = self.scenario.query_data_point_info(
                     self.scenario.data_point_path_to_path(path)

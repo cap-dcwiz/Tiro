@@ -6,7 +6,7 @@ from yaml import safe_load
 
 from .mock import Mocker
 from .model import DataPointInfo, Entity
-from .utils import split_path, concat_path, snake_to_camel, YAML_META_CHAR, PATH_SEP
+from .utils import split_path, concat_path, snake_to_camel, YAML_META_CHAR, PATH_SEP, decouple_uses
 from .validate import Validator
 
 
@@ -111,7 +111,7 @@ class Scenario:
     @staticmethod
     def data_point_path_to_path(path: str | list[str]) -> str:
         path = split_path(path)
-        return f"{PATH_SEP.join(path[i] for i in range(0, len(path)-2, 2))}{PATH_SEP}{path[-1]}"
+        return f"{PATH_SEP.join(path[i] for i in range(0, len(path) - 2, 2))}{PATH_SEP}{path[-1]}"
 
     @classmethod
     def data_point_path_to_tags(cls, path: str | list[str], tags=None) -> dict:
@@ -126,18 +126,25 @@ class Scenario:
             cls.data_point_path_to_tags(path, tags)
         return tags
 
-    def guess_missing_paths(self, existing_paths=None, pattern=None):
+    def guess_missing_paths(self,
+                            existing_paths: Optional[list[str]] = None,
+                            pattern_or_uses: Optional[str | dict | Path] = None):
         validator = self.validator(validate_path_only=True,
                                    require_all_children=False)
         if existing_paths:
             for path in existing_paths:
                 validator.collect(path, value={})
         res = validator.validate()
+        if isinstance(pattern_or_uses, dict) or isinstance(pattern_or_uses, Path):
+            valid_paths = set(decouple_uses(pattern_or_uses))
+        else:
+            valid_paths = None
         while not res.valid:
             for error in res.exception.errors():
                 missing_path = PATH_SEP.join(error["loc"])
                 path = self.data_point_path_to_path(missing_path)
-                if self.path_match(pattern, path):
+                if (valid_paths is not None and path in valid_paths) or \
+                        self.path_match(pattern_or_uses, path):
                     dp_info = self.query_data_point_info(path)
                     if dp_info:
                         yield missing_path

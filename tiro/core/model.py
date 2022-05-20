@@ -14,7 +14,7 @@ from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR, split_path
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR, split_path, decouple_uses
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -336,9 +336,14 @@ class Entity:
         for dp_name in self._used_data_points:
             yield "has_data_point", self_name, self.data_point_info[dp_name].__class__.__name__
 
-    def match_data_points(self, pattern: str, paths: list[str] = None) -> Iterable[str]:
-        return filter(partial(self.path_match, pattern),
-                      paths or self.all_required_paths())
+    def match_data_points(self, pattern_or_uses: str | dict | Path, paths: list[str] = None) -> Iterable[str]:
+        if isinstance(pattern_or_uses, str):
+            return filter(partial(self.path_match, pattern_or_uses),
+                          paths or self.all_required_paths())
+        else:
+            valid_paths = set(decouple_uses(pattern_or_uses))
+            return filter(valid_paths.__contains__,
+                          paths or self.all_required_paths())
 
     @staticmethod
     def path_match(pattern: str, path: str) -> bool:

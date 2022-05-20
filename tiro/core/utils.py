@@ -1,6 +1,8 @@
 from copy import copy
-from typing import Any
+from pathlib import Path
+from typing import Any, Iterable
 
+import yaml
 
 PATH_SEP = "."
 YAML_META_CHAR = "$"
@@ -43,3 +45,14 @@ def insert_data_point_to_dict(path: str | list[str], value: Any, data: dict):
             data[component] = {}
         insert_data_point_to_dict(path, value, data[component])
 
+
+def decouple_uses(uses_data: str | dict | Path) -> Iterable[str]:
+    if isinstance(uses_data, Path):
+        uses_data = yaml.safe_load(uses_data.open())
+    for item in uses_data:
+        if isinstance(item, str):
+            yield item
+        else:
+            for k, v in item.items():
+                for _path in decouple_uses(v):
+                    yield k + PATH_SEP + _path

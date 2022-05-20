@@ -20,5 +20,5 @@ gdb_client = ArangoAgent(scenario,
 # data = gdb_client.capture_status()
 # print(scenario.model().parse_obj(data).json(indent=2))
 
-data = gdb_client.capture_status(pattern=".*Server%(CPU|Memory)Temperature")
+data = gdb_client.capture_status(pattern_or_uses=".*Server%(CPU|Memory)Temperature")
 print(data)
