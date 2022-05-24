@@ -1,5 +1,6 @@
 - Room:
     - Rack:
+        - FrontTemperature
         - BackTemperature
         - Server:
             - CPUTemperature

@@ -5,7 +5,7 @@ from typing import Optional
 from arango import ArangoClient
 
 from tiro.core import Scenario
-from tiro.core.utils import PATH_SEP, insert_data_point_to_dict
+from tiro.core.utils import PATH_SEP, insert_data_point_to_dict, split_path
 from tiro.core.model import Entity
 
 QUERY_AQL = """
@@ -27,6 +27,41 @@ FOR v, e, p IN 1..100 OUTBOUND @start_vertex GRAPH @graph_name
     LET keys = SLICE(p.vertices[*]._key, 1, -1)
     LET raw_path = APPEND(INTERLEAVE(categories, keys), [v.type, v.name])
     RETURN CONCAT_SEPARATOR(".", raw_path)
+"""
+
+QUERY_COMPLEX_FILTER = """
+LET fields = {
+    "Room.Rack": ["BackTemperature"],
+    "Room.Rack.Server": ["CPUTemperature", "MemoryTemperature"]
+}
+
+FOR v, e, p IN 1..1000 OUTBOUND "Scenario/000" GRAPH "scenario"
+
+    PRUNE (v.path == "Room.Rack" && (!(v.name =~ "8a")))
+       OR (v.path == "Room.Rack.Server" && (!(v.name =~"290")))
+       
+    FILTER v.path == "Room.Rack"? v.name =~ "8a": true
+    FILTER v.path == "Room.Rack.Server"? v.name =~ "290": true
+    
+    FILTER v.path IN ["Room.Rack", "Room.Rack.Server"]
+    LET doc = MERGE((
+        FOR v0, e0, p0 in 1..1 OUTBOUND v GRAPH "scenario"
+            FILTER v0.name in fields[v.path]
+            RETURN {
+                [v0.name]:{
+                    path:APPEND(INTERLEAVE(p.edges[*].next_category, SLICE(p.vertices[*]._key, 1)), v0.name),
+                    type:v0.type,
+                    value:v0.value,
+                    unit:v0.unit,
+                    timestamp:v0.timestamp,
+                    aa: v.path
+                }
+            }
+    ))
+    
+    FILTER v.path == "Room.Rack.Server"? doc.MemoryTemperature.value > 10 : true
+
+    RETURN VALUES(doc)
 """
 
 
@@ -59,6 +94,79 @@ class ArangoAgent:
         self.scenario = scenario
         self.entity = scenario.root
 
+    def db(self, create: bool = False, clear: bool = False):
+        sys_db = self.client.db("_system", **self.auth_info or {})
+        if clear:
+            sys_db.delete_graph(self.db_name, ignore_missing=True)
+        if not sys_db.has_database(self.db_name) and create:
+            sys_db.create_database(self.db_name)
+        db = self.client.db(self.db_name, **self.auth_info or {})
+        return db
+
+    def create_graph(self,
+                     clear_existing: bool = True,
+                     clear_database: bool = False):
+
+        db = self.db(create=True, clear=clear_database)
+        if db.has_graph(self.graph_name) and clear_existing:
+            db.delete_graph(self.graph_name)
+        if not db.has_graph(self.graph_name):
+            db.create_graph(self.graph_name)
+        self.graph = db.graph(self.graph_name)
+
+        edges_info = dict()
+        vertices_info = set()
+        for e_type, f_type, t_type in self.entity.all_required_edges():
+            e_info = edges_info.get(e_type, dict(from_set=set(), to_set=set()))
+            e_info["from_set"].add(f_type)
+            e_info["to_set"].add(t_type)
+            edges_info[e_type] = e_info
+            vertices_info.add(f_type)
+            vertices_info.add(t_type)
+
+        for v_type in vertices_info:
+            if not self.graph.has_vertex_collection(v_type):
+                self.graph.create_vertex_collection(v_type)
+
+        for e_type, e_info in edges_info.items():
+            if self.graph.has_edge_definition(e_type):
+                self.graph.replace_edge_definition(e_type, list(e_info["from_set"]), list(e_info["to_set"]))
+            else:
+                self.graph.create_edge_definition(e_type, list(e_info["from_set"]), list(e_info["to_set"]))
+
+        return self
+
+    def insert_vertices_and_edges(self, vertices=None, edges=None, replace=False, insert_default_dp=False):
+        vertices = vertices or {}
+        edges = edges or []
+        for v_type, v_value in vertices.items():
+            v_collection = self.graph.vertex_collection(v_type)
+            if not v_collection.has(v_value["_key"]):
+                v_collection.insert(v_value)
+                if insert_default_dp and "value" not in v_value:
+                    self.create_default_data_points(v_type, v_value["_key"], v_value["path"])
+            elif replace:
+                v_collection.update(v_value)
+        for e_type, e_key, e_from, e_to, e_data in edges:
+            e_collection = self.graph.edge_collection(e_type)
+            if not e_collection.has(e_key):
+                e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
+
+    def create_default_data_points(self, parent_type, parent_id, path):
+        edges = []
+        vertices = {}
+        path = split_path(path)
+        defaults = self.entity.default_values(path)
+        for key, item in defaults.items():
+            dp_id = f"{parent_id}-{key}"
+            edges.append((f"has_data_point",
+                          f"{parent_id}_{dp_id}",
+                          f"{parent_type}/{parent_id}",
+                          f"{item['type']}/{dp_id}",
+                          dict(next_category=key)))
+            vertices[item["type"]] = {"_key": dp_id, "name": key} | item
+        self.insert_vertices_and_edges(vertices, edges, replace=False)
+
     def parse_doc_to_graph_components(self, doc: dict):
         path = doc["path"].split(PATH_SEP)
         root_name = self.entity.name
@@ -68,11 +176,14 @@ class ArangoAgent:
         for i in range(len(path) - 1):
             entity_type = path[i]
             if entity_type == root_name:
-                entity_id = "000"
+                name = "000"
             else:
-                entity_id = encode_key(doc[entity_type])
+                name = doc[entity_type]
+            entity_id = encode_key(name)
             vertices[entity_type] = {
                 "_key": entity_id,
+                "name": name,
+                "path": PATH_SEP.join(path[1:i + 1]),
             }
             if i != len(path) - 2:
                 next_type = path[i + 1]
@@ -115,66 +226,15 @@ class ArangoAgent:
             "edges": edges,
         }
 
-    def db(self, create: bool = False):
-        sys_db = self.client.db("_system", **self.auth_info or {})
-        if not sys_db.has_database(self.db_name) and create:
-            sys_db.create_database(self.db_name)
-        db = self.client.db(self.db_name, **self.auth_info or {})
-        return db
-
-    def create_graph(self,
-                     clear_existing: bool = True,
-                     clear_database: bool = False):
-        sys_db = self.client.db("_system")
-
-        if clear_database:
-            sys_db.delete_database(self.db_name, ignore_missing=True)
-        db = self.db(create=True)
-
-        if db.has_graph(self.graph_name) and clear_existing:
-            db.delete_graph(self.graph_name)
-        if not db.has_graph(self.graph_name):
-            db.create_graph(self.graph_name)
-        self.graph = db.graph(self.graph_name)
-
-        edges_info = dict()
-        vertices_info = set()
-        for e_type, f_type, t_type in self.entity.all_required_edges():
-            e_info = edges_info.get(e_type, dict(from_set=set(), to_set=set()))
-            e_info["from_set"].add(f_type)
-            e_info["to_set"].add(t_type)
-            edges_info[e_type] = e_info
-            vertices_info.add(f_type)
-            vertices_info.add(t_type)
-
-        for v_type in vertices_info:
-            if not self.graph.has_vertex_collection(v_type):
-                self.graph.create_vertex_collection(v_type)
-
-        for e_type, e_info in edges_info.items():
-            if self.graph.has_edge_definition(e_type):
-                self.graph.replace_edge_definition(e_type, list(e_info["from_set"]), list(e_info["to_set"]))
-            else:
-                self.graph.create_edge_definition(e_type, list(e_info["from_set"]), list(e_info["to_set"]))
-
-        return self
-
     def collect_raw(self, path: str, data: dict):
         for item in Scenario.decompose_data(path, data):
             self.update(item)
 
     def update(self, item: dict):
         g_info = self.parse_doc_to_graph_components(item)
-        for v_type, v_value in g_info["vertices"].items():
-            v_collection = self.graph.vertex_collection(v_type)
-            if not v_collection.has(v_value["_key"]):
-                v_collection.insert(v_value)
-            else:
-                v_collection.update(v_value)
-        for e_type, e_key, e_from, e_to, e_data in g_info["edges"]:
-            e_collection = self.graph.edge_collection(e_type)
-            if not e_collection.has(e_key):
-                e_collection.insert(dict(_key=e_key, _from=e_from, _to=e_to) | e_data)
+        self.insert_vertices_and_edges(g_info["vertices"], g_info["edges"],
+                                       replace=False,
+                                       insert_default_dp=True)
 
     def capture_status(self,
                        pattern_or_uses: Optional[str | dict | Path] = None,

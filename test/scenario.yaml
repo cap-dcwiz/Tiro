@@ -6,9 +6,13 @@ Room:
   Rack:
     $type: data_hall.Rack
     $number: 2
+    $defaults:
+      FrontTemperature: 30
     Server:
       $type: data_hall.Server
       $number: 2-5
+      $defaults:
+        MemoryTemperature: 60
   Server:
     $type: data_hall.Server
     $number: 5

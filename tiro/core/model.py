@@ -304,6 +304,22 @@ class Entity:
             elif path[0] in self.data_point_info:
                 return self.data_point_info[path[0]]
 
+    def default_values(self, path: str | list[str]):
+        path = split_path(path)
+        if path:
+            if path[0] in self.children.keys():
+                return self.children[path[0]].default_values(path[1:])
+            else:
+                return {}
+        else:
+            res = {}
+            for k in self._used_data_points:
+                dp_info = self.data_point_info[k]
+                if dp_info.default:
+                    res[k] = dp_info.default_object() | dict(type=dp_info.__class__.__name__)
+            return res
+
+
     @classmethod
     def use_selection_model(cls, name_prefix=""):
         telemetry_names = tuple(k for k, v in cls.data_point_info.items() if isinstance(v, Telemetry))
