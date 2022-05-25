@@ -72,7 +72,7 @@ class Scenario:
                               dict(type=k,
                                    field=sub_k,
                                    path=concat_path(pre_path, snake_to_camel(sub_k))) | \
-                              sub_v
+                              (sub_v if isinstance(sub_v, dict) else dict(value=sub_v))
                 elif "type" in info:
                     yield info | dict(field=k)
                 else:

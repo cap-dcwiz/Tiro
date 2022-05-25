@@ -56,3 +56,9 @@ def decouple_uses(uses_data: str | dict | Path) -> Iterable[str]:
             for k, v in item.items():
                 for _path in decouple_uses(v):
                     yield k + PATH_SEP + _path
+
+
+def format_regex(pattern):
+    pattern = pattern.replace("%%", ".*")
+    pattern = pattern.replace("%", "\.")
+    return f"^{pattern}$"

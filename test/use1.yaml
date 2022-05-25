@@ -1,5 +1,4 @@
 - Room:
-    - Site
     - Rack:
         - FrontTemperature
         - BackTemperature
@@ -10,3 +9,4 @@
         - CPUTemperature
         - MemoryTemperature
     - Temperature
+    - Site

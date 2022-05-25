@@ -1,10 +1,9 @@
 from pathlib import Path
 
-from arango import ArangoClient
 from rich import print
 
 from tiro.core import Scenario
-from tiro.plugins.arango import ArangoAgent
+from tiro.plugins.graph.agent import ArangoAgent
 
 scenario = Scenario.from_yaml(Path("./scenario.yaml"), Path("./use1.yaml"))
 gdb_client = ArangoAgent(scenario,
@@ -21,5 +20,5 @@ for item in scenario.decompose_data("", scenario.mocker().dict(skip_default=True
 # data = gdb_client.capture_status()
 # print(scenario.model().parse_obj(data).json(indent=2))
 
-data = gdb_client.capture_status()
+data = gdb_client.query_attributes_and_missing()
 print(data)

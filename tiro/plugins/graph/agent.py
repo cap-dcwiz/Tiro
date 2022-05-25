@@ -2,67 +2,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+import pandas as pd
 from arango import ArangoClient
 
 from tiro.core import Scenario
-from tiro.core.utils import PATH_SEP, insert_data_point_to_dict, split_path
 from tiro.core.model import Entity
-
-QUERY_AQL = """
-FOR v, e, p IN 1..10 OUTBOUND @start_vertex GRAPH @graph_name
-    FILTER CONCAT_SEPARATOR(".", p.edges[*].next_category) IN @patterns
-    RETURN {
-        path:INTERLEAVE(p.edges[*].next_category, SLICE(p.vertices[*]._key, 1, -1)),
-        type:v.type,
-        value:v.value,
-        unit:v.unit,
-        timestamp:v.timestamp
-    }
-"""
-
-QUERY_DP_PATHS = """
-FOR v, e, p IN 1..100 OUTBOUND @start_vertex GRAPH @graph_name
-    FILTER HAS(v, "value")
-    LET categories = SLICE(p.edges[*].next_category, 0, -1)
-    LET keys = SLICE(p.vertices[*]._key, 1, -1)
-    LET raw_path = APPEND(INTERLEAVE(categories, keys), [v.type, v.name])
-    RETURN CONCAT_SEPARATOR(".", raw_path)
-"""
-
-QUERY_COMPLEX_FILTER = """
-LET fields = {
-    "Room.Rack": ["BackTemperature"],
-    "Room.Rack.Server": ["CPUTemperature", "MemoryTemperature"]
-}
-
-FOR v, e, p IN 1..1000 OUTBOUND "Scenario/000" GRAPH "scenario"
-
-    PRUNE (v.path == "Room.Rack" && (!(v.name =~ "8a")))
-       OR (v.path == "Room.Rack.Server" && (!(v.name =~"290")))
-       
-    FILTER v.path == "Room.Rack"? v.name =~ "8a": true
-    FILTER v.path == "Room.Rack.Server"? v.name =~ "290": true
-    
-    FILTER v.path IN ["Room.Rack", "Room.Rack.Server"]
-    LET doc = MERGE((
-        FOR v0, e0, p0 in 1..1 OUTBOUND v GRAPH "scenario"
-            FILTER v0.name in fields[v.path]
-            RETURN {
-                [v0.name]:{
-                    path:APPEND(INTERLEAVE(p.edges[*].next_category, SLICE(p.vertices[*]._key, 1)), v0.name),
-                    type:v0.type,
-                    value:v0.value,
-                    unit:v0.unit,
-                    timestamp:v0.timestamp,
-                    aa: v.path
-                }
-            }
-    ))
-    
-    FILTER v.path == "Room.Rack.Server"? doc.MemoryTemperature.value > 10 : true
-
-    RETURN VALUES(doc)
-"""
+from tiro.core.utils import PATH_SEP, insert_data_point_to_dict, split_path, format_regex
+from .aql import QUERY_ATTR_AQL, QUERY_BY_QPATH_AQL, QUERY_BY_REGEX_AQL, QUERY_DP_PATHS
+from .qpath import QueryPath
 
 
 def encode_key(key: str) -> str:
@@ -233,26 +180,18 @@ class ArangoAgent:
     def update(self, item: dict):
         g_info = self.parse_doc_to_graph_components(item)
         self.insert_vertices_and_edges(g_info["vertices"], g_info["edges"],
-                                       replace=False,
+                                       replace=True,
                                        insert_default_dp=True)
 
-    def capture_status(self,
-                       pattern_or_uses: Optional[str | dict | Path] = None,
-                       paths: Optional[list[str]] = None,
-                       flatten: bool = False,
-                       fill_with_default: bool = False,
-                       skip_telemetry_in_tsdb: bool = False):
-        if paths:
-            if pattern_or_uses:
-                paths.extend(self.entity.match_data_points(pattern_or_uses))
+    def query_attributes_and_missing(self,
+                                     pattern_or_uses: Optional[str | dict | Path] = None):
+        if pattern_or_uses:
+            paths = list(self.entity.match_data_points(pattern_or_uses))
         else:
-            if pattern_or_uses:
-                paths = list(self.entity.match_data_points(pattern_or_uses))
-            else:
-                paths = list(self.entity.uses)
+            paths = list(self.entity.uses)
         db = self.db(create=False)
         start_vertex = f"{self.entity.name}/000"
-        cursor = db.aql.execute(QUERY_AQL,
+        cursor = db.aql.execute(QUERY_ATTR_AQL,
                                 bind_vars=dict(
                                     start_vertex=start_vertex,
                                     graph_name=self.graph_name,
@@ -263,26 +202,68 @@ class ArangoAgent:
             path = [decode_key(p) for p in item.pop("path")]
             dp_type = item.pop("type")
             path.insert(-1, dp_type)
-            if skip_telemetry_in_tsdb and dp_type == "Telemetry":
-                continue
-            if flatten:
-                data[PATH_SEP.join(path)] = item
-            else:
-                insert_data_point_to_dict(path, item, data)
-        if fill_with_default:
-            missing_paths = self.scenario.guess_missing_paths(
-                existing_paths=self.all_data_points(),
-                pattern_or_uses=pattern_or_uses)
-            for path in missing_paths:
-                default_value = self.scenario.query_data_point_info(
-                    self.scenario.data_point_path_to_path(path)
-                ).default_object()
-                if default_value:
-                    if flatten:
-                        data[path] = default_value
-                    else:
-                        insert_data_point_to_dict(path, default_value, data)
+            data[PATH_SEP.join(path)] = item
         return data
+
+    def _query2(self, query_statement: str,
+                **bind_vars) -> dict:
+        db = self.db(create=False)
+        start_vertex = f"{self.entity.name}/000"
+        cursor = db.aql.execute(query_statement,
+                                bind_vars=bind_vars | dict(
+                                    start_vertex=start_vertex,
+                                    graph_name=self.graph_name
+                                ))
+        data = {}
+        for path, value in cursor.next().items():
+            insert_data_point_to_dict(path, value, data)
+        return data
+
+    def _format_df(self, data, tags: str | list[str]):
+        if tags == "all":
+            return pd.DataFrame(self.scenario.decompose_data("", data)).set_index("asset_path")
+        elif isinstance(tags, str):
+            tags = [tags]
+        tags = set(tags) | {"field", "value", "unit"}
+        entities = []
+        for entity in self.scenario.decompose_data("", data):
+            entities.append({k: v for k, v in entity.items() if k in tags})
+        return pd.DataFrame(entities)
+
+    def query_by_qpath(self, uses: dict | str | Path,
+                       value_only: bool = False,
+                       as_dataframe: bool = False,
+                       include_tags: str | list[str] = "all",
+                       ):
+
+        query_path = QueryPath.parse(uses)
+        query_statement = QUERY_BY_QPATH_AQL.format(prune_statement=query_path.prune_statement(),
+                                                    filter_statement=query_path.filter_statement())
+        data = self._query2(query_statement,
+                            value_only=value_only,
+                            fields=query_path.all_fields(),
+                            all_paths=query_path.all_path_str(exclude_intermediate=False),
+                            )
+        data = query_path.post_cleanup(data)
+        if as_dataframe:
+            return self._format_df(data, include_tags)
+        else:
+            return data
+
+    def query_by_regex(self, regex: str,
+                       value_only: bool = False,
+                       as_dataframe: bool = False,
+                       include_tags: str | list[str] = "all",
+                       ):
+        data = self._query2(QUERY_BY_REGEX_AQL,
+                            value_only=value_only,
+                            regex=format_regex(regex)
+                            )
+
+        if as_dataframe:
+            return self._format_df(data, include_tags)
+        else:
+            return data
 
     def all_data_points(self):
         db = self.db(create=False)

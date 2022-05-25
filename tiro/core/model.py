@@ -14,7 +14,8 @@ from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR, split_path, decouple_uses
+from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR, split_path, decouple_uses, \
+    format_regex
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -364,8 +365,7 @@ class Entity:
     @staticmethod
     def path_match(pattern: str, path: str) -> bool:
         if pattern is not None:
-            pattern = pattern.replace("%", "\.")
-            return bool(re.fullmatch(f"^{pattern}$", path))
+            return bool(re.fullmatch(format_regex(pattern), path))
         else:
             return True
 

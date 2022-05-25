@@ -9,7 +9,7 @@ from karez.aggregator.base import AggregatorBase
 from karez.config import ConfigEntity, OptionalConfigEntity
 from tiro.core import Scenario
 from tiro.core.validate import Validator
-from tiro.plugins.arango import ArangoAgent
+from tiro.plugins.graph.agent import ArangoAgent
 
 
 class ArangoAggregator(AggregatorBase):

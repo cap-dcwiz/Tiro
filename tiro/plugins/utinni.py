@@ -10,8 +10,8 @@ from utinni.types import ValueType
 from tiro.core import Scenario
 from utinni.pump import InfluxDBDataPump
 
-from tiro.core.utils import PATH_SEP, split_path
-from tiro.plugins.arango import ArangoAgent
+from tiro.core.utils import PATH_SEP
+from tiro.plugins.graph.agent import ArangoAgent
 
 
 def _timeshift_by_epoch(dt: datetime, step: timedelta):
@@ -70,35 +70,32 @@ class TiroTSPump(InfluxDBDataPump):
         return self._arangodb_agent
 
     def gen_table(self,
-                  pattern_or_uses: Optional[str | dict | Path] = ".*",
-                  type: Literal["historian", "status"] = "historian",
+                  query: Optional[str | dict | Path] = ".*",
+                  type: Literal["historian", "status", "query"] = "historian",
                   column: str = "asset_path",
                   agg_fn: Literal["mean", "max", "min"] = "mean",
-                  only_ts: bool = True,
-                  fill_with_default: bool = True,
-                  as_df: bool = False,
-                  include_tags: list[str] | str = None,
+                  fill_with_graph: bool = True,
+                  as_dataframe: bool = False,
+                  include_tags: list[str] | str = "all",
+                  value_only: bool = False,
                   ) -> PrimaryTable:
         if type == "historian":
-            return self.gen_historian_table(pattern_or_uses=pattern_or_uses,
+            return self.gen_historian_table(pattern_or_uses=query,
                                             column=column,
                                             agg_fn=agg_fn,
-                                            only_ts=only_ts,
-                                            fill_with_default=fill_with_default)
+                                            only_ts=not fill_with_graph,
+                                            )
         elif type == "status":
-            if isinstance(include_tags, str):
-                include_tags = [include_tags]
-            return self.gen_status_table(pattern_or_uses=pattern_or_uses,
-                                         fill_with_default=fill_with_default,
-                                         as_df=as_df,
-                                         tags=include_tags)
+            return self.gen_status_table(query_or_regex=query,
+                                         as_dataframe=as_dataframe,
+                                         value_only=value_only,
+                                         include_tags=include_tags)
 
     def gen_historian_table(self,
                             pattern_or_uses: str | dict | Path,
                             column: str,
                             agg_fn: Literal["mean", "max", "min"],
                             only_ts: bool,
-                            fill_with_default: bool,
                             ) -> TimeSeriesPrimaryTable:
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
@@ -107,25 +104,23 @@ class TiroTSPump(InfluxDBDataPump):
         logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("table_type", "historian")
         table.set_meta("only_ts", only_ts)
-        table.set_meta("fill_with_default", fill_with_default)
         table.set_meta("pattern_or_uses", pattern_or_uses)
         return table
 
     def gen_status_table(self,
-                         pattern_or_uses: str | dict | Path,
-                         fill_with_default: bool,
-                         as_df: bool,
-                         tags: list[str],
+                         query_or_regex: str | dict | Path,
+                         as_dataframe: bool,
+                         value_only: bool,
+                         include_tags: list[str]
                          ) -> PrimaryTable:
-        table = PrimaryTable(context=self.context,
-                             pump=self,
-                             fields=None,
-                             meta=dict(table_type="status",
-                                       pattern_or_uses=pattern_or_uses,
-                                       fill_with_default=fill_with_default,
-                                       as_df=as_df,
-                                       df_tags=tags))
-        return table
+        return PrimaryTable(context=self.context,
+                            pump=self,
+                            fields=None,
+                            meta=dict(table_type="status",
+                                      query_or_regex=query_or_regex,
+                                      as_df=as_dataframe,
+                                      value_only=value_only,
+                                      include_tags=include_tags))
 
     def get_data(self, table: PrimaryTable, fields) -> ValueType:
         table_type = table.meta["table_type"]
@@ -141,29 +136,48 @@ class TiroTSPump(InfluxDBDataPump):
             data = super(TiroTSPump, self).get_data(table, fields=fields)
             if not table.meta["only_ts"]:
                 if fields:
-                    missing_fields = set(f for f in fields if f not in data.keys())
+                    missing_fields = set(f for f in fields if f not in data)
                     if missing_fields:
-                        data |= self.get_data_from_graph_db(table, missing_fields)
+                        data |= self.fill_data_from_graph_db(table, missing_fields)
                 else:
-                    data |= self.get_data_from_graph_db(table, None)
+                    data |= {
+                        k: v for k, v in self.fill_data_from_graph_db(table, None).items()
+                        if k not in data
+                    }
         except RuntimeError:
             if not table.meta["only_ts"]:
-                data = self.get_data_from_graph_db(table, fields)
+                data = self.fill_data_from_graph_db(table, fields)
             else:
                 data = {}
         return data
 
-    def get_data_from_graph_db(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
+    def get_status_data(self, table: PrimaryTable) -> ValueType:
+        query_or_regex = table.meta["query_or_regex"]
+        as_dataframe = table.meta["as_df"]
+        query_params = dict(
+            as_dataframe=as_dataframe,
+            value_only=table.meta["value_only"],
+            include_tags=table.meta["include_tags"]
+        )
+        if isinstance(query_or_regex, str):
+            res = self.arangodb_agent.query_by_regex(query_or_regex, **query_params)
+        else:
+            res = self.arangodb_agent.query_by_qpath(query_or_regex, **query_params)
+        if as_dataframe:
+            if not res.empty:
+                return {field: g.drop(columns=["field"]) for field, g in res.groupby("field")}
+            else:
+                return {}
+        else:
+            return res
+
+    def fill_data_from_graph_db(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
         column = table.meta["column"]
         agg_fn = table.meta["agg_fn"]
         pattern_or_uses = table.meta["pattern_or_uses"]
-        fill_with_default = table.meta["fill_with_default"]
         missing_data = []
-        for path, value in self.arangodb_agent.capture_status(
+        for path, value in self.arangodb_agent.query_attributes_and_missing(
                 pattern_or_uses=pattern_or_uses,
-                flatten=True,
-                fill_with_default=fill_with_default,
-                skip_telemetry_in_tsdb=True,
         ).items():
             data_point = self.scenario.data_point_path_to_tags(path) | value
             if fields and path.split(PATH_SEP)[-1] not in fields:
@@ -177,34 +191,3 @@ class TiroTSPump(InfluxDBDataPump):
                 series = getattr(df.groupby(column).value, agg_fn)()
                 results[field] = pd.DataFrame(data=[series for _ in index], index=index)
         return results
-
-    def get_status_data(self, table: PrimaryTable) -> ValueType:
-        pattern_or_uses = table.meta["pattern_or_uses"]
-        fill_with_default = table.meta["fill_with_default"]
-        df_required_tags = table.meta["df_tags"]
-        if table.meta["as_df"]:
-            data = []
-            for path, value in self.capture_status(
-                    pattern_or_uses=pattern_or_uses,
-                    flatten=True,
-                    fill_with_default=fill_with_default,
-                    skip_telemetry_in_tsdb=False,
-            ).items():
-                value.pop("timestamp")
-                tags = self.scenario.data_point_path_to_tags(path)
-                value = dict(field=tags["field"]) | value
-                if df_required_tags is None:
-                    value = dict(asset_path=PATH_SEP.join(split_path(path)[:-2])) | value
-                else:
-                    value = {t: v for t, v in tags.items() if t in df_required_tags} | value
-                data.append(value)
-            df = pd.DataFrame(data)
-            return {field: g.drop(columns=["field"]) for field, g in df.groupby("field")}
-        else:
-            return self.capture_status(pattern_or_uses=pattern_or_uses,
-                                       flatten=False,
-                                       fill_with_default=fill_with_default,
-                                       skip_telemetry_in_tsdb=False)
-
-    def capture_status(self, *args, **kwargs):
-        return self.arangodb_agent.capture_status(*args, **kwargs)
