@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.5.3"
+version = "0.5.4"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 

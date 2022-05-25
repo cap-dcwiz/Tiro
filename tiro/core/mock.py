@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Optional
 from uuid import uuid1
@@ -44,6 +45,9 @@ class Reference:
 
 
 class MockedItem:
+
+    _name_count = {}
+
     def __init__(self,
                  prototype: Entity | DataPointInfo,
                  reference: Reference,
@@ -53,6 +57,17 @@ class MockedItem:
         self.reference = reference
         self.parent = parent
 
+    def gen_uuid(self):
+        name = self.prototype.__class__.__name__.split('_')[-1]
+        name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+        name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
+        if name not in MockedItem._name_count:
+            MockedItem._name_count[name] = 0
+        no = MockedItem._name_count[name]
+        uuid = f"{name}_{no}"
+        MockedItem._name_count[name] += 1
+        return uuid
+
 
 class MockedEntity(MockedItem):
     """Mock data generator for an entity class"""
@@ -60,7 +75,8 @@ class MockedEntity(MockedItem):
     def __init__(self, entity_type: Optional[str], *args, uuid=None, **kwargs):
         super(MockedEntity, self).__init__(*args, **kwargs)
         self.children: dict[str, dict[str, MockedEntity]] = {}
-        self.uuid: Optional[str] = uuid or str(uuid1())
+        # self.uuid: Optional[str] = uuid or str(uuid1())
+        self.uuid: Optional[str] = uuid or self.gen_uuid()
         self.entity_type: str = entity_type
         self._initialised: bool = False
         self._path: Optional[str] = None
@@ -78,6 +94,7 @@ class MockedEntity(MockedItem):
             k = camel_to_snake(k)
             if ref_dps is None or k in ref_dps and k not in dps:
                 dps[k] = MockedDataPoint(prototype=v, name=k, parent=self, reference=self.reference)
+
 
     def generate(self,
                  regenerate: bool,
