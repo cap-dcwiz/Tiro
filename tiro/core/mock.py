@@ -7,6 +7,7 @@ from uuid import uuid1
 import yaml
 from faker import Faker
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from .utils import camel_to_snake, PATH_SEP, concat_path, split_path
 from .model import Entity, DataPointInfo, Telemetry
@@ -255,6 +256,8 @@ class MockedDataPoint(MockedItem):
                                                          max_value=value_range["max"])
                 else:
                     self.cur_value = self.prototype.faker()
+                    if isinstance(self.cur_value, BaseModel):
+                        self.cur_value = self.cur_value.dict()
             self.gen_timestamp = self._faker.past_datetime(-self.prototype.time_var).isoformat()
         return self
 
