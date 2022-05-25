@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from rich import print
 
@@ -25,3 +26,20 @@ def serve(
     validator = scenario.validator(retention=retention, log=True, log_size=log_size)
     validate_app = RestfulValidationApp(validator)
     uvicorn.run(validate_app, host=host, port=port)
+
+
+@app.command("test")
+def test(
+        scenario_path: Path,
+        uses: list[Path],
+        input: Path
+):
+    scenario = Scenario.from_yaml(scenario_path, *uses)
+    validator = scenario.validator(log=True)
+    context = json.load(input.open())
+    res = validator.validate_dict(context)
+    if res.valid:
+        print("[green]Validation succeeded![/green]")
+    else:
+        print("[red]Validation failed![/red]")
+        print(res.exception)

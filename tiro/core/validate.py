@@ -122,6 +122,10 @@ class Validator:
             self.log.appendleft(res)
         return res
 
+    def validate_dict(self, content: dict):
+        self._data = content
+        return self.validate()
+
     @property
     def last_validation_start_time(self):
         if self.log:
