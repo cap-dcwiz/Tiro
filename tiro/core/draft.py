@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
@@ -11,6 +12,7 @@ from .utils import split_path, insert_data_point_to_dict
 class DraftGenerator:
     def __init__(self, dataframe: Optional[DataFrame] = None, csv_file: Optional[Path] = None):
         self.df: DataFrame = dataframe or pd.read_csv(csv_file)
+        self.df.replace({np.nan: None}, inplace=True)
         self.df["data_point"] = self.df.data_point.apply(self.format_name)
         self.df["asset_type"] = self.df.asset_type.apply(self.format_name)
 

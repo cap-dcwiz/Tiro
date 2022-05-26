@@ -320,7 +320,6 @@ class Entity:
                     res[k] = dp_info.default_object() | dict(type=dp_info.__class__.__name__)
             return res
 
-
     @classmethod
     def use_selection_model(cls, name_prefix=""):
         telemetry_names = tuple(k for k, v in cls.data_point_info.items() if isinstance(v, Telemetry))
@@ -439,3 +438,12 @@ class Entity:
         if f"{YAML_META_CHAR}defaults" in defs:
             entity.update_defaults(**defs[f"{YAML_META_CHAR}defaults"])
         return entity.many(**list_args)
+
+    def to_compact(self, data):
+        res = {k: {c: self.children[k].to_compact(cv)
+                   for c, cv in v.items()}
+               for k, v in data.items() if k in self.children}
+        for dp_type in DataPointInfo.SUB_CLASS_NAMES:
+            if dp_type in data:
+                res |= {k: v["value"] for k, v in data[dp_type].items()}
+        return res

@@ -41,12 +41,16 @@ def schema_example(
         scenario_path: Path,
         uses: list[Path],
         reference: Optional[Path] = typer.Option(None, "--reference", "-r"),
+        compact: Optional[bool] = typer.Option(False, "--compact", "-c"),
         output: Optional[Path] = typer.Option(None, "--output", "-o")
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     mocker = scenario.mocker(reference=reference)
+    data = mocker.dict()
+    if compact:
+        data = scenario.to_compact(data)
     if output:
         with open(output, 'w') as f:
-            json.dump(mocker.dict(), f, indent=2)
+            json.dump(data, f, indent=2)
     else:
-        print(mocker.dict())
+        print(data)
