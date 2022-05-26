@@ -2,8 +2,8 @@ import json
 import logging
 import re
 from pathlib import Path
+from random import uniform
 from typing import Optional
-from uuid import uuid1
 
 import yaml
 from faker import Faker
@@ -29,12 +29,16 @@ class Reference:
                 component = path.pop(0)
                 if component in tree:
                     return self.get_children(path, tree[component])
-                return []
+                return {}
             else:
-                if isinstance(tree, dict):
-                    return list(tree.keys())
-                else:
-                    return tree
+                return tree
+
+    def get_data_points(self, path):
+        item = self.get_children(path)
+        if item is None:
+            return None
+        else:
+            return item.get("DataPoints", {})
 
     def get_value_range(self, path, name):
         if self.value_range:
@@ -45,7 +49,6 @@ class Reference:
 
 
 class MockedItem:
-
     _name_count = {}
 
     def __init__(self,
@@ -84,7 +87,7 @@ class MockedEntity(MockedItem):
         for dp_type in DataPointInfo.SUB_CLASSES:
             setattr(self, camel_to_snake(dp_type.__name__), {})
 
-        ref_dps = self.reference.get_children(self.path)
+        ref_dps = self.reference.get_data_points(self.path)
         if ref_dps is not None:
             ref_dps = set(ref_dps)
 
@@ -94,7 +97,6 @@ class MockedEntity(MockedItem):
             k = camel_to_snake(k)
             if ref_dps is None or k in ref_dps and k not in dps:
                 dps[k] = MockedDataPoint(prototype=v, name=k, parent=self, reference=self.reference)
-
 
     def generate(self,
                  regenerate: bool,
@@ -120,6 +122,8 @@ class MockedEntity(MockedItem):
                         uuids = prototype.ids
                     else:
                         uuids = [None for _ in range(number)]
+                else:
+                    uuids = list(uuids.keys())
                 for uuid in uuids[:number]:
                     entity = MockedEntity(entity_type=entity_type,
                                           prototype=v,
@@ -269,8 +273,11 @@ class MockedDataPoint(MockedItem):
             else:
                 value_range = self.reference.get_value_range(self.parent.path, self.name)
                 if value_range is not None:
-                    self.cur_value = self._faker.pyfloat(min_value=value_range["min"],
-                                                         max_value=value_range["max"])
+                    self.cur_value = uniform(value_range["min"], value_range["max"])
+
+                    # pyfloat bug!
+                    # self.cur_value = self._faker.pyfloat(min_value=value_range["min"],
+                    #                                      max_value=value_range["max"])
                 else:
                     self.cur_value = self.prototype.faker()
                     if isinstance(self.cur_value, BaseModel):

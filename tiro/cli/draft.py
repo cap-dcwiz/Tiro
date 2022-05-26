@@ -11,7 +11,7 @@ from tiro.core.draft import DraftGenerator
 app = typer.Typer()
 
 
-@app.command("schema")
+@app.command("scenario")
 def gen_schema(
         csv_file: Path,
         output: Optional[Path] = typer.Option(None, "--output", "-o"),

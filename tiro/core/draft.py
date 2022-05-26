@@ -39,9 +39,9 @@ class DraftGenerator:
         cc = self.df \
             .groupby(["parent_type", "asset_type", "parent_asset"]) \
             .asset.nunique() \
-            .unstack("parent_asset") \
-            .fillna(0).astype(int)
-        return dict(min=cc.min(axis=1).to_dict(), max=cc.max(axis=1).to_dict())
+            .unstack("parent_asset")
+        return dict(min=cc.min(axis=1).astype(int).to_dict(),
+                    max=cc.max(axis=1).astype(int).to_dict())
 
     def get_asset_path(self, asset: str) -> str:
         component = f"{self.type_dict[asset]}.{asset}"
@@ -67,18 +67,19 @@ class DraftGenerator:
         if path:
             asset_type = path.pop(0)
             path.pop(0)
+            count_key = parent_type, asset_type
             if asset_type not in schema:
                 schema[asset_type] = {"$type": asset_type, "$number": 0}
-            count_key = parent_type, asset_type
-            if count_key in self.count_info["min"]:
-                min_num = self.count_info["min"][count_key]
-                max_num = self.count_info["max"][count_key]
-                if min_num == max_num:
-                    schema[asset_type]["$number"] = min_num
-                else:
-                    schema[asset_type]["$number"] = f"{min_num}-{max_num}"
-            else:
-                schema[asset_type]["$number"] += 1
+                if count_key in self.count_info["min"]:
+                    min_num = self.count_info["min"][count_key]
+                    max_num = self.count_info["max"][count_key]
+                    if min_num == max_num:
+                        schema[asset_type]["$number"] = min_num
+                    else:
+                        schema[asset_type]["$number"] = f"{min_num}-{max_num}"
+                if count_key not in self.count_info["min"]:
+                    schema[asset_type]["$number"] = \
+                        self.df[self.df.asset_type == asset_type].asset.nunique()
             self.insert_into_schema(path, schema[asset_type], asset_type)
 
     def insert_into_uses(self,
@@ -124,6 +125,6 @@ class DraftGenerator:
     def sample(self):
         tree = {}
         for path, dps in self.df[~self.df.data_point.isna()].groupby("path").data_point.unique().items():
-            insert_data_point_to_dict(path, list(dps), tree)
+            insert_data_point_to_dict(path, dict(DataPoints=list(dps)), tree)
         value_range = self.df.groupby("type_path").value.agg([min, max]).dropna().to_dict(orient="index")
         return dict(tree=tree, value_range=value_range)
