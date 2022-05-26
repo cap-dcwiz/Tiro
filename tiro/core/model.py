@@ -139,8 +139,11 @@ class Entity:
     data_point_info: dict[str, DataPointInfo] = {}
 
     def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls.data_point_info = copy(cls.data_point_info)
+        super(Entity, cls).__init_subclass__(**kwargs)
+        cls.data_point_info = {}
+        for c in cls.__mro__:
+            if issubclass(c, Entity):
+                cls.data_point_info |= c.data_point_info
         cls.child_info: dict[str, EntityList] = {}
         for k, v in get_annotations(cls).items():
             if isinstance(v, DataPointInfo):
@@ -372,22 +375,26 @@ class Entity:
     def create(cls,
                name: str,
                *entities: Union["Entity", Type["Entity"]],
-               base_class: Optional[str] = None,
+               base_classes: Optional[list[str]] = None,
                asset_library_path: Optional[str] = None,
                asset_library_name: str = "tiro.assets",
                **entity_dict: dict[str, Union["Entity", Type["Entity"]]]
                ) -> Type["Entity"]:
         """Dynamically create the entity class according to the entity name defined in an asset library"""
-        if base_class:
+        if base_classes:
             if asset_library_path and asset_library_path not in sys.path:
                 sys.path.insert(0, asset_library_path)
-            base_class, _, base_name = base_class.rpartition(".")
-            if not base_class:
-                base = getattr(import_module(asset_library_name), base_name)
-            else:
-                base = getattr(import_module(f"{asset_library_name}.{base_class}"), base_name)
+            bases = []
+            for base_class in base_classes:
+                base_class, _, base_name = base_class.rpartition(".")
+                if not base_class:
+                    base = getattr(import_module(asset_library_name), base_name)
+                else:
+                    base = getattr(import_module(f"{asset_library_name}.{base_class}"), base_name)
+                bases.append(base)
+            bases = tuple(bases)
         else:
-            base = Entity
+            bases = (Entity,)
         ann = {}
         for item in entities:
             if isinstance(item, type) and issubclass(item, Entity):
@@ -397,7 +404,7 @@ class Entity:
             if isinstance(v, type) and issubclass(v, Entity):
                 v = v.many(faking_number=1)
             ann[k] = v
-        return type(name, (base,), dict(__annotations__=ann))
+        return type(name, bases, dict(__annotations__=ann))
 
     @classmethod
     def create_from_define_string(cls,
@@ -418,8 +425,11 @@ class Entity:
             )
             for k, v in defs.items() if not k.startswith(YAML_META_CHAR)
         }
+        base_classes = defs[f"{YAML_META_CHAR}type"]
+        if not isinstance(base_classes, list):
+            base_classes = [base_classes]
         entity = cls.create(name,
-                            base_class=defs[f"{YAML_META_CHAR}type"],
+                            base_classes=base_classes,
                             asset_library_path=asset_library_path,
                             asset_library_name=asset_library_name,
                             **children)

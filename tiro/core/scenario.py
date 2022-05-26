@@ -18,7 +18,7 @@ class Scenario:
                  **kw_entities: dict[str, Entity | Type[Entity]]):
         self.root: Entity = Entity.create("Scenario",
                                           *entities,
-                                          base_class=None,
+                                          base_classes=None,
                                           asset_library_path=asset_library_path,
                                           asset_library_name=asset_library_name,
                                           **kw_entities)()
