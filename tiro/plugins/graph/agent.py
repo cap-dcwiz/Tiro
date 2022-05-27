@@ -184,7 +184,8 @@ class ArangoAgent:
                                        insert_default_dp=True)
 
     def query_attributes_and_missing(self,
-                                     pattern_or_uses: Optional[str | dict | Path] = None):
+                                     pattern_or_uses: Optional[str | dict | Path] = None,
+                                     max_time_diff: Optional[float]=300):
         if pattern_or_uses:
             paths = list(self.entity.match_data_points(pattern_or_uses))
         else:
@@ -195,7 +196,8 @@ class ArangoAgent:
                                 bind_vars=dict(
                                     start_vertex=start_vertex,
                                     graph_name=self.graph_name,
-                                    patterns=paths
+                                    patterns=paths,
+                                    time_diff=max_time_diff
                                 ))
         data = {}
         for item in cursor:
@@ -234,6 +236,7 @@ class ArangoAgent:
                        value_only: bool = False,
                        as_dataframe: bool = False,
                        include_tags: str | list[str] = "all",
+                       max_time_diff: Optional[float] = 600,
                        ):
 
         query_path = QueryPath.parse(uses)
@@ -243,6 +246,7 @@ class ArangoAgent:
                             value_only=value_only,
                             fields=query_path.all_fields(),
                             all_paths=query_path.all_path_str(exclude_intermediate=False),
+                            time_diff=max_time_diff,
                             )
         data = query_path.post_cleanup(data)
         if as_dataframe:
@@ -254,10 +258,12 @@ class ArangoAgent:
                        value_only: bool = False,
                        as_dataframe: bool = False,
                        include_tags: str | list[str] = "all",
+                       max_time_diff: Optional[float] = 600,
                        ):
         data = self._query2(QUERY_BY_REGEX_AQL,
                             value_only=value_only,
-                            regex=format_regex(regex)
+                            regex=format_regex(regex),
+                            time_diff=max_time_diff,
                             )
 
         if as_dataframe:

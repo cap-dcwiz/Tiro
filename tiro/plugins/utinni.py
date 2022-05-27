@@ -78,24 +78,29 @@ class TiroTSPump(InfluxDBDataPump):
                   as_dataframe: bool = False,
                   include_tags: list[str] | str = "all",
                   value_only: bool = False,
+                  # When query status, the telemetries updated before (now - max_time_diff) will be ignored.
+                  max_time_diff: Optional[float] = 600,
                   ) -> PrimaryTable:
         if type == "historian":
             return self.gen_historian_table(pattern_or_uses=query,
                                             column=column,
                                             agg_fn=agg_fn,
                                             only_ts=not fill_with_graph,
+                                            time_diff=max_time_diff,
                                             )
         elif type == "status":
             return self.gen_status_table(query_or_regex=query,
                                          as_dataframe=as_dataframe,
                                          value_only=value_only,
-                                         include_tags=include_tags)
+                                         include_tags=include_tags,
+                                         time_diff=max_time_diff)
 
     def gen_historian_table(self,
                             pattern_or_uses: str | dict | Path,
                             column: str,
                             agg_fn: Literal["mean", "max", "min"],
                             only_ts: bool,
+                            time_diff: float,
                             ) -> TimeSeriesPrimaryTable:
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
@@ -105,13 +110,15 @@ class TiroTSPump(InfluxDBDataPump):
         table.set_meta("table_type", "historian")
         table.set_meta("only_ts", only_ts)
         table.set_meta("pattern_or_uses", pattern_or_uses)
+        table.set_meta("time_diff", time_diff)
         return table
 
     def gen_status_table(self,
                          query_or_regex: str | dict | Path,
                          as_dataframe: bool,
                          value_only: bool,
-                         include_tags: list[str]
+                         include_tags: list[str],
+                         time_diff: float
                          ) -> PrimaryTable:
         return PrimaryTable(context=self.context,
                             pump=self,
@@ -120,7 +127,8 @@ class TiroTSPump(InfluxDBDataPump):
                                       query_or_regex=query_or_regex,
                                       as_df=as_dataframe,
                                       value_only=value_only,
-                                      include_tags=include_tags))
+                                      include_tags=include_tags,
+                                      time_diff=time_diff))
 
     def get_data(self, table: PrimaryTable, fields) -> ValueType:
         table_type = table.meta["table_type"]
@@ -157,7 +165,8 @@ class TiroTSPump(InfluxDBDataPump):
         query_params = dict(
             as_dataframe=as_dataframe,
             value_only=table.meta["value_only"],
-            include_tags=table.meta["include_tags"]
+            include_tags=table.meta["include_tags"],
+            max_time_diff=table.meta["time_diff"]
         )
         if isinstance(query_or_regex, str):
             res = self.arangodb_agent.query_by_regex(query_or_regex, **query_params)
@@ -175,9 +184,11 @@ class TiroTSPump(InfluxDBDataPump):
         column = table.meta["column"]
         agg_fn = table.meta["agg_fn"]
         pattern_or_uses = table.meta["pattern_or_uses"]
+        time_diff = table.meta["time_diff"]
         missing_data = []
         for path, value in self.arangodb_agent.query_attributes_and_missing(
                 pattern_or_uses=pattern_or_uses,
+                max_time_diff=time_diff
         ).items():
             data_point = self.scenario.data_point_path_to_tags(path) | value
             if fields and path.split(PATH_SEP)[-1] not in fields:
