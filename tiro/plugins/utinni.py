@@ -71,9 +71,10 @@ class TiroTSPump(InfluxDBDataPump):
 
     def gen_table(self,
                   query: Optional[str | dict | Path] = ".*",
-                  type: Literal["historian", "status", "query"] = "historian",
+                  type: Literal["historian", "status"] = "historian",
                   column: str = "asset_path",
-                  agg_fn: Literal["mean", "max", "min"] = "mean",
+                  asset_agg_fn: str = "mean",
+                  time_agg_fn: str = "last",
                   fill_with_graph: bool = True,
                   as_dataframe: bool = False,
                   include_tags: list[str] | str = "all",
@@ -84,7 +85,8 @@ class TiroTSPump(InfluxDBDataPump):
         if type == "historian":
             return self.gen_historian_table(pattern_or_uses=query,
                                             column=column,
-                                            agg_fn=agg_fn,
+                                            asset_agg_fn=asset_agg_fn,
+                                            time_agg_fn=time_agg_fn,  # Careful!
                                             only_ts=not fill_with_graph,
                                             time_diff=max_time_diff,
                                             )
@@ -98,19 +100,22 @@ class TiroTSPump(InfluxDBDataPump):
     def gen_historian_table(self,
                             pattern_or_uses: str | dict | Path,
                             column: str,
-                            agg_fn: Literal["mean", "max", "min"],
+                            asset_agg_fn: str,
+                            time_agg_fn: str,
                             only_ts: bool,
                             time_diff: float,
                             ) -> TimeSeriesPrimaryTable:
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
             raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern_or_uses}\"")
-        table = super(TiroTSPump, self).gen_table(column=column, agg_fn=agg_fn, path=paths)
+        table = super(TiroTSPump, self).gen_table(column=None, agg_fn=time_agg_fn, path=paths)
         logging.debug(f"paths: {';'.join(paths)}")
+        table.set_meta("asset_agg_fn", asset_agg_fn)
         table.set_meta("table_type", "historian")
         table.set_meta("only_ts", only_ts)
         table.set_meta("pattern_or_uses", pattern_or_uses)
         table.set_meta("time_diff", time_diff)
+        table.set_meta("group_by", column)
         return table
 
     def gen_status_table(self,
@@ -182,7 +187,7 @@ class TiroTSPump(InfluxDBDataPump):
 
     def fill_data_from_graph_db(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
         column = table.meta["column"]
-        agg_fn = table.meta["agg_fn"]
+        asset_agg_fn = table.meta["asset_agg_fn"]
         pattern_or_uses = table.meta["pattern_or_uses"]
         time_diff = table.meta["time_diff"]
         missing_data = []
@@ -197,8 +202,9 @@ class TiroTSPump(InfluxDBDataPump):
         index = gen_index(self.config.start, self.config.stop, self.config.step)
         results = {}
         field: str
+        print(missing_data)
         if missing_data:
             for field, df in pd.DataFrame(missing_data).groupby("field"):
-                series = getattr(df.groupby(column).value, agg_fn)()
+                series = getattr(df.groupby(column).value, asset_agg_fn)()
                 results[field] = pd.DataFrame(data=[series for _ in index], index=index)
         return results
