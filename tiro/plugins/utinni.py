@@ -10,7 +10,7 @@ from utinni.types import ValueType
 from tiro.core import Scenario
 from utinni.pump import InfluxDBDataPump
 
-from tiro.core.utils import PATH_SEP
+from tiro.core.utils import PATH_SEP, split_path
 from tiro.plugins.graph.agent import ArangoAgent
 
 
@@ -108,7 +108,7 @@ class TiroTSPump(InfluxDBDataPump):
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
             raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern_or_uses}\"")
-        table = super(TiroTSPump, self).gen_table(column=None, agg_fn=time_agg_fn, path=paths)
+        table = super(TiroTSPump, self).gen_table(column="asset_path", agg_fn=time_agg_fn, path=paths)
         logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("asset_agg_fn", asset_agg_fn)
         table.set_meta("table_type", "historian")
@@ -162,7 +162,27 @@ class TiroTSPump(InfluxDBDataPump):
                 data = self.fill_data_from_graph_db(table, fields)
             else:
                 data = {}
-        return data
+        return self.group_ts_data(data, table.meta["group_by"], table.meta["asset_agg_fn"])
+
+    @staticmethod
+    def _get_tag_from_asset_path(path, name):
+        path = split_path(path)
+        if name == "path":
+            return PATH_SEP.join(path[i] for i in range(0, len(path), 2))
+        if name in path:
+            return path[path.index(name)+1]
+        else:
+            return None
+
+    def group_ts_data(self, data, key, agg_fn):
+        if key == "asset_path":
+            return data
+        if isinstance(data, dict):
+            return {k: self.group_ts_data(v, key, agg_fn) for k, v in data.items()}
+        else:
+            return getattr(data.groupby(lambda x: self._get_tag_from_asset_path(x, key),
+                                        axis=1),
+                           agg_fn)()
 
     def get_status_data(self, table: PrimaryTable) -> ValueType:
         query_or_regex = table.meta["query_or_regex"]
@@ -186,7 +206,7 @@ class TiroTSPump(InfluxDBDataPump):
             return res
 
     def fill_data_from_graph_db(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
-        column = table.meta["column"]
+        column = table.meta["group_by"]
         asset_agg_fn = table.meta["asset_agg_fn"]
         pattern_or_uses = table.meta["pattern_or_uses"]
         time_diff = table.meta["time_diff"]
@@ -202,7 +222,6 @@ class TiroTSPump(InfluxDBDataPump):
         index = gen_index(self.config.start, self.config.stop, self.config.step)
         results = {}
         field: str
-        print(missing_data)
         if missing_data:
             for field, df in pd.DataFrame(missing_data).groupby("field"):
                 series = getattr(df.groupby(column).value, asset_agg_fn)()
