@@ -61,10 +61,11 @@ class TiroTSPump(InfluxDBDataPump):
     @property
     def arangodb_agent(self):
         if self._arangodb_agent is None:
-            agent = self.context.clients.get("arangodb")
-            if agent is None:
+            if self._arangodb_agent is not None:
                 agent = ArangoAgent(**self._arangodb_agent_params)
-            if agent.scenario is None:
+            else:
+                agent = self.context.clients.get("arangodb")
+            if agent and agent.scenario is None:
                 agent.set_scenario(self.scenario)
             self._arangodb_agent = agent
         return self._arangodb_agent
