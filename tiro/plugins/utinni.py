@@ -163,6 +163,7 @@ class TiroTSPump(InfluxDBDataPump):
                 data = self.fill_data_from_graph_db(table, fields)
             else:
                 data = {}
+        # TODO: may need to interpolate before grouping
         return self.group_ts_data(data, table.meta["group_by"], table.meta["asset_agg_fn"])
 
     @staticmethod

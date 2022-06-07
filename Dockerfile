@@ -15,5 +15,7 @@ COPY tiro /tiro/tiro
 
 RUN sed -i '/git/d' pyproject.toml
 RUN pip install /deps/*.whl
-RUN poetry install --no-dev
+RUN poetry install --no-dev &&  \
+    rm /tiro/poetry.lock &&  \
+    rm /tiro/pyproject.toml
 
