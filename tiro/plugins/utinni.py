@@ -212,6 +212,7 @@ class TiroTSPump(InfluxDBDataPump):
         asset_agg_fn = table.meta["asset_agg_fn"]
         pattern_or_uses = table.meta["pattern_or_uses"]
         time_diff = table.meta["time_diff"]
+        config = table.config
         missing_data = []
         for path, value in self.arangodb_agent.query_attributes_and_missing(
                 pattern_or_uses=pattern_or_uses,
@@ -221,7 +222,7 @@ class TiroTSPump(InfluxDBDataPump):
             if fields and path.split(PATH_SEP)[-1] not in fields:
                 continue
             missing_data.append(data_point)
-        index = gen_index(self.config.start, self.config.stop, self.config.step)
+        index = gen_index(config.start, config.stop, config.step)
         results = {}
         field: str
         if missing_data:
