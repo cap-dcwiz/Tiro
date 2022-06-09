@@ -19,6 +19,7 @@ class Reference:
         reference = reference or {}
         self.tree = reference.get("tree", None)
         self.value_range = reference.get("value_range", None)
+        self.uuid_map = reference.get("uuid_map", None)
 
     def get_children(self, path, tree=None):
         if self.tree:
@@ -39,6 +40,17 @@ class Reference:
             return None
         else:
             return item.get("DataPoints", {})
+
+    def search_by_uuid(self, uuid):
+        if self.uuid_map is not None:
+            return self.uuid_map.get(uuid, None)
+        return None
+
+    def list_uuids(self):
+        if self.uuid_map:
+            return list(self.uuid_map.keys())
+        else:
+            return []
 
     def get_value_range(self, path, name):
         if self.value_range:
@@ -337,17 +349,46 @@ class Mocker:
     def gen_data_point(self, path: str,
                        change_attr: bool = False,
                        use_default: bool = True) -> dict:
+        self.entity.generate(regenerate=False,
+                             include_data_points=False,
+                             change_attrs=change_attr,
+                             use_default=use_default)
         path, _, dp_name = path.rpartition(PATH_SEP)
         path, _, _ = path.rpartition(PATH_SEP)
         return self.entity.get_child(path).gen_data_point(dp_name,
                                                           change_attrs=change_attr,
                                                           use_default=use_default)
 
+    def gen_value_by_uuid(self,
+                          uuid: str,
+                          change_attr: bool = False,
+                          use_default: bool = True,
+                          value_only: bool = False) -> dict:
+        self.entity.generate(regenerate=False,
+                             include_data_points=False,
+                             change_attrs=change_attr,
+                             use_default=use_default)
+        path = self.entity.reference.search_by_uuid(uuid)
+        if path is not None:
+            path, _, dp_name = path.rpartition(PATH_SEP)
+            dp = self.entity.get_child(path).gen_data_point(dp_name,
+                                                            change_attrs=change_attr,
+                                                            use_default=use_default)
+            if value_only:
+                return dp["value"]
+            else:
+                return dp
+        else:
+            raise KeyError
+
     def list_entities(self) -> list[str]:
         return [k for k, _ in self.entity.list_entities()]
 
     def list_data_points(self, skip_default=True) -> list[str]:
         return [k for k, _ in self.entity.list_data_points(skip_default=skip_default)]
+
+    def list_uuids(self) -> list[str]:
+        return self.entity.reference.list_uuids()
 
 
 class MockApp(FastAPI):
@@ -374,9 +415,27 @@ class MockApp(FastAPI):
         def list_points():
             return self.mocker.list_data_points(skip_default=self.skip_defaults)
 
+        @self.get("/values/")
+        def list_uuids():
+            return self.mocker.list_uuids()
+
         @self.get("/points/{path:str}")
         def get_point(path):
             try:
                 return self.mocker.gen_data_point(path, use_default=self.use_defaults)
             except KeyError as e:
-                raise HTTPException(status_code=404, detail=str(e))
+                raise HTTPException(status_code=404,
+                                    detail=f"Cannot find path {path}"
+                                    ) from e
+
+        @self.get("/values/{uuid:str}")
+        def get_value_by_uuid(uuid):
+            try:
+                return self.mocker.gen_value_by_uuid(uuid,
+                                                     use_default=self.use_defaults,
+                                                     value_only=True)
+            except KeyError as e:
+                print("error:", e)
+                raise HTTPException(status_code=404,
+                                    detail=f"Cannot find uuid {uuid}"
+                                    ) from e

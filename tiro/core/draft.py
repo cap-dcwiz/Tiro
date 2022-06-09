@@ -1,4 +1,5 @@
 import re
+from collections import OrderedDict
 from pathlib import Path
 from typing import Optional
 
@@ -107,6 +108,13 @@ class DraftGenerator:
                 res.append(k)
         return res
 
+    def gen_uuid_map(self):
+        if "uuid" not in self.df:
+            self.df["uuid"] = None
+        df = self.df[~self.df.data_point.isna()].copy()
+        df["uuid"] = df.apply(lambda x: x.uuid or f"{x.asset}.{x.data_point}", axis=1)
+        return df.set_index("uuid").apply(lambda x: f"{x.path}.{x.data_point}", axis=1).to_dict()
+
     @property
     def schema(self):
         schema = {}
@@ -122,9 +130,11 @@ class DraftGenerator:
         return self.post_process_uses(uses)
 
     @property
-    def sample(self):
+    def reference(self):
         tree = {}
         for path, dps in self.df[~self.df.data_point.isna()].groupby("path").data_point.unique().items():
             insert_data_point_to_dict(path, dict(DataPoints=list(dps)), tree)
         value_range = self.df.groupby("type_path").value.agg([min, max]).dropna().to_dict(orient="index")
-        return dict(tree=tree, value_range=value_range)
+        return dict(tree=tree,
+                    value_range=value_range,
+                    uuid_map=self.gen_uuid_map())

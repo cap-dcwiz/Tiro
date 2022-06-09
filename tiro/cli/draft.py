@@ -45,7 +45,7 @@ def gen_reference(
         output: Optional[Path] = typer.Option(None, "--output", "-o"),
 ):
     draft_gen = DraftGenerator(csv_file=csv_file)
-    out = yaml.dump(draft_gen.sample)
+    out = yaml.dump(draft_gen.reference)
     if output:
         with open(output, "w") as f:
             f.write(out)
