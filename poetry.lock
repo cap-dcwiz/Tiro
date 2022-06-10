@@ -721,7 +721,7 @@ test = ["codecov", "ipykernel", "jupyter-server", "openapi-core (>=0.14.2)", "op
 
 [[package]]
 name = "karez"
-version = "0.2.36"
+version = "0.2.38"
 description = ""
 category = "main"
 optional = false
@@ -755,7 +755,7 @@ influxdb = ["influxdb-client (>=1.27.0,<2.0.0)"]
 type = "git"
 url = "ssh://git@github.com/cap-dcwiz/Karez.git"
 reference = "main"
-resolved_reference = "292857cd17fe0b73e3f8287919c8bbed4b46bbe3"
+resolved_reference = "a7d561a1084efb9f2e551d0dfd468b18f62de2b4"
 
 [[package]]
 name = "markdown"
@@ -1179,7 +1179,7 @@ python-versions = "*"
 
 [[package]]
 name = "plotly"
-version = "5.8.1"
+version = "5.8.2"
 description = "An open-source, interactive data visualization library for Python"
 category = "dev"
 optional = false
@@ -1329,7 +1329,7 @@ documents = ["sphinx (>=1.1.3)", "sphinx-rtd-theme", "humanfriendly"]
 quality = ["coverage (>=3.5.3)", "nose (>=1.2.1)", "mock (>=1.0.0)", "pep8 (>=1.3.3)"]
 repl = ["click (>=7.0)", "prompt-toolkit (==2.0.4)", "pygments (>=2.2.0)", "click (>=7.0)", "prompt-toolkit (>=3.0.8)", "pygments (>=2.2.0)", "aiohttp (>=3.7.3)", "pyserial-asyncio (>=0.5)"]
 tornado = ["tornado (==4.5.3)"]
-twisted = ["Twisted[conch,serial] (>=20.3.0)", "Twisted[conch] (>=20.3.0)"]
+twisted = ["Twisted[serial,conch] (>=20.3.0)", "Twisted[conch] (>=20.3.0)"]
 
 [[package]]
 name = "pyparsing"
@@ -2322,8 +2322,8 @@ pickleshare = [
     {file = "pickleshare-0.7.5.tar.gz", hash = "sha256:87683d47965c1da65cdacaf31c8441d12b8044cdec9aca500cd78fc2c683afca"},
 ]
 plotly = [
-    {file = "plotly-5.8.1-py2.py3-none-any.whl", hash = "sha256:f46424f191ea6656440a849c281685685c3154864bbf36bb1fcd0709cb59a496"},
-    {file = "plotly-5.8.1.tar.gz", hash = "sha256:63b0d47d21ec285cf18c9b413182fcf9af6cba8faa52d47a43323f7f28a85646"},
+    {file = "plotly-5.8.2-py2.py3-none-any.whl", hash = "sha256:bd5376ac8cc06e195e3d397da089f3189243b61b27b6c837c1930edbf75fb8f3"},
+    {file = "plotly-5.8.2.tar.gz", hash = "sha256:6cfbb2cce3866671dbf304e5168c58950328be4573547dc9a337f9e000c8e32b"},
 ]
 prometheus-client = [
     {file = "prometheus_client-0.14.1-py3-none-any.whl", hash = "sha256:522fded625282822a89e2773452f42df14b5a8e84a86433e3f8a189c1d54dc01"},

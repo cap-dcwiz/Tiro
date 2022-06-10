@@ -3,7 +3,6 @@ from pathlib import Path
 import yaml
 
 from karez.config import OptionalConfigEntity
-from karez.converter import ConverterBase
 from tiro.core import Scenario
 from tiro.core.mock import Reference
 from tiro.core.utils import PATH_SEP, split_path
