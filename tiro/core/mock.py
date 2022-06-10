@@ -136,6 +136,7 @@ class MockedEntity(MockedItem):
                         uuids = [None for _ in range(number)]
                 else:
                     uuids = list(uuids.keys())
+                    number = len(uuids)
                 for uuid in uuids[:number]:
                     entity = MockedEntity(entity_type=entity_type,
                                           prototype=v,
@@ -435,7 +436,7 @@ class MockApp(FastAPI):
                                                      use_default=self.use_defaults,
                                                      value_only=True)
             except KeyError as e:
-                print("error:", e)
+                logging.error(f"{type(e)}:{e}")
                 raise HTTPException(status_code=404,
                                     detail=f"Cannot find uuid {uuid}"
                                     ) from e
