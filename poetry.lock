@@ -721,7 +721,7 @@ test = ["codecov", "ipykernel", "jupyter-server", "openapi-core (>=0.14.2)", "op
 
 [[package]]
 name = "karez"
-version = "0.2.32"
+version = "0.2.36"
 description = ""
 category = "main"
 optional = false
@@ -755,7 +755,7 @@ influxdb = ["influxdb-client (>=1.27.0,<2.0.0)"]
 type = "git"
 url = "ssh://git@github.com/cap-dcwiz/Karez.git"
 reference = "main"
-resolved_reference = "dafe66688be35fec113e6804b9b5a42bfa9b74b6"
+resolved_reference = "292857cd17fe0b73e3f8287919c8bbed4b46bbe3"
 
 [[package]]
 name = "markdown"
