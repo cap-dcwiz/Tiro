@@ -8,7 +8,7 @@ dispatchers:
 connectors:
   - type: tiro_mock
     base_url: http://mock-server:8000
-#    base_url: http://localhost:8000
+#        base_url: http://localhost:8000
     converter:
       - tiro_fmt
       - update_category_for_validator
@@ -44,7 +44,6 @@ converters:
       telemetry: validation_data
       attribute: validation_data
 
-
 aggregators:
   - type: tiro_validate
     category: validation_data
@@ -58,10 +57,9 @@ aggregators:
     uses: config/use1.yaml
     db_name: tiro_test
     graph_name: scenario
-#    hosts: http://localhost:8529
+#        hosts: http://localhost:8529
     hosts: http://storage-arangodb:8529
     auth:
       password: arangodb_password
 #  - type: echo
 #    category: attribute2
-

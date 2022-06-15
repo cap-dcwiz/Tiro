@@ -1,14 +1,13 @@
 import re
 import sys
 from collections.abc import Iterable
-from copy import copy, deepcopy
 from datetime import datetime, timedelta
 from functools import partial
 from importlib import import_module
 from inspect import get_annotations
 from pathlib import Path
 from random import randint
-from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable, Literal
+from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable, Literal, Generator
 
 from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
@@ -182,7 +181,7 @@ class Entity:
             unique_name = self.name
         return unique_name
 
-    def _parse_use_yaml(self, d, prefix="") -> Iterable[str]:
+    def _parse_use_yaml(self, d, prefix="") -> Generator[str]:
         if isinstance(d, list):
             for item in d:
                 yield from self._parse_use_yaml(item, prefix=prefix)
@@ -213,9 +212,8 @@ class Entity:
             else:
                 if path in self.data_point_info:
                     self._used_data_points.add(path)
-                elif path in self.child_info:
-                    if path not in self.children:
-                        self.children[path] = self.child_info[path].new_entity(self)
+                elif path in self.child_info and path not in self.children:
+                    self.children[path] = self.child_info[path].new_entity(self)
         return self
 
     @classmethod
@@ -340,14 +338,14 @@ class Entity:
         #     model_kwargs["children"] = Optional[list[Union[children]]], Field(...)
         return create_model(name, **model_kwargs)
 
-    def all_required_paths(self, prefix=None) -> Iterable[str]:
+    def all_required_paths(self, prefix=None) -> Generator[str]:
         prefix = prefix or ""
         for name, child in self.children.items():
             yield from child.all_required_paths(concat_path(prefix, name))
         for dp in self._used_data_points:
             yield concat_path(prefix, dp)
 
-    def all_required_edges(self, self_name=None) -> Iterable[tuple[str, str, str]]:
+    def all_required_edges(self, self_name=None) -> Generator[tuple[str, str, str]]:
         self_name = self_name or self.name
         for child_name, child in self.children.items():
             yield "is_parent_of", self_name, child_name

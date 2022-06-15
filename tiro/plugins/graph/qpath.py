@@ -39,7 +39,6 @@ class QueryPath:
     def _parse_dict(self, use_dict: dict) -> "QueryPath":
         self.data_points = {}
         self.children = {}
-        string_constraints = {"$match", "$not_match"}
         for k, v in use_dict.items():
             if isinstance(v, dict) and any(not _k.startswith("$") for _k in v):
                 self.children[k] = QueryPath(k, self)._parse_dict(v)

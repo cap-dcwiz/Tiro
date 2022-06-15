@@ -3,7 +3,7 @@ import logging
 import re
 from pathlib import Path
 from random import uniform
-from typing import Optional
+from typing import Optional, Generator
 
 import yaml
 from faker import Faker
@@ -219,7 +219,7 @@ class MockedEntity(MockedItem):
                 self._path = concat_path(self.parent.path, self.entity_type, self.uuid)
         return self._path
 
-    def list_entities(self) -> tuple[str, "MockedEntity"]:
+    def list_entities(self) -> Generator[tuple[str, "MockedEntity"]]:
         self.generate(regenerate=False,
                       include_data_points=False,
                       change_attrs=False,
@@ -229,7 +229,7 @@ class MockedEntity(MockedItem):
             for c in v.values():
                 yield from c.list_entities()
 
-    def list_data_points(self, skip_default) -> tuple[str, "MockedDataPoint"]:
+    def list_data_points(self, skip_default) -> Generator[tuple[str, "MockedDataPoint"]]:
         self.generate(regenerate=False,
                       include_data_points=False,
                       change_attrs=False,

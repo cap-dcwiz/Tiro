@@ -1,6 +1,5 @@
-from collections.abc import Iterable
 from pathlib import Path
-from typing import Type, Optional
+from typing import Type, Optional, Generator
 
 from yaml import safe_load
 
@@ -56,7 +55,7 @@ class Scenario:
         return Validator(self.root, *args, **kwargs)
 
     @classmethod
-    def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Iterable[dict]:
+    def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Generator[dict]:
         """Decompose a dict to separate data points."""
         path = split_path(path)
         info = info or dict(path="", asset_path="")

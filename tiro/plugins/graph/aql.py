@@ -32,7 +32,7 @@ FOR v, e, p IN 1..1000 OUTBOUND @start_vertex GRAPH @graph_name
     LET doc = MERGE((
         FOR v0, e0, p0 in 1..1 OUTBOUND v GRAPH @graph_name
             FILTER v0.name in fields[v.path]
-            FILTER v0.type == "Telemetry"?DATE_NOW() - DATE_TIMESTAMP(v0.timestamp) < 1000 * @time_diff:true
+            FILTER v0.type == "Telemetry"?DATE_NOW() / 1000 - v0.timestamp < @time_diff:true
 
             RETURN {{
                 [v0.name]:{{
@@ -76,7 +76,7 @@ FOR v, e, p IN 1..1000 OUTBOUND @start_vertex GRAPH @graph_name
         FOR v0, e0, p0 in 1..1 OUTBOUND v GRAPH @graph_name
             LET d_path = CONCAT_SEPARATOR(".", APPEND(p.edges[*].next_category, v0.name))
             FILTER d_path =~ @regex
-            FILTER v0.type == "Telemetry"?DATE_NOW() - DATE_TIMESTAMP(v0.timestamp) < 1000 * @time_diff:true
+            FILTER v0.type == "Telemetry"?DATE_NOW() / 1000 - v0.timestamp < @time_diff:true
             RETURN {
                 [v0.name]: {
                     type:v0.type,

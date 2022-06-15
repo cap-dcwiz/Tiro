@@ -1,18 +1,18 @@
 Room:
-    $name_match: 7c5a8382
-    Site:
-        $match: Arnold
-    Rack:
-        FrontTemperature:
-            $gt: 20
-            $le: 25
-        BackTemperature:
-        Server:
-            CPUTemperature:
-            _MemoryTemperature:
-                $gt: 20
+  $name_match: 7c5a8382
+  Site:
+    $match: Arnold
+  Rack:
+    FrontTemperature:
+      $gt: 20
+      $le: 25
+    BackTemperature:
     Server:
-        CPUTemperature:
-        MemoryTemperature:
-            $gt: 20
-    Temperature:
+      CPUTemperature:
+      _MemoryTemperature:
+        $gt: 20
+  Server:
+    CPUTemperature:
+    MemoryTemperature:
+      $gt: 20
+  Temperature:
