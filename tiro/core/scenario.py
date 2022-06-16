@@ -55,7 +55,7 @@ class Scenario:
         return Validator(self.root, *args, **kwargs)
 
     @classmethod
-    def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Generator[dict]:
+    def decompose_data(cls, path: str | list[str], value: dict, info=None) -> Generator[dict, None, None]:
         """Decompose a dict to separate data points."""
         path = split_path(path)
         info = info or dict(path="", asset_path="")

@@ -219,7 +219,7 @@ class MockedEntity(MockedItem):
                 self._path = concat_path(self.parent.path, self.entity_type, self.uuid)
         return self._path
 
-    def list_entities(self) -> Generator[tuple[str, "MockedEntity"]]:
+    def list_entities(self) -> Generator[tuple[str, "MockedEntity"], None, None]:
         self.generate(regenerate=False,
                       include_data_points=False,
                       change_attrs=False,
@@ -229,7 +229,7 @@ class MockedEntity(MockedItem):
             for c in v.values():
                 yield from c.list_entities()
 
-    def list_data_points(self, skip_default) -> Generator[tuple[str, "MockedDataPoint"]]:
+    def list_data_points(self, skip_default) -> Generator[tuple[str, "MockedDataPoint"], None, None]:
         self.generate(regenerate=False,
                       include_data_points=False,
                       change_attrs=False,
