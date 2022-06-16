@@ -133,3 +133,5 @@ dmypy.json
 demo/data/
 
 .DS_Store
+
+.scannerwork/
