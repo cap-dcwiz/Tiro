@@ -2,17 +2,16 @@ name: Security Scanning
 
 on:
   push:
-    branches:
-      - main # or the name of your main branch
-    pull_request:
-      - main
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
   schedule:
-    - corn: '42 13 * * 4'
+    - cron: '42 13 * * 4'
 
 jobs:
   depchecktest:
     runs-on: ubuntu-latest
-    name: depecheck_test
+    name: depcheck_test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
