@@ -1,5 +1,3 @@
-from random import randint
-
 from pydantic import confloat, conint
 from rich import print_json
 
@@ -25,7 +23,7 @@ class Rack(Entity):
     BackTemperature: Telemetry(temperature_type, "°C")
 
     # Entities
-    Server: EntityList(Server, faking_number=lambda: randint(2, 20))
+    Server: EntityList(Server, faking_number=lambda: 10)
 
 
 class Room(Entity):
