@@ -22,14 +22,13 @@ def split_path(path: str | list[str]) -> list[str]:
 
 
 def snake_to_camel(name: str) -> str:
+    # Not doing anything, need to fix or change the function name.
     return name
-    # return "".join([x.capitalize() for x in name.split("_")])
 
 
 def camel_to_snake(name: str) -> str:
+    # Not doing anything, need to fix or change the function name.
     return name
-    # name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    # return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
 
 
 DataPointTypes = int, float, str

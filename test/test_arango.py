@@ -17,8 +17,5 @@ gdb_client.create_graph(clear_existing=True, clear_database=True)
 for item in scenario.decompose_data("", scenario.mocker().dict(skip_default=True)):
     gdb_client.update(item)
 
-# data = gdb_client.capture_status()
-# print(scenario.model().parse_obj(data).json(indent=2))
-
 data = gdb_client.query_attributes_and_missing()
 print(data)

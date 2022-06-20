@@ -333,9 +333,6 @@ class Entity:
             model_kwargs["attribute"] = Optional[list[Literal[attribute_names]]], Field(None, unique_items=True)
         for k, v in cls.child_info.items():
             model_kwargs[k] = Optional[v.cls.use_selection_model(name_prefix=name)], Field(None)
-        # children = tuple(v.cls.use_selection_model(name_prefix=name) for v in cls.child_info.values())
-        # if children:
-        #     model_kwargs["children"] = Optional[list[Union[children]]], Field(...)
         return create_model(name, **model_kwargs)
 
     def all_required_paths(self, prefix=None) -> Generator[str, None, None]:

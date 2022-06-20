@@ -70,16 +70,17 @@ class DraftGenerator:
             path.pop(0)
             count_key = parent_type, asset_type
             if asset_type not in schema:
-                schema[asset_type] = {"$type": asset_type, "$number": 0}
+                _num_field = "$number"
+                schema[asset_type] = {"$type": asset_type, _num_field: 0}
                 if count_key in self.count_info["min"]:
                     min_num = self.count_info["min"][count_key]
                     max_num = self.count_info["max"][count_key]
                     if min_num == max_num:
-                        schema[asset_type]["$number"] = min_num
+                        schema[asset_type][_num_field] = min_num
                     else:
-                        schema[asset_type]["$number"] = f"{min_num}-{max_num}"
+                        schema[asset_type][_num_field] = f"{min_num}-{max_num}"
                 if count_key not in self.count_info["min"]:
-                    schema[asset_type]["$number"] = \
+                    schema[asset_type][_num_field] = \
                         self.df[self.df.asset_type == asset_type].asset.nunique()
             self.insert_into_schema(path, schema[asset_type], asset_type)
 

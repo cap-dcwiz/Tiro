@@ -12,13 +12,10 @@ mocker = scenario.mocker()
 data_points = list(mocker.list_data_points(skip_default=True))
 
 with scenario.validator(require_all_children=True, retention=1) as validator:
-    # for i in range(1000):
-    #     path = choice(data_points)
     for path in data_points:
         value = mocker.gen_data_point(path)
         print(path, value)
         validator.collect(path, value)
-        # time.sleep(0.0005)
     res = validator.validate()
     print(res)
 

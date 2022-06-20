@@ -19,7 +19,7 @@ table = context.tiro_table(".*Server%(CPU|Memory)Temperature")
 
 context.bind(start=-timedelta(hours=1),
              step=timedelta(minutes=10))
-# print(table.value)
+print(table.value)
 
 df = table["CPUTemperature"].value
 print(df)
