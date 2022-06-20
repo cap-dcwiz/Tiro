@@ -135,3 +135,6 @@ demo/data/
 .DS_Store
 
 .scannerwork/
+
+dependency-check-report.html
+reports/dependency-check-report.html
