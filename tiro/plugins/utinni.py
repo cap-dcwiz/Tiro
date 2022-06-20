@@ -4,12 +4,15 @@ from pathlib import Path
 from typing import Optional, Literal
 
 import pandas as pd
-from utinni.table.table import TimeSeriesPrimaryTable, PrimaryTable
-from utinni.types import ValueType
+
+try:
+    from utinni.table.table import TimeSeriesPrimaryTable, PrimaryTable
+    from utinni.types import ValueType
+    from utinni.pump import InfluxDBDataPump
+except ImportError:
+    raise ImportError("Utinni is not available. Please install Utinni first.")
 
 from tiro.core import Scenario
-from utinni.pump import InfluxDBDataPump
-
 from tiro.core.utils import PATH_SEP, split_path
 from tiro.plugins.graph.agent import ArangoAgent
 
@@ -172,7 +175,7 @@ class TiroTSPump(InfluxDBDataPump):
         if name == "path":
             return PATH_SEP.join(path[i] for i in range(0, len(path), 2))
         if name in path:
-            return path[path.index(name)+1]
+            return path[path.index(name) + 1]
         else:
             return None
 

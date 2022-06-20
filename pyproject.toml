@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.7.1"
+version = "0.7.2"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
@@ -31,7 +31,6 @@ pandas = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^3.3.4"
-utinni = {git = "ssh://git@github.com/cap-dcwiz/Utinni.git", rev = "main"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main # or the name of your main branch
+    pull_request:
+      - main
+  schedule:
+    - corn: '42 13 * * 4'
 
 jobs:
   depchecktest:
