@@ -29,6 +29,7 @@ jobs:
             --enableRetired
             --enableExperimental
       - name: Upload Test results
+        if: success() || failure()
         uses: actions/upload-artifact@master
         with:
            name: Depcheck report
@@ -37,6 +38,7 @@ jobs:
   sonarqube:
     name: sonarqube-scanning
     runs-on: ubuntu-latest
+    if: success() || failure()
     needs: depchecktest
     steps:
       - uses: actions/checkout@v2
