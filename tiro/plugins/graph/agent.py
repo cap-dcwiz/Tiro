@@ -185,7 +185,7 @@ class ArangoAgent:
 
     def query_attributes_and_missing(self,
                                      pattern_or_uses: Optional[str | dict | Path] = None,
-                                     max_time_diff: Optional[float]=300):
+                                     max_time_diff: Optional[float] = 300):
         if pattern_or_uses:
             paths = list(self.entity.match_data_points(pattern_or_uses))
         else:

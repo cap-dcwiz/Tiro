@@ -142,27 +142,16 @@ class QueryPath:
         else:
             return ""
 
-    def post_cleanup(self, doc, hide_dp_type=False):
+    def post_cleanup(self, doc):
         for k in self.data_points.keys():
-            passed_test = False
             for dp_type in DataPointInfo.SUB_CLASS_NAMES:
-                if dp_type in doc and k in doc[dp_type]:
-                    passed_test = True
-                    if k in self.aux_data_points:
-                        del doc[dp_type][k]
-            if not passed_test:
-                return {}
-        if hide_dp_type:
-            result = {}
-            for k, v in doc.items():
-                if k in DataPointInfo.SUB_CLASS_NAMES:
-                    result |= v
-        else:
-            result = {k: v for k, v in doc.items() if k in DataPointInfo.SUB_CLASS_NAMES and v}
+                if dp_type in doc and k in self.aux_data_points:
+                    del doc[dp_type][k]
+        result = {k: v for k, v in doc.items() if k in DataPointInfo.SUB_CLASS_NAMES and v}
         for name, child in self.children.items():
             if name in doc:
                 for k in doc[name]:
-                    v = child.post_cleanup(doc[name][k], hide_dp_type=hide_dp_type)
+                    v = child.post_cleanup(doc[name][k])
                     if v:
                         result[name] = result.get(name, {})
                         result[name][k] = v
