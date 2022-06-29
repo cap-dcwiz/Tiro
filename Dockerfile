@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10
 
 WORKDIR /tiro
 
@@ -9,12 +9,9 @@ ENV PYTHONPATH="${PYTHONPATH}:/tiro/" \
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
-COPY deps /deps
 COPY pyproject.toml /tiro/
 COPY tiro /tiro/tiro
 
-RUN sed -i '/git/d' pyproject.toml
-RUN pip install /deps/*.whl
 RUN poetry install --no-dev &&  \
     rm /tiro/poetry.lock &&  \
     rm /tiro/pyproject.toml
