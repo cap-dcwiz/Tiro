@@ -2,8 +2,11 @@ import logging
 from datetime import timedelta, datetime
 from pathlib import Path
 from typing import Optional, Literal
+from rich import print
 
 import pandas as pd
+
+from utinni.table.preprocess import PreProcessorForTSTable, NullPreProcessor
 
 try:
     from utinni.table.table import TimeSeriesPrimaryTable, PrimaryTable
@@ -28,6 +31,31 @@ def gen_index(start, stop, step):
         start -= _timeshift_by_epoch(start, step)
         stop -= _timeshift_by_epoch(stop, step)
     return pd.date_range(start, stop, freq=step)
+
+
+class PreProcessorForTiroTSTable(PreProcessorForTSTable):
+    @staticmethod
+    def _get_tag_from_asset_path(path, name):
+        path = split_path(path)
+        if name == "path":
+            return PATH_SEP.join(path[i] for i in range(0, len(path), 2))
+        if name in path:
+            return path[path.index(name) + 1]
+        else:
+            return None
+
+    def preprocess_dim_2(self, value, config, table_meta):
+        value = super(PreProcessorForTiroTSTable, self).preprocess_dim_2(value, config, table_meta)
+        key = table_meta["group_by"]
+        if key == "asset_path":
+            return value
+        return getattr(value.groupby(lambda x: self._get_tag_from_asset_path(x, key),
+                                     axis=1),
+                       table_meta["asset_agg_fn"])()
+
+
+class TimeSeriesPrimaryTableForTiro(TimeSeriesPrimaryTable):
+    PreProcessorClass = PreProcessorForTiroTSTable
 
 
 class TiroTSPump(InfluxDBDataPump):
@@ -112,7 +140,8 @@ class TiroTSPump(InfluxDBDataPump):
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
             raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern_or_uses}\"")
-        table = super(TiroTSPump, self).gen_table(column="asset_path", agg_fn=time_agg_fn, path=paths)
+        table = super(TiroTSPump, self).gen_table(column="asset_path", agg_fn=time_agg_fn, path=paths,
+                                                  table_cls=TimeSeriesPrimaryTableForTiro)
         logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("asset_agg_fn", asset_agg_fn)
         table.set_meta("table_type", "historian")
@@ -166,28 +195,7 @@ class TiroTSPump(InfluxDBDataPump):
                 data = self.fill_data_from_graph_db(table, fields)
             else:
                 data = {}
-        # TODO: may need to interpolate before grouping
-        return self.group_ts_data(data, table.meta["group_by"], table.meta["asset_agg_fn"])
-
-    @staticmethod
-    def _get_tag_from_asset_path(path, name):
-        path = split_path(path)
-        if name == "path":
-            return PATH_SEP.join(path[i] for i in range(0, len(path), 2))
-        if name in path:
-            return path[path.index(name) + 1]
-        else:
-            return None
-
-    def group_ts_data(self, data, key, agg_fn):
-        if key == "asset_path":
-            return data
-        if isinstance(data, dict):
-            return {k: self.group_ts_data(v, key, agg_fn) for k, v in data.items()}
-        else:
-            return getattr(data.groupby(lambda x: self._get_tag_from_asset_path(x, key),
-                                        axis=1),
-                           agg_fn)()
+        return data
 
     def get_status_data(self, table: PrimaryTable) -> ValueType:
         query_or_regex = table.meta["query_or_regex"]
