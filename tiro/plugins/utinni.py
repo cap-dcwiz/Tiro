@@ -49,9 +49,10 @@ class PreProcessorForTiroTSTable(PreProcessorForTSTable):
         key = table_meta["group_by"]
         if key == "asset_path":
             return value
-        return getattr(value.groupby(lambda x: self._get_tag_from_asset_path(x, key),
-                                     axis=1),
-                       table_meta["asset_agg_fn"])()
+        return getattr(
+            value.groupby(lambda x: self._get_tag_from_asset_path(x, key), axis=1),
+            table_meta["asset_agg_fn"]
+        )(**table_meta.get("asset_agg_fn_kwargs", {}))
 
 
 class TimeSeriesPrimaryTableForTiro(TimeSeriesPrimaryTable):
@@ -106,6 +107,7 @@ class TiroTSPump(InfluxDBDataPump):
                   type: Literal["historian", "status"] = "historian",
                   column: str = "asset_path",
                   asset_agg_fn: str = "mean",
+                  asset_agg_fn_kwargs: dict = None,
                   time_agg_fn: str = "last",
                   fill_with_graph: bool = True,
                   as_dataframe: bool = False,
@@ -118,6 +120,7 @@ class TiroTSPump(InfluxDBDataPump):
             return self.gen_historian_table(pattern_or_uses=query,
                                             column=column,
                                             asset_agg_fn=asset_agg_fn,
+                                            asset_agg_fn_kwargs=asset_agg_fn_kwargs or {},
                                             time_agg_fn=time_agg_fn,  # Careful!
                                             only_ts=not fill_with_graph,
                                             time_diff=max_time_diff,
@@ -133,6 +136,7 @@ class TiroTSPump(InfluxDBDataPump):
                             pattern_or_uses: str | dict | Path,
                             column: str,
                             asset_agg_fn: str,
+                            asset_agg_fn_kwargs: dict,
                             time_agg_fn: str,
                             only_ts: bool,
                             time_diff: float,
@@ -144,6 +148,7 @@ class TiroTSPump(InfluxDBDataPump):
                                                   table_cls=TimeSeriesPrimaryTableForTiro)
         logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("asset_agg_fn", asset_agg_fn)
+        table.set_meta("asset_agg_fn_kwargs", asset_agg_fn_kwargs)
         table.set_meta("table_type", "historian")
         table.set_meta("only_ts", only_ts)
         table.set_meta("pattern_or_uses", pattern_or_uses)
