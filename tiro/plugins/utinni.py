@@ -6,7 +6,7 @@ from rich import print
 
 import pandas as pd
 
-from utinni.table.preprocess import PreProcessorForTSTable, NullPreProcessor
+from utinni.table.preprocess import PreProcessorForTSTable
 
 try:
     from utinni.table.table import TimeSeriesPrimaryTable, PrimaryTable
