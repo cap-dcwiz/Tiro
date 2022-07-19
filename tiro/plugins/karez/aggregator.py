@@ -81,7 +81,7 @@ class ValidationAggregator(AggregatorBase):
                     schema = json.load(f)
                 self.validator = Validator(schema=schema, retention=self.config.retention, log=False)
         self.validator.collect(payload["path"], payload["result"])
-        print(f"[bold]\[{self.TYPE}-{self.name}][/bold] "
+        print(f"[bold][{self.TYPE}-{self.name}][/bold] "
               f"Collection size: {self.validator.current_collection_size}",
               end="\r")
         if self.validator.last_validation_start_time > self.last_validation_start_time:
