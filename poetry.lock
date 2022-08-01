@@ -736,7 +736,7 @@ influxdb = ["influxdb-client (>=1.27.0,<2.0.0)"]
 type = "git"
 url = "https://github.com/cap-dcwiz/Karez.git"
 reference = "main"
-resolved_reference = "4f20e66976fb3b0490f11513e8266f49250fcc87"
+resolved_reference = "7d3a43d2494e4246c573c599f3297aa1f50079ab"
 
 [[package]]
 name = "markdown"
@@ -1262,7 +1262,7 @@ documents = ["sphinx (>=1.1.3)", "sphinx-rtd-theme", "humanfriendly"]
 quality = ["coverage (>=3.5.3)", "nose (>=1.2.1)", "mock (>=1.0.0)", "pep8 (>=1.3.3)"]
 repl = ["click (>=7.0)", "prompt-toolkit (==2.0.4)", "pygments (>=2.2.0)", "click (>=7.0)", "prompt-toolkit (>=3.0.8)", "pygments (>=2.2.0)", "aiohttp (>=3.7.3)", "pyserial-asyncio (>=0.5)"]
 tornado = ["tornado (==4.5.3)"]
-twisted = ["Twisted[serial,conch] (>=20.3.0)", "Twisted[conch] (>=20.3.0)"]
+twisted = ["Twisted[conch,serial] (>=20.3.0)", "Twisted[conch] (>=20.3.0)"]
 
 [[package]]
 name = "pyparsing"

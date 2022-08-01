@@ -99,6 +99,12 @@ class Attribute(DataPointInfo):
     pass
 
 
+class Alias:
+    """Alias for a data point info"""
+    def __init__(self, origin: str):
+        self.origin = origin
+
+
 class RequireHelper:
     """Helper class for requiring children or data points"""
 
@@ -144,7 +150,10 @@ class Entity:
             if issubclass(c, Entity):
                 cls.data_point_info |= c.data_point_info
         cls.child_info: dict[str, EntityList] = {}
-        for k, v in get_annotations(cls).items():
+        annotations = get_annotations(cls)
+        for k, v in annotations.items():
+            if isinstance(v, Alias):
+                v = annotations[v.origin]
             if isinstance(v, DataPointInfo):
                 cls.data_point_info[k] = v
                 if hasattr(cls, k):
