@@ -2,13 +2,12 @@ import logging
 from datetime import timedelta, datetime
 from pathlib import Path
 from typing import Optional, Literal
-from rich import print
 
 import pandas as pd
 
-from utinni.table.preprocess import PreProcessorForTSTable
-
 try:
+    from utinni.pump.tsdb import NoValidDataFoundException
+    from utinni.table.preprocess import PreProcessorForTSTable
     from utinni.table.table import TimeSeriesPrimaryTable, PrimaryTable
     from utinni.types import ValueType
     from utinni.pump import InfluxDBDataPump
@@ -195,10 +194,14 @@ class TiroTSPump(InfluxDBDataPump):
                         k: v for k, v in self.fill_data_from_graph_db(table, None).items()
                         if k not in data
                     }
-        except RuntimeError:
+        except NoValidDataFoundException:
             if not table.meta["only_ts"]:
+                logging.warning(f"{table.name or table}: "
+                                f"Failed to get data from Tiro, trying to get data from ArangoDB")
                 data = self.fill_data_from_graph_db(table, fields)
             else:
+                logging.warning(f"{table.name or table}: "
+                                f"Failed to get data from Tiro, WILL NOT try to get data from ArangoDB")
                 data = {}
         return data
 
