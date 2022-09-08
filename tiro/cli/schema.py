@@ -22,11 +22,12 @@ def json_default(obj):
 
 @app.command("show")
 def schema_show(
-        scenario_path: Path,
-        uses: list[Path],
-        output: Optional[Path] = typer.Option(None, "--output", "-o"),
-        all_children: Optional[bool] = typer.Option(True, "--all-children", "-a",
-                                                    help="Require all claimed children for each asset")
+    scenario_path: Path,
+    uses: list[Path],
+    output: Optional[Path] = typer.Option(None, "--output", "-o"),
+    all_children: Optional[bool] = typer.Option(
+        True, "--all-children", "-a", help="Require all claimed children for each asset"
+    ),
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     if output:
@@ -38,11 +39,11 @@ def schema_show(
 
 @app.command("example")
 def schema_example(
-        scenario_path: Path,
-        uses: list[Path],
-        reference: Optional[Path] = typer.Option(None, "--reference", "-r"),
-        compact: Optional[bool] = typer.Option(False, "--compact", "-c"),
-        output: Optional[Path] = typer.Option(None, "--output", "-o")
+    scenario_path: Path,
+    uses: list[Path],
+    reference: Optional[Path] = typer.Option(None, "--reference", "-r"),
+    compact: Optional[bool] = typer.Option(False, "--compact", "-c"),
+    output: Optional[Path] = typer.Option(None, "--output", "-o"),
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     mocker = scenario.mocker(reference=reference)
@@ -50,7 +51,7 @@ def schema_example(
     if compact:
         data = scenario.to_compact(data)
     if output:
-        with open(output, 'w') as f:
+        with open(output, "w") as f:
             json.dump(data, f, indent=2)
     else:
         print(data)

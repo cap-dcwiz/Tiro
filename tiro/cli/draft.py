@@ -13,8 +13,8 @@ app = typer.Typer()
 
 @app.command("scenario")
 def gen_schema(
-        csv_file: Path,
-        output: Optional[Path] = typer.Option(None, "--output", "-o"),
+    csv_file: Path,
+    output: Optional[Path] = typer.Option(None, "--output", "-o"),
 ):
     draft_gen = DraftGenerator(csv_file=csv_file)
     out = yaml.dump(draft_gen.schema)
@@ -27,8 +27,8 @@ def gen_schema(
 
 @app.command("uses")
 def gen_uses(
-        csv_file: Path,
-        output: Optional[Path] = typer.Option(None, "--output", "-o"),
+    csv_file: Path,
+    output: Optional[Path] = typer.Option(None, "--output", "-o"),
 ):
     draft_gen = DraftGenerator(csv_file=csv_file)
     out = yaml.dump(draft_gen.uses)
@@ -41,8 +41,8 @@ def gen_uses(
 
 @app.command("reference")
 def gen_reference(
-        csv_file: Path,
-        output: Optional[Path] = typer.Option(None, "--output", "-o"),
+    csv_file: Path,
+    output: Optional[Path] = typer.Option(None, "--output", "-o"),
 ):
     draft_gen = DraftGenerator(csv_file=csv_file)
     out = yaml.dump(draft_gen.reference)
@@ -51,5 +51,3 @@ def gen_reference(
             f.write(out)
     else:
         print(out)
-
-

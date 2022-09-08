@@ -13,12 +13,12 @@ app = typer.Typer()
 
 @app.command("serve")
 def serve(
-        scenario_path: Path,
-        uses: list[Path],
-        host: str = typer.Option("127.0.0.1", "--host", "-h"),
-        port: int = typer.Option(8001, "--port", "-p"),
-        log_size: int = typer.Option(10, "--log-size", "-l"),
-        retention: int = typer.Option(60, "--retention", "-r")
+    scenario_path: Path,
+    uses: list[Path],
+    host: str = typer.Option("127.0.0.1", "--host", "-h"),
+    port: int = typer.Option(8001, "--port", "-p"),
+    log_size: int = typer.Option(10, "--log-size", "-l"),
+    retention: int = typer.Option(60, "--retention", "-r"),
 ):
     print(f"[green]CONF[/green]:     Retention: {retention}")
     print(f"[green]CONF[/green]:     Log Size: {log_size}")
@@ -29,11 +29,7 @@ def serve(
 
 
 @app.command("test")
-def test(
-        scenario_path: Path,
-        uses: list[Path],
-        input: Path
-):
+def test(scenario_path: Path, uses: list[Path], input: Path):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     validator = scenario.validator(log=True)
     context = json.load(input.open())

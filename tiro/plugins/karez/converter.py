@@ -40,8 +40,12 @@ class TiroUpdateInfoForValueConverter(FixTimestampConverter):
     @classmethod
     def config_entities(cls):
         yield from super(TiroUpdateInfoForValueConverter, cls).config_entities()
-        yield OptionalConfigEntity("reference", None, 'Reference file (required if by="uuid"')
-        yield OptionalConfigEntity("scenario", None, 'Scenario file (required if by="uuid"')
+        yield OptionalConfigEntity(
+            "reference", None, 'Reference file (required if by="uuid"'
+        )
+        yield OptionalConfigEntity(
+            "scenario", None, 'Scenario file (required if by="uuid"'
+        )
         yield OptionalConfigEntity("uses", None, 'Uses files (required if by="uuid"')
 
     def convert(self, payload):

@@ -9,10 +9,9 @@ from .model import Entity
 from .scenario import Scenario
 
 
-def create_entity(name: str,
-                  base_path: str,
-                  library_path: str = "tiro.assets",
-                  **entities) -> Type[Entity]:
+def create_entity(
+    name: str, base_path: str, library_path: str = "tiro.assets", **entities
+) -> Type[Entity]:
     base_path, _, base_name = base_path.rpartition(".")
     if not base_path:
         base = getattr(import_module(library_path), base_name)
@@ -25,9 +24,11 @@ def create_entity_from_dict(name, defs, as_list, prefix=""):
     meta_start = "$"
     if prefix:
         name = f"{prefix}_{name}"
-    children = {k: create_entity_from_dict(k, v, as_list=True, prefix=name)
-                for k, v in defs.items()
-                if not k.startswith(meta_start)}
+    children = {
+        k: create_entity_from_dict(k, v, as_list=True, prefix=name)
+        for k, v in defs.items()
+        if not k.startswith(meta_start)
+    }
     entity = create_entity(name, defs[f"{meta_start}type"], **children)
     if as_list:
         list_args = {}
@@ -35,7 +36,9 @@ def create_entity_from_dict(name, defs, as_list, prefix=""):
             number = defs[f"{meta_start}number"]
             if isinstance(number, str) and "-" in number:
                 min_num, max_num = number.split("-")
-                list_args["faking_number"] = partial(randint, int(min_num), int(max_num))
+                list_args["faking_number"] = partial(
+                    randint, int(min_num), int(max_num)
+                )
             else:
                 list_args["faking_number"] = int(number)
         else:
@@ -60,5 +63,6 @@ def create_scenario(*args, **entities):
 
 def create_scenario_from_yaml(yaml):
     defs = safe_load(yaml)
-    return create_scenario(**{k: create_entity_from_dict(k, v, as_list=True)
-                              for k, v in defs.items()})
+    return create_scenario(
+        **{k: create_entity_from_dict(k, v, as_list=True) for k, v in defs.items()}
+    )

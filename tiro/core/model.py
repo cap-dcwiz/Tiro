@@ -7,14 +7,32 @@ from importlib import import_module
 from inspect import get_annotations
 from pathlib import Path
 from random import randint
-from typing import TypeVar, Generic, Optional, Type, Any, Union, Callable, Literal, Generator
+from typing import (
+    TypeVar,
+    Generic,
+    Optional,
+    Type,
+    Any,
+    Union,
+    Callable,
+    Literal,
+    Generator,
+)
 
 from pydantic import BaseModel, create_model, Field
 from pydantic.generics import GenericModel
 from yaml import safe_load
 
-from .utils import camel_to_snake, DataPointTypes, PATH_SEP, concat_path, YAML_META_CHAR, split_path, decouple_uses, \
-    format_regex
+from .utils import (
+    camel_to_snake,
+    DataPointTypes,
+    PATH_SEP,
+    concat_path,
+    YAML_META_CHAR,
+    split_path,
+    decouple_uses,
+    format_regex,
+)
 
 DPT = TypeVar("DPT", *DataPointTypes)
 
@@ -22,18 +40,21 @@ DPT = TypeVar("DPT", *DataPointTypes)
 class EntityList:
     """Holding the information of a list of entity with the same type"""
 
-    def __init__(self,
-                 cls: Type["Entity"],
-                 faking_number: Optional[Callable | int] = None,
-                 ids: Optional[list[str]] = None
-                 ):
+    def __init__(
+        self,
+        cls: Type["Entity"],
+        faking_number: Optional[Callable | int] = None,
+        ids: Optional[list[str]] = None,
+    ):
         self.cls = cls
         self.ids = ids
         if self.ids is not None:
             if faking_number is None:
                 faking_number = len(self.ids)
             elif isinstance(faking_number, int) and faking_number > len(self.ids):
-                raise RuntimeError("When ids is provided, faking_number must be less than the length of ids.")
+                raise RuntimeError(
+                    "When ids is provided, faking_number must be less than the length of ids."
+                )
         if isinstance(faking_number, int):
             self.number_faker = lambda: faking_number
         else:
@@ -46,6 +67,7 @@ class EntityList:
 
 class DataPoint(GenericModel, Generic[DPT]):
     """Base Pydantic Model to representing a data point"""
+
     value: DPT
     timestamp: datetime
     _unit: Optional[str] = None
@@ -62,12 +84,14 @@ class DataPointInfo:
     SUB_CLASSES = set()
     SUB_CLASS_NAMES = set()
 
-    def __init__(self,
-                 type: Any,
-                 unit: Optional[str] = None,
-                 faker: Optional[Callable] = None,
-                 time_var: Optional[timedelta] = timedelta(seconds=0),
-                 default=None):
+    def __init__(
+        self,
+        type: Any,
+        unit: Optional[str] = None,
+        faker: Optional[Callable] = None,
+        time_var: Optional[timedelta] = timedelta(seconds=0),
+        default=None,
+    ):
         self.type = type
         self.unit = unit
         self.faker = faker
@@ -78,7 +102,9 @@ class DataPointInfo:
         cls.SUB_CLASSES.add(cls)
         cls.SUB_CLASS_NAMES.add(cls.__name__)
 
-    def default_object(self, cls: Optional[Type[DataPoint]] = None) -> Optional[DataPoint | dict]:
+    def default_object(
+        self, cls: Optional[Type[DataPoint]] = None
+    ) -> Optional[DataPoint | dict]:
         if self.default is None:
             return None
         else:
@@ -91,16 +117,19 @@ class DataPointInfo:
 
 class Telemetry(DataPointInfo):
     """Data point that dynamically changes."""
+
     pass
 
 
 class Attribute(DataPointInfo):
     """Data point that seldom changes"""
+
     pass
 
 
 class Alias:
     """Alias for a data point info"""
+
     def __init__(self, origin: str):
         self.origin = origin
 
@@ -165,9 +194,10 @@ class Entity:
                     delattr(cls, k)
         cls.cached_data_point_model = {}
 
-    def __init__(self,
-                 parent: Optional["Entity"] = None,
-                 ):
+    def __init__(
+        self,
+        parent: Optional["Entity"] = None,
+    ):
         self.children: dict[str, Entity] = {}
         self.parent: Optional[Entity] = parent
         self._used_data_points: set[str] = set()
@@ -230,13 +260,15 @@ class Entity:
         for key, value in defaults.items():
             cls.data_point_info[key].default = value
 
-    def _create_date_points_model(self,
-                                  dp_category: Type[DataPoint],
-                                  hide_dp_values: bool
-                                  ) -> tuple[Optional[Type[BaseModel]], bool]:
+    def _create_date_points_model(
+        self, dp_category: Type[DataPoint], hide_dp_values: bool
+    ) -> tuple[Optional[Type[BaseModel]], bool]:
         """Dynamically generate Pydantic model for all data points in the entity."""
-        info = {k: v for k, v in self.data_point_info.items()
-                if isinstance(v, dp_category) and k in self._used_data_points}
+        info = {
+            k: v
+            for k, v in self.data_point_info.items()
+            if isinstance(v, dp_category) and k in self._used_data_points
+        }
         if not info:
             return None, False
         sub_models: dict[str, tuple[type, Any]] = {}
@@ -248,30 +280,39 @@ class Entity:
             else:
                 model_cache = self.__class__.cached_data_point_model
                 if dp_model_name not in model_cache:
-                    model_cache[dp_model_name] = type(f"{self.name}_{dp_name}",
-                                                      (DataPoint[dp_info.type],),
-                                                      dict(_unit=dp_info.unit))
+                    model_cache[dp_model_name] = type(
+                        f"{self.name}_{dp_name}",
+                        (DataPoint[dp_info.type],),
+                        dict(_unit=dp_info.unit),
+                    )
                 dp_type = model_cache[dp_model_name]
             if dp_info.default is not None and not hide_dp_values:
-                sub_models[camel_to_snake(dp_name)] = Optional[dp_type], dp_info.default_object(dp_type)
+                sub_models[camel_to_snake(dp_name)] = Optional[
+                    dp_type
+                ], dp_info.default_object(dp_type)
             else:
                 is_optional = False
                 sub_models[camel_to_snake(dp_name)] = dp_type, ...
-        return create_model(f"{self.unique_name}_{dp_category.__name__}", **sub_models), is_optional
+        return (
+            create_model(f"{self.unique_name}_{dp_category.__name__}", **sub_models),
+            is_optional,
+        )
 
-    def _create_entities_model(self,
-                               hide_dp_values: bool,
-                               require_all_children: bool
-                               ) -> tuple[dict[str, tuple[type, Any]], bool]:
+    def _create_entities_model(
+        self, hide_dp_values: bool, require_all_children: bool
+    ) -> tuple[dict[str, tuple[type, Any]], bool]:
         """Dynamically generate Pydantic model for the entity type."""
         fields = {}
         is_optional = True
         for name, ins in self.children.items():
-            sub_model_list_values, sub_is_optional = ins._model(hide_dp_values=hide_dp_values,
-                                                                require_all_children=require_all_children)
+            sub_model_list_values, sub_is_optional = ins._model(
+                hide_dp_values=hide_dp_values, require_all_children=require_all_children
+            )
             child_info = self.child_info[name]
             if child_info.ids:
-                sub_model_list = dict[Literal[tuple(child_info.ids)], sub_model_list_values]
+                sub_model_list = dict[
+                    Literal[tuple(child_info.ids)], sub_model_list_values
+                ]
             else:
                 sub_model_list = dict[str, sub_model_list_values]
             if sub_is_optional and not require_all_children:
@@ -281,22 +322,31 @@ class Entity:
                 fields[camel_to_snake(name)] = sub_model_list, ...
         return fields, is_optional
 
-    def _model(self, hide_dp_values: bool, require_all_children: bool) -> tuple[Type[BaseModel], bool]:
+    def _model(
+        self, hide_dp_values: bool, require_all_children: bool
+    ) -> tuple[Type[BaseModel], bool]:
         """Generate a complete Pydantic model for a model tree staring from current entity."""
-        fields, is_optional = self._create_entities_model(hide_dp_values=hide_dp_values,
-                                                          require_all_children=require_all_children)
+        fields, is_optional = self._create_entities_model(
+            hide_dp_values=hide_dp_values, require_all_children=require_all_children
+        )
         for dp_category in DataPointInfo.SUB_CLASSES:
-            dp_model, sub_is_optional = self._create_date_points_model(dp_category, hide_dp_values=hide_dp_values)
+            dp_model, sub_is_optional = self._create_date_points_model(
+                dp_category, hide_dp_values=hide_dp_values
+            )
             if dp_model:
                 if sub_is_optional:
-                    fields |= {camel_to_snake(dp_category.__name__): (Optional[dp_model], {})}
+                    fields |= {
+                        camel_to_snake(dp_category.__name__): (Optional[dp_model], {})
+                    }
                 else:
                     fields |= {camel_to_snake(dp_category.__name__): (dp_model, ...)}
                 is_optional &= sub_is_optional
         return create_model(self.unique_name, config=self.Config, **fields), is_optional
 
     def model(self, hide_dp_values: bool = False, require_all_children: bool = True):
-        return self._model(hide_dp_values=hide_dp_values, require_all_children=require_all_children)[0]
+        return self._model(
+            hide_dp_values=hide_dp_values, require_all_children=require_all_children
+        )[0]
 
     def __getattr__(self, item: str) -> RequireHelper:
         return RequireHelper(item, self)
@@ -327,21 +377,33 @@ class Entity:
             for k in self._used_data_points:
                 dp_info = self.data_point_info[k]
                 if dp_info.default:
-                    res[k] = dp_info.default_object() | dict(type=dp_info.__class__.__name__)
+                    res[k] = dp_info.default_object() | dict(
+                        type=dp_info.__class__.__name__
+                    )
             return res
 
     @classmethod
     def use_selection_model(cls, name_prefix=""):
-        telemetry_names = tuple(k for k, v in cls.data_point_info.items() if isinstance(v, Telemetry))
-        attribute_names = tuple(k for k, v in cls.data_point_info.items() if isinstance(v, Attribute))
+        telemetry_names = tuple(
+            k for k, v in cls.data_point_info.items() if isinstance(v, Telemetry)
+        )
+        attribute_names = tuple(
+            k for k, v in cls.data_point_info.items() if isinstance(v, Attribute)
+        )
         name = f"{name_prefix}.{cls.__name__}".strip(".")
         model_kwargs = dict()
         if telemetry_names:
-            model_kwargs["telemetry"] = Optional[list[Literal[telemetry_names]]], Field(None, unique_items=True)
+            model_kwargs["telemetry"] = Optional[list[Literal[telemetry_names]]], Field(
+                None, unique_items=True
+            )
         if attribute_names:
-            model_kwargs["attribute"] = Optional[list[Literal[attribute_names]]], Field(None, unique_items=True)
+            model_kwargs["attribute"] = Optional[list[Literal[attribute_names]]], Field(
+                None, unique_items=True
+            )
         for k, v in cls.child_info.items():
-            model_kwargs[k] = Optional[v.cls.use_selection_model(name_prefix=name)], Field(None)
+            model_kwargs[k] = Optional[
+                v.cls.use_selection_model(name_prefix=name)
+            ], Field(None)
         return create_model(name, **model_kwargs)
 
     def all_required_paths(self, prefix=None) -> Generator[str, None, None]:
@@ -351,22 +413,29 @@ class Entity:
         for dp in self._used_data_points:
             yield concat_path(prefix, dp)
 
-    def all_required_edges(self, self_name=None) -> Generator[tuple[str, str, str], None, None]:
+    def all_required_edges(
+        self, self_name=None
+    ) -> Generator[tuple[str, str, str], None, None]:
         self_name = self_name or self.name
         for child_name, child in self.children.items():
             yield "is_parent_of", self_name, child_name
             yield from child.all_required_edges(child_name)
         for dp_name in self._used_data_points:
-            yield "has_data_point", self_name, self.data_point_info[dp_name].__class__.__name__
+            yield "has_data_point", self_name, self.data_point_info[
+                dp_name
+            ].__class__.__name__
 
-    def match_data_points(self, pattern_or_uses: str | dict | Path, paths: list[str] = None) -> Iterable[str]:
+    def match_data_points(
+        self, pattern_or_uses: str | dict | Path, paths: list[str] = None
+    ) -> Iterable[str]:
         if isinstance(pattern_or_uses, str):
-            return filter(partial(self.path_match, pattern_or_uses),
-                          paths or self.all_required_paths())
+            return filter(
+                partial(self.path_match, pattern_or_uses),
+                paths or self.all_required_paths(),
+            )
         else:
             valid_paths = set(decouple_uses(pattern_or_uses))
-            return filter(valid_paths.__contains__,
-                          paths or self.all_required_paths())
+            return filter(valid_paths.__contains__, paths or self.all_required_paths())
 
     @staticmethod
     def path_match(pattern: str, path: str) -> bool:
@@ -376,14 +445,15 @@ class Entity:
             return True
 
     @classmethod
-    def create(cls,
-               name: str,
-               *entities: Union["Entity", Type["Entity"]],
-               base_classes: Optional[list[str]] = None,
-               asset_library_path: Optional[str] = None,
-               asset_library_name: str = "tiro.assets",
-               **entity_dict: dict[str, Union["Entity", Type["Entity"]]]
-               ) -> Type["Entity"]:
+    def create(
+        cls,
+        name: str,
+        *entities: Union["Entity", Type["Entity"]],
+        base_classes: Optional[list[str]] = None,
+        asset_library_path: Optional[str] = None,
+        asset_library_name: str = "tiro.assets",
+        **entity_dict: dict[str, Union["Entity", Type["Entity"]]],
+    ) -> Type["Entity"]:
         """Dynamically create the entity class according to the entity name defined in an asset library"""
         if base_classes:
             if asset_library_path and asset_library_path not in sys.path:
@@ -394,7 +464,9 @@ class Entity:
                 if not base_class:
                     base = getattr(import_module(asset_library_name), base_name)
                 else:
-                    base = getattr(import_module(f"{asset_library_name}.{base_class}"), base_name)
+                    base = getattr(
+                        import_module(f"{asset_library_name}.{base_class}"), base_name
+                    )
                 bases.append(base)
             bases = tuple(bases)
         else:
@@ -411,38 +483,46 @@ class Entity:
         return type(name, bases, dict(__annotations__=ann))
 
     @classmethod
-    def create_from_define_string(cls,
-                                  name: str,
-                                  defs: dict,
-                                  prefix: str = "",
-                                  asset_library_path: Optional[str] = None,
-                                  asset_library_name: str = "tiro.assets") -> EntityList:
+    def create_from_define_string(
+        cls,
+        name: str,
+        defs: dict,
+        prefix: str = "",
+        asset_library_path: Optional[str] = None,
+        asset_library_name: str = "tiro.assets",
+    ) -> EntityList:
         """Dynamically create the entity from a dictionary containing model infos"""
         if prefix:
             name = f"{prefix}_{name}"
         children = {
             k: cls.create_from_define_string(
-                k, v,
+                k,
+                v,
                 prefix=name,
                 asset_library_path=asset_library_path,
-                asset_library_name=asset_library_name
+                asset_library_name=asset_library_name,
             )
-            for k, v in defs.items() if not k.startswith(YAML_META_CHAR)
+            for k, v in defs.items()
+            if not k.startswith(YAML_META_CHAR)
         }
         base_classes = defs[f"{YAML_META_CHAR}type"]
         if not isinstance(base_classes, list):
             base_classes = [base_classes]
-        entity = cls.create(name,
-                            base_classes=base_classes,
-                            asset_library_path=asset_library_path,
-                            asset_library_name=asset_library_name,
-                            **children)
+        entity = cls.create(
+            name,
+            base_classes=base_classes,
+            asset_library_path=asset_library_path,
+            asset_library_name=asset_library_name,
+            **children,
+        )
         list_args = {}
         if f"{YAML_META_CHAR}number" in defs:
             number = defs[f"{YAML_META_CHAR}number"]
             if isinstance(number, str) and "-" in number:
                 min_num, max_num = number.split("-")
-                list_args["faking_number"] = partial(randint, int(min_num), int(max_num))
+                list_args["faking_number"] = partial(
+                    randint, int(min_num), int(max_num)
+                )
             else:
                 list_args["faking_number"] = int(number)
         else:
@@ -454,9 +534,11 @@ class Entity:
         return entity.many(**list_args)
 
     def to_compact(self, data):
-        res = {k: {c: self.children[k].to_compact(cv)
-                   for c, cv in v.items()}
-               for k, v in data.items() if k in self.children}
+        res = {
+            k: {c: self.children[k].to_compact(cv) for c, cv in v.items()}
+            for k, v in data.items()
+            if k in self.children
+        }
         for dp_type in DataPointInfo.SUB_CLASS_NAMES:
             if dp_type in data:
                 res |= {k: v["value"] for k, v in data[dp_type].items()}

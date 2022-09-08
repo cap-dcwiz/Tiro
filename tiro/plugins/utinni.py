@@ -44,13 +44,15 @@ class PreProcessorForTiroTSTable(PreProcessorForTSTable):
             return None
 
     def preprocess_dim_2(self, value, config, table_meta):
-        value = super(PreProcessorForTiroTSTable, self).preprocess_dim_2(value, config, table_meta)
+        value = super(PreProcessorForTiroTSTable, self).preprocess_dim_2(
+            value, config, table_meta
+        )
         key = table_meta["group_by"]
         if key == "asset_path":
             return value
         return getattr(
             value.groupby(lambda x: self._get_tag_from_asset_path(x, key), axis=1),
-            table_meta["asset_agg_fn"]
+            table_meta["asset_agg_fn"],
         )(**table_meta.get("asset_agg_fn_kwargs", {}))
 
 
@@ -59,17 +61,19 @@ class TimeSeriesPrimaryTableForTiro(TimeSeriesPrimaryTable):
 
 
 class TiroTSPump(InfluxDBDataPump):
-    def __init__(self, *args,
-                 scenario: Scenario | str | Path,
-                 uses: Optional[list[str | Path]] = None,
-                 arangodb_db="tiro",
-                 arangodb_graph="scenario",
-                 arangodb_hosts="http://localhost:8529",
-                 arangodb_auth=None,
-                 arangodb_agent=None,
-                 **kwargs):
-        super(TiroTSPump, self).__init__(*args,
-                                         **kwargs)
+    def __init__(
+        self,
+        *args,
+        scenario: Scenario | str | Path,
+        uses: Optional[list[str | Path]] = None,
+        arangodb_db="tiro",
+        arangodb_graph="scenario",
+        arangodb_hosts="http://localhost:8529",
+        arangodb_auth=None,
+        arangodb_agent=None,
+        **kwargs,
+    ):
+        super(TiroTSPump, self).__init__(*args, **kwargs)
         uses = uses or []
         if isinstance(scenario, Scenario):
             self.scenario = scenario
@@ -78,11 +82,13 @@ class TiroTSPump(InfluxDBDataPump):
         else:
             self.scenario = Scenario.from_yaml(scenario, *uses)
         if arangodb_agent is None:
-            self._arangodb_agent_params = dict(scenario=scenario,
-                                               db_name=arangodb_db,
-                                               graph_name=arangodb_graph,
-                                               auth_info=arangodb_auth,
-                                               hosts=arangodb_hosts)
+            self._arangodb_agent_params = dict(
+                scenario=scenario,
+                db_name=arangodb_db,
+                graph_name=arangodb_graph,
+                auth_info=arangodb_auth,
+                hosts=arangodb_hosts,
+            )
         else:
             self._arangodb_agent_params = None
             if arangodb_agent.scenario is None:
@@ -101,50 +107,61 @@ class TiroTSPump(InfluxDBDataPump):
             self._arangodb_agent = agent
         return self._arangodb_agent
 
-    def gen_table(self,
-                  query: Optional[str | dict | Path] = ".*",
-                  type: Literal["historian", "status"] = "historian",
-                  column: str = "asset_path",
-                  asset_agg_fn: str = "mean",
-                  asset_agg_fn_kwargs: dict = None,
-                  time_agg_fn: str = "last",
-                  fill_with_graph: bool = True,
-                  as_dataframe: bool = False,
-                  include_tags: list[str] | str = "all",
-                  value_only: bool = False,
-                  # When query status, the telemetries updated before (now - max_time_diff) will be ignored.
-                  max_time_diff: Optional[float] = 600,
-                  ) -> PrimaryTable:
+    def gen_table(
+        self,
+        query: Optional[str | dict | Path] = ".*",
+        type: Literal["historian", "status"] = "historian",
+        column: str = "asset_path",
+        asset_agg_fn: str = "mean",
+        asset_agg_fn_kwargs: dict = None,
+        time_agg_fn: str = "last",
+        fill_with_graph: bool = True,
+        as_dataframe: bool = False,
+        include_tags: list[str] | str = "all",
+        value_only: bool = False,
+        # When query status, the telemetries updated before (now - max_time_diff) will be ignored.
+        max_time_diff: Optional[float] = 600,
+    ) -> PrimaryTable:
         if type == "historian":
-            return self.gen_historian_table(pattern_or_uses=query,
-                                            column=column,
-                                            asset_agg_fn=asset_agg_fn,
-                                            asset_agg_fn_kwargs=asset_agg_fn_kwargs or {},
-                                            time_agg_fn=time_agg_fn,  # Careful!
-                                            only_ts=not fill_with_graph,
-                                            time_diff=max_time_diff,
-                                            )
+            return self.gen_historian_table(
+                pattern_or_uses=query,
+                column=column,
+                asset_agg_fn=asset_agg_fn,
+                asset_agg_fn_kwargs=asset_agg_fn_kwargs or {},
+                time_agg_fn=time_agg_fn,  # Careful!
+                only_ts=not fill_with_graph,
+                time_diff=max_time_diff,
+            )
         elif type == "status":
-            return self.gen_status_table(query_or_regex=query,
-                                         as_dataframe=as_dataframe,
-                                         value_only=value_only,
-                                         include_tags=include_tags,
-                                         time_diff=max_time_diff)
+            return self.gen_status_table(
+                query_or_regex=query,
+                as_dataframe=as_dataframe,
+                value_only=value_only,
+                include_tags=include_tags,
+                time_diff=max_time_diff,
+            )
 
-    def gen_historian_table(self,
-                            pattern_or_uses: str | dict | Path,
-                            column: str,
-                            asset_agg_fn: str,
-                            asset_agg_fn_kwargs: dict,
-                            time_agg_fn: str,
-                            only_ts: bool,
-                            time_diff: float,
-                            ) -> TimeSeriesPrimaryTable:
+    def gen_historian_table(
+        self,
+        pattern_or_uses: str | dict | Path,
+        column: str,
+        asset_agg_fn: str,
+        asset_agg_fn_kwargs: dict,
+        time_agg_fn: str,
+        only_ts: bool,
+        time_diff: float,
+    ) -> TimeSeriesPrimaryTable:
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:
-            raise RuntimeError(f"Cannot find data points matching the pattern \"{pattern_or_uses}\"")
-        table = super(TiroTSPump, self).gen_table(column="asset_path", agg_fn=time_agg_fn, path=paths,
-                                                  table_cls=TimeSeriesPrimaryTableForTiro)
+            raise RuntimeError(
+                f'Cannot find data points matching the pattern "{pattern_or_uses}"'
+            )
+        table = super(TiroTSPump, self).gen_table(
+            column="asset_path",
+            agg_fn=time_agg_fn,
+            path=paths,
+            table_cls=TimeSeriesPrimaryTableForTiro,
+        )
         logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("asset_agg_fn", asset_agg_fn)
         table.set_meta("asset_agg_fn_kwargs", asset_agg_fn_kwargs)
@@ -155,22 +172,27 @@ class TiroTSPump(InfluxDBDataPump):
         table.set_meta("group_by", column)
         return table
 
-    def gen_status_table(self,
-                         query_or_regex: str | dict | Path,
-                         as_dataframe: bool,
-                         value_only: bool,
-                         include_tags: list[str],
-                         time_diff: float
-                         ) -> PrimaryTable:
-        return PrimaryTable(context=self.context,
-                            pump=self,
-                            fields=None,
-                            meta=dict(table_type="status",
-                                      query_or_regex=query_or_regex,
-                                      as_df=as_dataframe,
-                                      value_only=value_only,
-                                      include_tags=include_tags,
-                                      time_diff=time_diff))
+    def gen_status_table(
+        self,
+        query_or_regex: str | dict | Path,
+        as_dataframe: bool,
+        value_only: bool,
+        include_tags: list[str],
+        time_diff: float,
+    ) -> PrimaryTable:
+        return PrimaryTable(
+            context=self.context,
+            pump=self,
+            fields=None,
+            meta=dict(
+                table_type="status",
+                query_or_regex=query_or_regex,
+                as_df=as_dataframe,
+                value_only=value_only,
+                include_tags=include_tags,
+                time_diff=time_diff,
+            ),
+        )
 
     def get_data(self, table: PrimaryTable, fields) -> ValueType:
         table_type = table.meta["table_type"]
@@ -191,17 +213,22 @@ class TiroTSPump(InfluxDBDataPump):
                         data |= self.fill_data_from_graph_db(table, missing_fields)
                 else:
                     data |= {
-                        k: v for k, v in self.fill_data_from_graph_db(table, None).items()
+                        k: v
+                        for k, v in self.fill_data_from_graph_db(table, None).items()
                         if k not in data
                     }
         except NoValidDataFoundException:
             if not table.meta["only_ts"]:
-                logging.warning(f"{table.name or table}: "
-                                f"Failed to get data from Tiro, trying to get data from ArangoDB")
+                logging.warning(
+                    f"{table.name or table}: "
+                    f"Failed to get data from Tiro, trying to get data from ArangoDB"
+                )
                 data = self.fill_data_from_graph_db(table, fields)
             else:
-                logging.warning(f"{table.name or table}: "
-                                f"Failed to get data from Tiro, WILL NOT try to get data from ArangoDB")
+                logging.warning(
+                    f"{table.name or table}: "
+                    f"Failed to get data from Tiro, WILL NOT try to get data from ArangoDB"
+                )
                 data = {}
         return data
 
@@ -212,7 +239,7 @@ class TiroTSPump(InfluxDBDataPump):
             as_dataframe=as_dataframe,
             value_only=table.meta["value_only"],
             include_tags=table.meta["include_tags"],
-            max_time_diff=table.meta["time_diff"]
+            max_time_diff=table.meta["time_diff"],
         )
         if isinstance(query_or_regex, str):
             res = self.arangodb_agent.query_by_regex(query_or_regex, **query_params)
@@ -220,13 +247,18 @@ class TiroTSPump(InfluxDBDataPump):
             res = self.arangodb_agent.query_by_qpath(query_or_regex, **query_params)
         if as_dataframe:
             if not res.empty:
-                return {field: g.drop(columns=["field"]) for field, g in res.groupby("field")}
+                return {
+                    field: g.drop(columns=["field"])
+                    for field, g in res.groupby("field")
+                }
             else:
                 return {}
         else:
             return res
 
-    def fill_data_from_graph_db(self, table: TimeSeriesPrimaryTable, fields) -> ValueType:
+    def fill_data_from_graph_db(
+        self, table: TimeSeriesPrimaryTable, fields
+    ) -> ValueType:
         column = table.meta["group_by"]
         asset_agg_fn = table.meta["asset_agg_fn"]
         pattern_or_uses = table.meta["pattern_or_uses"]
@@ -234,8 +266,7 @@ class TiroTSPump(InfluxDBDataPump):
         config = table.config
         missing_data = []
         for path, value in self.arangodb_agent.query_attributes_and_missing(
-                pattern_or_uses=pattern_or_uses,
-                max_time_diff=time_diff
+            pattern_or_uses=pattern_or_uses, max_time_diff=time_diff
         ).items():
             data_point = self.scenario.data_point_path_to_tags(path) | value
             if fields and path.split(PATH_SEP)[-1] not in fields:

@@ -12,8 +12,12 @@ class DispatcherForMockServer(DispatcherBase):
     @classmethod
     def config_entities(cls):
         yield from super(DispatcherForMockServer, cls).config_entities()
-        yield OptionalConfigEntity("base_url", "http://localhost:8000", "URL of the Tiro Mock Server")
-        yield OptionalConfigEntity("by", "path", "Access data by path or uuid? (path, uuid)")
+        yield OptionalConfigEntity(
+            "base_url", "http://localhost:8000", "URL of the Tiro Mock Server"
+        )
+        yield OptionalConfigEntity(
+            "by", "path", "Access data by path or uuid? (path, uuid)"
+        )
 
     def load_entities(self) -> list:
         if self.config.by == "path":

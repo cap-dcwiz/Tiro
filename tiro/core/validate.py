@@ -36,7 +36,7 @@ class ValidationResult:
             start=self.start.isoformat(),
             end=self.end.isoformat(),
             valid=self.valid,
-            exception=self.serialise_exception()
+            exception=self.serialise_exception(),
         )
 
     def serialise_exception(self) -> Optional[dict]:
@@ -45,10 +45,11 @@ class ValidationResult:
         elif isinstance(self.exception, PydanticValidationError):
             return self.exception.errors()
         elif isinstance(self.exception, JSONSchemaValidatorError):
-            return dict(message=self.exception.message,
-                        path=self.exception.json_path,
-                        description=str(self.exception)
-                        )
+            return dict(
+                message=self.exception.message,
+                path=self.exception.json_path,
+                description=str(self.exception),
+            )
 
 
 class Validator:
@@ -58,24 +59,29 @@ class Validator:
     against the given scenario or JSON schema.
     """
 
-    def __init__(self,
-                 entity: Entity = None,
-                 schema: dict = None,
-                 retention: int = 0,
-                 log: bool = True,
-                 log_size: int = 100,
-                 validate_path_only: bool = False,
-                 require_all_children: bool = True,
-                 ):
+    def __init__(
+        self,
+        entity: Entity = None,
+        schema: dict = None,
+        retention: int = 0,
+        log: bool = True,
+        log_size: int = 100,
+        validate_path_only: bool = False,
+        require_all_children: bool = True,
+    ):
         if entity:
-            self.model: Type[BaseModel] = entity.model(hide_dp_values=validate_path_only,
-                                                       require_all_children=require_all_children)
+            self.model: Type[BaseModel] = entity.model(
+                hide_dp_values=validate_path_only,
+                require_all_children=require_all_children,
+            )
             self.schema = None
         else:
             self.model = None
             self.schema = schema
         self._data = {}
-        self.retention: Optional[timedelta] = timedelta(seconds=retention if retention > 0 else 1e9)
+        self.retention: Optional[timedelta] = timedelta(
+            seconds=retention if retention > 0 else 1e9
+        )
         self.data_create_time: datetime = datetime.now()
         self.log: deque[ValidationResult] = deque(maxlen=log_size if log else 1)
         self._collect_count = 0

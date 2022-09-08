@@ -95,20 +95,27 @@ class QueryPath:
                 )
                 all_paths.append(path_str)
         if prune_rules:
-            prune_statement = "PRUNE v.path NOT IN all_fields\n       OR " + "\n       OR ".join(prune_rules)
+            prune_statement = (
+                "PRUNE v.path NOT IN all_fields\n       OR "
+                + "\n       OR ".join(prune_rules)
+            )
         else:
             prune_statement = "PRUNE v.path NOT IN all_fields"
         if filter_rules:
             filter_statement = "\n    ".join(filter_rules)
         else:
             filter_statement = ""
-        filter_path_statement = f'FILTER v.path in KEYS(fields)'
+        filter_path_statement = f"FILTER v.path in KEYS(fields)"
         return """
     {prune_statement}
     {filter_statement}
-    {filter_path_statement}""".format(prune_statement=prune_statement,
-                                      filter_statement=filter_statement,
-                                      filter_path_statement=filter_path_statement).strip("\n")
+    {filter_path_statement}""".format(
+            prune_statement=prune_statement,
+            filter_statement=filter_statement,
+            filter_path_statement=filter_path_statement,
+        ).strip(
+            "\n"
+        )
 
     def _filter_condition(self, var: str, cond_def: dict) -> str:
         cmp_op_maps = dict(
@@ -124,7 +131,7 @@ class QueryPath:
         conds = []
         for k, v in cond_def.items():
             if k in cmp_op_maps:
-                conds.append(f'({var} {cmp_op_maps[k]} {v})')
+                conds.append(f"({var} {cmp_op_maps[k]} {v})")
             elif k in str_op_maps:
                 conds.append(f'({var} {str_op_maps[k]} "{v}")')
         return " && ".join(conds)
@@ -133,7 +140,9 @@ class QueryPath:
         rules = []
         for path in self.traverse(exclude_intermediate=True):
             cond = " && ".join(
-                f'({self._filter_condition(f"doc.{k}.value", v)})' for k, v in path.data_points.items() if v is not None
+                f'({self._filter_condition(f"doc.{k}.value", v)})'
+                for k, v in path.data_points.items()
+                if v is not None
             )
             if cond:
                 rules.append(f'v.path == "{path.path_str}" ? {cond} : true')
@@ -147,7 +156,9 @@ class QueryPath:
             for dp_type in DataPointInfo.SUB_CLASS_NAMES:
                 if dp_type in doc and k in self.aux_data_points:
                     del doc[dp_type][k]
-        result = {k: v for k, v in doc.items() if k in DataPointInfo.SUB_CLASS_NAMES and v}
+        result = {
+            k: v for k, v in doc.items() if k in DataPointInfo.SUB_CLASS_NAMES and v
+        }
         for name, child in self.children.items():
             if name in doc:
                 for k in doc[name]:

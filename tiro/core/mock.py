@@ -63,19 +63,20 @@ class Reference:
 class MockedItem:
     _name_count = {}
 
-    def __init__(self,
-                 prototype: Entity | DataPointInfo,
-                 reference: Reference,
-                 parent: Optional["MockedEntity"] = None
-                 ):
+    def __init__(
+        self,
+        prototype: Entity | DataPointInfo,
+        reference: Reference,
+        parent: Optional["MockedEntity"] = None,
+    ):
         self.prototype = prototype
         self.reference = reference
         self.parent = parent
 
     def gen_uuid(self):
-        name = self.prototype.__class__.__name__.split('_')[-1]
-        name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
+        name = self.prototype.__class__.__name__.split("_")[-1]
+        name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+        name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
         if name not in MockedItem._name_count:
             MockedItem._name_count[name] = 0
         no = MockedItem._name_count[name]
@@ -108,13 +109,17 @@ class MockedEntity(MockedItem):
             dps = getattr(self, camel_to_snake(v.__class__.__name__))
             k = camel_to_snake(k)
             if ref_dps is None or k in ref_dps and k not in dps:
-                dps[k] = MockedDataPoint(prototype=v, name=k, parent=self, reference=self.reference)
+                dps[k] = MockedDataPoint(
+                    prototype=v, name=k, parent=self, reference=self.reference
+                )
 
-    def generate(self,
-                 regenerate: bool,
-                 include_data_points: bool,
-                 change_attrs: bool,
-                 use_default: bool) -> "MockedEntity":
+    def generate(
+        self,
+        regenerate: bool,
+        include_data_points: bool,
+        change_attrs: bool,
+        use_default: bool,
+    ) -> "MockedEntity":
         if not self._initialised or regenerate:
             self.children = {}
             for k, v in self.prototype.children.items():
@@ -127,7 +132,9 @@ class MockedEntity(MockedItem):
                         f"Faking number ({number})is greater the length of predefined IDs ({len(prototype.ids)}."
                         f"Only {len(prototype.ids)} instances will be generated."
                     )
-                child_path = f"{self.path}{PATH_SEP}{entity_type}" if self.path else entity_type
+                child_path = (
+                    f"{self.path}{PATH_SEP}{entity_type}" if self.path else entity_type
+                )
                 uuids = self.reference.get_children(child_path)
                 if uuids is None:
                     if prototype.ids:
@@ -138,42 +145,49 @@ class MockedEntity(MockedItem):
                     uuids = list(uuids.keys())
                     number = len(uuids)
                 for uuid in uuids[:number]:
-                    entity = MockedEntity(entity_type=entity_type,
-                                          prototype=v,
-                                          parent=self,
-                                          reference=self.reference,
-                                          uuid=uuid)
-                    _children[entity.uuid] = entity.generate(regenerate=regenerate,
-                                                             include_data_points=include_data_points,
-                                                             change_attrs=change_attrs,
-                                                             use_default=use_default)
+                    entity = MockedEntity(
+                        entity_type=entity_type,
+                        prototype=v,
+                        parent=self,
+                        reference=self.reference,
+                        uuid=uuid,
+                    )
+                    _children[entity.uuid] = entity.generate(
+                        regenerate=regenerate,
+                        include_data_points=include_data_points,
+                        change_attrs=change_attrs,
+                        use_default=use_default,
+                    )
                 self.children[entity_type] = _children
             self._initialised = True
         if include_data_points:
-            self._generate_data_points(change_attrs=change_attrs or regenerate, use_default=use_default)
+            self._generate_data_points(
+                change_attrs=change_attrs or regenerate, use_default=use_default
+            )
         return self
 
-    def dict(self,
-             regenerate,
-             include_data_points,
-             change_attrs,
-             skip_default,
-             use_default) -> dict:
+    def dict(
+        self, regenerate, include_data_points, change_attrs, skip_default, use_default
+    ) -> dict:
         """Generate a complete tree starting from current entity"""
-        self.generate(regenerate=regenerate,
-                      include_data_points=include_data_points,
-                      change_attrs=change_attrs,
-                      use_default=use_default)
+        self.generate(
+            regenerate=regenerate,
+            include_data_points=include_data_points,
+            change_attrs=change_attrs,
+            use_default=use_default,
+        )
         res = {}
         if self.children:
             for k, v in self.children.items():
                 _values = {}
                 for uuid, c in v.items():
-                    _sub_value = c.dict(regenerate=regenerate,
-                                        include_data_points=include_data_points,
-                                        change_attrs=change_attrs,
-                                        skip_default=skip_default,
-                                        use_default=use_default)
+                    _sub_value = c.dict(
+                        regenerate=regenerate,
+                        include_data_points=include_data_points,
+                        change_attrs=change_attrs,
+                        skip_default=skip_default,
+                        use_default=use_default,
+                    )
                     if _sub_value:
                         _values |= {uuid: _sub_value}
                 if _values:
@@ -184,7 +198,8 @@ class MockedEntity(MockedItem):
             if dps:
                 if include_data_points:
                     _values = {
-                        k: v.dict() for k, v in dps.items()
+                        k: v.dict()
+                        for k, v in dps.items()
                         if not skip_default or v.prototype.default is None
                     }
                     if _values:
@@ -220,20 +235,26 @@ class MockedEntity(MockedItem):
         return self._path
 
     def list_entities(self) -> Generator[tuple[str, "MockedEntity"], None, None]:
-        self.generate(regenerate=False,
-                      include_data_points=False,
-                      change_attrs=False,
-                      use_default=True)
+        self.generate(
+            regenerate=False,
+            include_data_points=False,
+            change_attrs=False,
+            use_default=True,
+        )
         yield self.path, self
         for v in self.children.values():
             for c in v.values():
                 yield from c.list_entities()
 
-    def list_data_points(self, skip_default) -> Generator[tuple[str, "MockedDataPoint"], None, None]:
-        self.generate(regenerate=False,
-                      include_data_points=False,
-                      change_attrs=False,
-                      use_default=True)
+    def list_data_points(
+        self, skip_default
+    ) -> Generator[tuple[str, "MockedDataPoint"], None, None]:
+        self.generate(
+            regenerate=False,
+            include_data_points=False,
+            change_attrs=False,
+            use_default=True,
+        )
         for dp_type in DataPointInfo.SUB_CLASSES:
             dp_type_name = camel_to_snake(dp_type.__name__)
             dps = getattr(self, dp_type_name)
@@ -244,11 +265,15 @@ class MockedEntity(MockedItem):
             for c in v.values():
                 yield from c.list_data_points(skip_default)
 
-    def gen_data_point(self, dp_name: str, change_attrs=False, use_default=True) -> dict:
-        self.generate(regenerate=False,
-                      include_data_points=False,
-                      change_attrs=change_attrs,
-                      use_default=use_default)
+    def gen_data_point(
+        self, dp_name: str, change_attrs=False, use_default=True
+    ) -> dict:
+        self.generate(
+            regenerate=False,
+            include_data_points=False,
+            change_attrs=change_attrs,
+            use_default=use_default,
+        )
         dp = None
         for dp_type in DataPointInfo.SUB_CLASSES:
             dps = getattr(self, camel_to_snake(dp_type.__name__))
@@ -256,10 +281,12 @@ class MockedEntity(MockedItem):
                 dp = dps[dp_name]
                 break
         if dp is None:
-            raise KeyError(f"Cannot find data points {dp_name} in {self.prototype.unique_name}")
+            raise KeyError(
+                f"Cannot find data points {dp_name} in {self.prototype.unique_name}"
+            )
         return dp.generate(change_attrs=change_attrs, use_default=use_default).dict()
 
-    def get_child(self, path: str) -> 'MockedEntity':
+    def get_child(self, path: str) -> "MockedEntity":
         if path:
             c_type, _, path = path.partition(PATH_SEP)
             c_uuid, _, path = path.partition(PATH_SEP)
@@ -278,13 +305,17 @@ class MockedDataPoint(MockedItem):
         self.name = name
 
     def generate(self, change_attrs, use_default) -> "MockedDataPoint":
-        if self.cur_value is None \
-                or isinstance(self.prototype, Telemetry) \
-                or change_attrs:
+        if (
+            self.cur_value is None
+            or isinstance(self.prototype, Telemetry)
+            or change_attrs
+        ):
             if use_default and self.prototype.default is not None:
                 self.cur_value = self.prototype.default
             else:
-                value_range = self.reference.get_value_range(self.parent.path, self.name)
+                value_range = self.reference.get_value_range(
+                    self.parent.path, self.name
+                )
                 if value_range is not None:
                     self.cur_value = uniform(value_range["min"], value_range["max"])
 
@@ -295,7 +326,9 @@ class MockedDataPoint(MockedItem):
                     self.cur_value = self.prototype.faker()
                     if isinstance(self.cur_value, BaseModel):
                         self.cur_value = self.cur_value.dict()
-            self.gen_timestamp = self._faker.past_datetime(-self.prototype.time_var).isoformat()
+            self.gen_timestamp = self._faker.past_datetime(
+                -self.prototype.time_var
+            ).isoformat()
         return self
 
     def dict(self) -> dict:
@@ -306,75 +339,88 @@ class MockedDataPoint(MockedItem):
 
 
 class Mocker:
-    def __init__(self,
-                 entity: Optional[Entity] = None,
-                 reference: Optional[Path | dict] = None):
+    def __init__(
+        self, entity: Optional[Entity] = None, reference: Optional[Path | dict] = None
+    ):
         if isinstance(reference, Path):
             reference = yaml.safe_load(reference.open())
-        self.entity: MockedEntity = MockedEntity(entity_type=None,
-                                                 prototype=entity,
-                                                 reference=Reference(reference))
+        self.entity: MockedEntity = MockedEntity(
+            entity_type=None, prototype=entity, reference=Reference(reference)
+        )
         self.entity_cache: Optional[dict[str, MockedEntity]] = None
 
-    def dict(self,
-             regenerate: bool = False,
-             include_data_points: bool = True,
-             change_attrs: bool = False,
-             skip_default: bool = True,
-             use_default: bool = True
-             ) -> dict:
+    def dict(
+        self,
+        regenerate: bool = False,
+        include_data_points: bool = True,
+        change_attrs: bool = False,
+        skip_default: bool = True,
+        use_default: bool = True,
+    ) -> dict:
         """Generate a complete dictionary for the tree starting from the given entity."""
         if regenerate:
             self.entity_cache = None
-        return self.entity.dict(regenerate=regenerate,
-                                include_data_points=include_data_points,
-                                change_attrs=change_attrs,
-                                skip_default=skip_default,
-                                use_default=use_default)
+        return self.entity.dict(
+            regenerate=regenerate,
+            include_data_points=include_data_points,
+            change_attrs=change_attrs,
+            skip_default=skip_default,
+            use_default=use_default,
+        )
 
-    def json(self,
-             regenerate: bool = False,
-             include_data_points: bool = True,
-             change_attrs: bool = False,
-             skip_default: bool = True,
-             use_default: bool = True,
-             **kwargs) -> str:
+    def json(
+        self,
+        regenerate: bool = False,
+        include_data_points: bool = True,
+        change_attrs: bool = False,
+        skip_default: bool = True,
+        use_default: bool = True,
+        **kwargs,
+    ) -> str:
         """Generate a complete dictionary for the tree starting from the entity and return the coded json string."""
-        d = self.dict(regenerate=regenerate,
-                      include_data_points=include_data_points,
-                      change_attrs=change_attrs,
-                      skip_default=skip_default,
-                      use_default=use_default)
+        d = self.dict(
+            regenerate=regenerate,
+            include_data_points=include_data_points,
+            change_attrs=change_attrs,
+            skip_default=skip_default,
+            use_default=use_default,
+        )
         return json.dumps(d, **kwargs)
 
-    def gen_data_point(self, path: str,
-                       change_attr: bool = False,
-                       use_default: bool = True) -> dict:
-        self.entity.generate(regenerate=False,
-                             include_data_points=False,
-                             change_attrs=change_attr,
-                             use_default=use_default)
+    def gen_data_point(
+        self, path: str, change_attr: bool = False, use_default: bool = True
+    ) -> dict:
+        self.entity.generate(
+            regenerate=False,
+            include_data_points=False,
+            change_attrs=change_attr,
+            use_default=use_default,
+        )
         path, _, dp_name = path.rpartition(PATH_SEP)
         path, _, _ = path.rpartition(PATH_SEP)
-        return self.entity.get_child(path).gen_data_point(dp_name,
-                                                          change_attrs=change_attr,
-                                                          use_default=use_default)
+        return self.entity.get_child(path).gen_data_point(
+            dp_name, change_attrs=change_attr, use_default=use_default
+        )
 
-    def gen_value_by_uuid(self,
-                          uuid: str,
-                          change_attr: bool = False,
-                          use_default: bool = True,
-                          value_only: bool = False) -> dict:
-        self.entity.generate(regenerate=False,
-                             include_data_points=False,
-                             change_attrs=change_attr,
-                             use_default=use_default)
+    def gen_value_by_uuid(
+        self,
+        uuid: str,
+        change_attr: bool = False,
+        use_default: bool = True,
+        value_only: bool = False,
+    ) -> dict:
+        self.entity.generate(
+            regenerate=False,
+            include_data_points=False,
+            change_attrs=change_attr,
+            use_default=use_default,
+        )
         path = self.entity.reference.search_by_uuid(uuid)
         if path is not None:
             path, _, dp_name = path.rpartition(PATH_SEP)
-            dp = self.entity.get_child(path).gen_data_point(dp_name,
-                                                            change_attrs=change_attr,
-                                                            use_default=use_default)
+            dp = self.entity.get_child(path).gen_data_point(
+                dp_name, change_attrs=change_attr, use_default=use_default
+            )
             if value_only:
                 return dp["value"]
             else:
@@ -393,12 +439,14 @@ class Mocker:
 
 
 class MockApp(FastAPI):
-    def __init__(self,
-                 mocker: Mocker,
-                 *args,
-                 skip_defaults: bool = True,
-                 use_defaults: bool = True,
-                 **kwargs):
+    def __init__(
+        self,
+        mocker: Mocker,
+        *args,
+        skip_defaults: bool = True,
+        use_defaults: bool = True,
+        **kwargs,
+    ):
         super(MockApp, self).__init__(*args, **kwargs)
         self.mocker: Mocker = mocker
         self.skip_defaults: bool = skip_defaults
@@ -425,18 +473,18 @@ class MockApp(FastAPI):
             try:
                 return self.mocker.gen_data_point(path, use_default=self.use_defaults)
             except KeyError as e:
-                raise HTTPException(status_code=404,
-                                    detail=f"Cannot find path {path}"
-                                    ) from e
+                raise HTTPException(
+                    status_code=404, detail=f"Cannot find path {path}"
+                ) from e
 
         @self.get("/values/{uuid:str}")
         def get_value_by_uuid(uuid):
             try:
-                return self.mocker.gen_value_by_uuid(uuid,
-                                                     use_default=self.use_defaults,
-                                                     value_only=True)
+                return self.mocker.gen_value_by_uuid(
+                    uuid, use_default=self.use_defaults, value_only=True
+                )
             except KeyError as e:
                 logging.error(f"{type(e)}:{e}")
-                raise HTTPException(status_code=404,
-                                    detail=f"Cannot find uuid {uuid}"
-                                    ) from e
+                raise HTTPException(
+                    status_code=404, detail=f"Cannot find uuid {uuid}"
+                ) from e
