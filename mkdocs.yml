@@ -3,6 +3,8 @@ repo_url: https://github.com/cap-dcwiz/Tiro
 repo_name: cap-dcwiz/Tiro
 theme:
   name: material
+  palette:
+    primary: deep purple
   icon:
     repo: fontawesome/brands/github
   features:
