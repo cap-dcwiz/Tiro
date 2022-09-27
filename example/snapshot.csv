@@ -1,0 +1,15 @@
+data_point,asset,asset_type,parent_asset,value
+Supply Temperature,crac_1,CRAC,data_hall,15
+Supply Temperature,crac_2,CRAC,data_hall,17
+Supply Temperature,crac_3,CRAC,data_hall,16.5
+Supply Temperature,crac_4,CRAC,data_hall,15
+CPU Temperature,server_1,Server,rack,80
+CPU Temperature,server_2,Server,rack,60
+CPU Temperature,server_3,Server,rack,67
+CPU Temperature,server_4,Server,rack,55
+Active Power,rack,Rack,data_hall,10000
+Active Power,crac_1,CRAC,data_hall,3000
+Active Power,crac_2,CRAC,data_hall,4000
+Active Power,crac_3,CRAC,data_hall,6000
+Active Power,crac_4,CRAC,data_hall,4300
+Temperature,data_hall,DataHall,,23

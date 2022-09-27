@@ -19,6 +19,7 @@ theme:
     - navigation.prune
     - toc.follow
     - toc.integrate
+
 nav:
   - Home: index.md
   - Get Started:
@@ -28,8 +29,13 @@ nav:
       - Basic Tools: get_started/basic_tools.md
       - Karez Integration: get_started/karez_integration.md
       - Utinni Integration: get_started/utinni_integration.md
+  - Guides:
+      - Scenario from Snapshot: guides/scenario_from_snapshot.md
+      - Data Collection Protocol: guides/data_collection_protocol.md
+      - Utinni Querying Guide: guides/utinni_querying_guide.md
   - License: license.md
   - Reference: reference/
+  - Tiro Assets Library: https://github.com/cap-dcwiz/Tiro-asset-library
 
 plugins:
   - search
@@ -56,6 +62,7 @@ markdown_extensions:
   - admonition
   - attr_list
   - md_in_html
+  - tables
   - pymdownx.details
   - pymdownx.betterem
   - pymdownx.caret
@@ -76,11 +83,16 @@ markdown_extensions:
   - pymdownx.highlight:
       use_pygments: true
       pygments_lang_class: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 extra_javascript:
-  - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - javascripts/mathjax.js
+  - javascripts/tablesort.js
 
 extra_css:
   - css/code_select.css
