@@ -10,7 +10,7 @@ default_faker = Faker()
 
 
 def RangedFloatTelemetry(
-        ge, le, unit=None, right_digits=2, faker=default_faker
+    ge, le, unit=None, right_digits=2, faker=default_faker
 ) -> Telemetry:
     return Telemetry(
         confloat(ge=ge, le=le),
@@ -23,6 +23,7 @@ def RangedFloatTelemetry(
 
 class DataHall(Entity):
     """Data hall asset."""
+
     RoomTemperature = RangedFloatTelemetry(-50, 50)
     ChilledWaterSupplyTemperature = RangedFloatTelemetry(0, 1000)
     ChilledWaterReturnTemperature = RangedFloatTelemetry(0, 1000)

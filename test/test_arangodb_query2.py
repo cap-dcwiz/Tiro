@@ -33,14 +33,14 @@ print(root_path.all_fields())
 
 print(root_path.all_path_str(exclude_intermediate=False))
 
-scenario = Scenario.from_yaml(Path("./scenario.yaml"),
-                              Path("./use1.yaml"))
-gdb_client = ArangoAgent(scenario,
-                         db_name="tiro_test",
-                         graph_name="scenario",
-                         hosts="http://localhost:8529",
-                         auth_info=dict(password="arangodb_password")
-                         )
+scenario = Scenario.from_yaml(Path("./scenario.yaml"), Path("./use1.yaml"))
+gdb_client = ArangoAgent(
+    scenario,
+    db_name="tiro_test",
+    graph_name="scenario",
+    hosts="http://localhost:8529",
+    auth_info=dict(password="arangodb_password"),
+)
 
 rprint(gdb_client.query_by_qpath(query, value_only=True, as_dataframe=True).columns)
 # print(gdb_client.query_by_regex("Room%Server%MemoryTemperature",

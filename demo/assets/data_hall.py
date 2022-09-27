@@ -37,15 +37,21 @@ class Room(Entity):
 
 class PDU(Entity):
     # Telemetries
-    ActivePower: Telemetry(float, "W", faker=lambda: faker.pyfloat(min_value=0, max_value=1000))
+    ActivePower: Telemetry(
+        float, "W", faker=lambda: faker.pyfloat(min_value=0, max_value=1000)
+    )
 
 
 class Sensor(Entity):
     # Telemetries
     Temperature: Telemetry(temperature_type, "°C", faker=temperature_faker)
-    Humidity: Telemetry(float, None, faker=lambda: faker.pyfloat(min_value=0, max_value=1))
+    Humidity: Telemetry(
+        float, None, faker=lambda: faker.pyfloat(min_value=0, max_value=1)
+    )
 
 
 class UPS(Entity):
     # Telemetries
-    ActivePower: Telemetry(float, "W", faker=lambda: faker.pyfloat(min_value=0, max_value=1000))
+    ActivePower: Telemetry(
+        float, "W", faker=lambda: faker.pyfloat(min_value=0, max_value=1000)
+    )
