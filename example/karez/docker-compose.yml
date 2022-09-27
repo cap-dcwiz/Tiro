@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  influxdb:
+    image: influxdb:alpine
+    restart: always
+    ports:
+      - 8086:8086
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: tiro
+      DOCKER_INFLUXDB_INIT_PASSWORD: tiro-password
+      DOCKER_INFLUXDB_INIT_ORG: tiro
+      DOCKER_INFLUXDB_INIT_BUCKET: tiro
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: tiro-token
+
+  arangodb:
+    image: arangodb/arangodb:3.8.6
+    platform: linux/amd64
+    restart: always
+    ports:
+      - 8529:8529
+    environment:
+      ARANGO_ROOT_PASSWORD: tiro-password
+    command: arangod --server.endpoint tcp://0.0.0.0:8529
+
+  nats-server:
+    image: nats
+    restart: always
+    ports:
+      - 4222:4222
+      - 8222:8222
+
+  telegraf:
+    image: telegraf
+    restart: always
+    volumes:
+      - ./config/telegraf.conf:/etc/telegraf/telegraf.conf

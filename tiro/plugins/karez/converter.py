@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from karez.config import OptionalConfigEntity
+from karez.config import OptionalConfigEntity, ConfigEntity
 from tiro.core import Scenario
 from tiro.core.mock import Reference
 from tiro.core.utils import PATH_SEP, split_path
@@ -40,13 +40,9 @@ class TiroUpdateInfoForValueConverter(FixTimestampConverter):
     @classmethod
     def config_entities(cls):
         yield from super(TiroUpdateInfoForValueConverter, cls).config_entities()
-        yield OptionalConfigEntity(
-            "reference", None, 'Reference file (required if by="uuid"'
-        )
-        yield OptionalConfigEntity(
-            "scenario", None, 'Scenario file (required if by="uuid"'
-        )
-        yield OptionalConfigEntity("uses", None, 'Uses files (required if by="uuid"')
+        yield ConfigEntity("reference", "Reference file")
+        yield ConfigEntity("scenario", "Scenario file")
+        yield ConfigEntity("uses", "Uses files")
 
     def convert(self, payload):
         if self.is_configured("tz_infos"):

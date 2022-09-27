@@ -1,0 +1,15 @@
+$asset_library_name: test_assets
+$asset_library_path: ./
+
+DataHall:
+  $number: 1
+  $type: DataHall
+  Rack:
+    $number: 2
+    $type: Rack
+    Server:
+      $number: 2-5
+      $type: Server
+  CRAC:
+    $number: 1
+    $type: CRAC

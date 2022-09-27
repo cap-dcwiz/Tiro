@@ -1,0 +1,9 @@
+- DataHall:
+  - Rack:
+    - ChilledWaterSupplyTemperature
+    - ChilledWaterReturnTemperature
+    - Server:
+      - FlowRate
+  - CRAC:
+    - SupplyTemperature
+    - ReturnTemperature

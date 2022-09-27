@@ -1,0 +1,61 @@
+dispatchers:
+  - type: tiro_mock
+    connector: tiro_mock
+    by: path
+    batch_size: 10
+    interval: 10
+    mode: burst
+    base_url: http://localhost:8000
+
+connectors:
+  - type: tiro_mock
+    base_url: http://localhost:8000
+    by: path
+    converter:
+      - update_category_for_validator
+      - tiro_preprocess
+
+converters:
+  - type: tiro_preprocess
+    tz_infos:
+      SGT: Aisa/Singapore
+    next:
+      - influx_line_protocol
+      - update_category_for_arangodb
+
+  - type: influx_line_protocol
+    measurement: tiro_telemetry
+    field_name: field
+    field_value: value
+
+  - name: update_category_for_arangodb
+    type: filter_and_update_meta
+    key: category
+    rename:
+      telemetry: graph_data
+      attribute: graph_data
+
+  - name: update_category_for_validator
+    type: filter_and_update_meta
+    key: category
+    rename:
+      telemetry: validation_data
+      attribute: validation_data
+
+aggregators:
+  - type: tiro_validate
+    category: validation_data
+    scenario: scenario/scenario.yaml
+    uses: "scenario/use-srv1.yaml,scenario/use-srv2.yaml"
+    retention: 10
+    log_file: validation.log
+
+  - type: arango_db
+    category: graph_data
+    scenario: scenario/scenario.yaml
+    uses: "scenario/use-srv1.yaml,scenario/use-srv2.yaml"
+    db_name: tiro
+    graph_name: scenario
+    hosts: http://localhost:8529
+    auth:
+      password: tiro-password

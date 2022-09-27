@@ -5,7 +5,6 @@ import httpx
 import time
 import typer
 import uvicorn
-import yaml
 from rich import print
 
 from tiro.core import Scenario
@@ -45,6 +44,7 @@ def push(
         data_url = f"http{'s' if data_ssl else ''}://{data_address}"
         receiver_url = f"http{'s' if receiver_ssl else ''}://{receiver_address}"
         r = httpx.get(f"{data_url}/points/")
+        print(r)
         for path in r.json():
             r = httpx.get(f"{data_url}/points/{path}")
             print(f"Forwarding {path}")
