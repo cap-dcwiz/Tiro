@@ -1,14 +1,4 @@
-# Background
-
-## Why Tiro?
-
-
-
-## Workflow
-
-![Tiro Architecture](tiro%20concepts.svg)
-
-## Glossary
+# Glossary
 
 `Entity`, `Asset`
 :   A `Entity` or a `Asset` is a device, equipment or virtual group in an IoT environment. An entity can have several child entities.
@@ -31,15 +21,8 @@
 `Schema`
 :   A [JSON schema](https://json-schema.org/) to describe the scenario and the information of data points required by multiple use cases.
 
-## Materials
+`Asset Path`
+:   A path to an asset or a data point in the scenario. The path is a list of asset types and names from the root asset to the target asset. For example, an asset with path `"DataHall.data_hall.Rack.rack_1.Server.server_1"` is the server named `server_1` in a rack named `rack_1` in a data hall named `data_hall`. And the data point with path `"DataHall.data_hall.Rack.rack_1.Server.server_1.Telemetry.temperature"` is the temperature telemetry of the server named `server_1` in a rack named `rack_1` in a data hall named `data_hall`. In some occasions, the `Telemetry` or `Attribute` before the data point name can be omitted.
 
-### Slides
-
-* [DCWiz Data Workflow](dcwiz_data_workflow.pdf)
-* [DCWiz Data Modules](dcwiz_data_modules.pdf)
-
-### Related Projects:
-
-* [Utinni](https://github.com/cap-dcwiz/Utinni)
-* [Karez](https://github.com/cap-dcwiz/Karez)
-* [Tiro-asset-library](https://github.com/cap-dcwiz/Tiro-asset-library)
+`Type Path`
+: `Asset Path` without asset and data point types. For example, the type path of the asset with path `"DataHall.data_hall.Rack.rack_1.Server.server_1"` is `"DataHall.Rack.Server"`.

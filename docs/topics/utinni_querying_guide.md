@@ -4,9 +4,9 @@ This guide explains how to query data from using Tiro-provided Utinni data pump 
 
 ## Query String
 
-The most common way to query data is to use the query string. The query string is a string to match the "type path" of the data point. The "type path" is the path to the data point in the scenario tree, but includes only the asset type names but no asset names. For example, the "type path" of the data point `DataHall.data_hall.CRAC.crac_1.SupplyTemperature` is `DataHall.CRAC.SupplyTemperature`.
+The most common way to query data is to use the query string. The query string is a string to match the "type path" of the data point. The "type path" is the path to the data point in the scenario tree, but includes only the asset type names but no asset names. For example, the "type path" of the data point `DataHall.data_hall.CRAC.crac_1.Telemetry.SupplyTemperature` is `DataHall.CRAC.SupplyTemperature`.
 
-A query string is basically a regular expression. However, because `.` is a special character in regular expression, we use `%` to represent `.` in the query string. For example, the query string `DataHall%CRAC%SupplyTemperature` matches the data point `DataHall.data_hall.CRAC.crac_1.SupplyTemperature`. Also, we introduce `%%` to match any number of characters including `.`. For example, the query string `DataHall%%Temperature` matches the data point `DataHall.data_hall.CRAC.crac_1.SupplyTemperature` and `DataHall.data_hall.Rack.server_1.CPUTemperature`.
+A query string is basically a regular expression. However, because `.` is a special character in regular expression, we use `%` to represent `.` in the query string. For example, the query string `DataHall%CRAC%SupplyTemperature` matches the data point `DataHall.CRAC.SupplyTemperature`. Also, we introduce `%%` to match any number of characters including `.`. For example, the query string `DataHall%%Temperature` matches the data point `DataHall.CRAC.SupplyTemperature` and `DataHall.Rack.CPUTemperature`.
 
 The table definition of the Tiro Pump has a unified interface
 
@@ -34,7 +34,7 @@ When passing `type="historian"` to the table constructor, the table will query h
 }
 ```
 
-There is an additional parameter `column` can be passed to the table constructor, which can be `"asset_path"` or a asset type like `"Rack"`. By default, it is `asset_path`, which means the full path of the data point, like `DataHall.data_hall.CRAC.crac_1.SupplyTemperature`. In this case the returned dataframe's column will be the full path of the data point. Otherwise, if `column` is set to an asset type, the name of the asset of the appointed type which relates to the data point will be used as the column name. For example, if `column` is set to `"Rack"`, and the query string is `%%Rack%ActivePower`, the returned data frame will be a dataframe whose column is different rack names, and the value is corresponding active powers
+There is an additional parameter `column` can be passed to the table constructor, which can be `"asset_path"` or a asset type like `"Rack"`. By default, it is `asset_path`, which means the full path of the data point, like `DataHall.data_hall.CRAC.crac_1.Telemetry.SupplyTemperature`. In this case the returned dataframe's column will be the full path of the data point. Otherwise, if `column` is set to an asset type, the name of the asset of the appointed type which relates to the data point will be used as the column name. For example, if `column` is set to `"Rack"`, and the query string is `%%Rack%ActivePower`, the returned data frame will be a dataframe whose column is different rack names, and the value is corresponding active powers
 
 When passing the `column` parameter, if there are multiple columns which have the same name, they will be aggregated, and the aggregation function and additional keyword arguments can be passed to the table constructor by `asset_agg_fn` and `asser_agg_fn_kwargs`, respectively. For example, the following query will return total flow rate of each rack. The default aggregation function is `mean`, and the default aggregation function keyword arguments is `{}`.
 
