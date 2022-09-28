@@ -1,7 +1,9 @@
-site_name: Tiro
+site_name: Tiro Documentation
 repo_url: https://github.com/cap-dcwiz/Tiro
 repo_name: cap-dcwiz/Tiro
+edit_uri: blob/main/docs/
 watch: [tiro]
+
 theme:
   name: material
   palette:
