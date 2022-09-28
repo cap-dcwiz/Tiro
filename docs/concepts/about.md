@@ -4,7 +4,7 @@ The complete toolchain for DCWiz data interface development, data validation, da
 
 ## About
 
-![Tiro Concepts](Tiro%20concepts.svg)
+![Tiro Concepts](tiro concepts.svg)
 
 The purpose of this project is to accelerate and standardize the development procedure of data interfacing for the DCWiz
 platform. More specifically, it provides tools to

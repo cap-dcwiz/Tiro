@@ -33,6 +33,8 @@ nav:
       - Scenario from Snapshot: guides/scenario_from_snapshot.md
       - Data Collection Protocol: guides/data_collection_protocol.md
       - Utinni Querying Guide: guides/utinni_querying_guide.md
+      - Asset Library: guides/asset_library.md
+  - Concepts: concepts/concepts.md
   - License: license.md
   - Reference: reference/
   - Tiro Assets Library: https://github.com/cap-dcwiz/Tiro-asset-library

@@ -8,7 +8,7 @@ The basic features of Tiro are provided by the `tiro` command line tool. In last
 
 One common task in DCWiz data interface development is to find the list of data point info that are required by multiple use cases. This information should include not only the list of data point names, but also the data type, unit, hierarchy structure, etc. 
 
-Tiro provides the tool to gather data requirements from different services and applications and generate a formal JSON schema from the scenario. The schema can be used to describe the data requirement, to validate the data actually collected, or to generate mock data.
+Tiro provides the tool to gather data requirements from different services and applications and generate a formal [JSON schema](https://json-schema.org/) from the scenario. The schema can be used to describe the data requirement, to validate the data actually collected, or to generate mock data.
 
 To generate the schema, run the following command:
 
