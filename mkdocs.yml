@@ -63,6 +63,7 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - tables
+  - def_list
   - pymdownx.details
   - pymdownx.betterem
   - pymdownx.caret
@@ -86,6 +87,8 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
