@@ -31,12 +31,12 @@ nav:
       - Basic Tools: get_started/basic_tools.md
       - Karez Integration: get_started/karez_integration.md
       - Utinni Integration: get_started/utinni_integration.md
-  - Guides:
-      - Scenario from Snapshot: guides/scenario_from_snapshot.md
-      - Data Collection Protocol: guides/data_collection_protocol.md
-      - Utinni Querying Guide: guides/utinni_querying_guide.md
-      - Asset Library: guides/asset_library.md
-  - Concepts: concepts/concepts.md
+  - Topics:
+      - Scenario from Snapshot: topics/scenario_from_snapshot.md
+      - Data Collection Protocol: topics/data_collection_protocol.md
+      - Utinni Querying Guide: topics/utinni_querying_guide.md
+      - Asset Library: topics/asset_library.md
+  - Background: background/concepts.md
   - License: license.md
   - Reference: reference/
   - Tiro Assets Library: https://github.com/cap-dcwiz/Tiro-asset-library
