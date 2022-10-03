@@ -89,7 +89,7 @@ test = ["astroid (<=2.5.3)", "pytest"]
 
 [[package]]
 name = "asyncua"
-version = "0.9.97"
+version = "0.9.98"
 description = "Pure Python OPC-UA client and server library"
 category = "main"
 optional = false
@@ -451,24 +451,8 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
-name = "importlib-metadata"
-version = "4.12.0"
-description = "Read metadata from Python packages"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-zipp = ">=0.5"
-
-[package.extras]
-docs = ["jaraco.packaging (>=9)", "rst.linker (>=1.9)", "sphinx"]
-perf = ["ipython"]
-testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pytest-perf (>=0.9.2)"]
-
-[[package]]
 name = "influxdb-client"
-version = "1.32.0"
+version = "1.33.0"
 description = "InfluxDB 2.0 Python client library"
 category = "main"
 optional = false
@@ -482,7 +466,7 @@ setuptools = ">=21.0.0"
 urllib3 = ">=1.26.0"
 
 [package.extras]
-async = ["aiohttp (>=3.8.1)"]
+async = ["aiocsv (>=1.2.2)", "aiohttp (>=3.8.1)"]
 ciso = ["ciso8601 (>=2.1.1)"]
 extra = ["numpy", "pandas (>=0.25.3)"]
 test = ["aioresponses (>=0.7.3)", "coverage (>=4.0.3)", "flake8 (>=5.0.3)", "httpretty (==1.0.5)", "jinja2 (==3.1.2)", "nose (>=1.3.7)", "pluggy (>=0.3.1)", "psutil (>=5.6.3)", "py (>=1.4.31)", "pytest (>=5.0.0)", "pytest-cov (>=3.0.0)", "randomize (>=0.13)", "sphinx (==1.8.5)", "sphinx-rtd-theme"]
@@ -648,7 +632,7 @@ test = ["ipykernel", "pre-commit", "pytest", "pytest-cov", "pytest-timeout"]
 
 [[package]]
 name = "jupyter-server"
-version = "1.19.0"
+version = "1.19.1"
 description = "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
 category = "dev"
 optional = false
@@ -744,7 +728,7 @@ dateutils = "^0.6.12"
 dynaconf = "^3.1.7"
 httpx = "^0.23.0"
 Markdown = "^3.3.6"
-mkdocs = "^1.3.0"
+mkdocs = {version = "^1.3.1", extras = ["python-legacy"]}
 mkdocs-gen-files = "^0.3.4"
 mkdocs-literate-nav = "^0.4.1"
 mkdocs-material = "^8.2.8"
@@ -765,7 +749,7 @@ influxdb = ["influxdb-client (>=1.27.0,<2.0.0)"]
 type = "git"
 url = "https://github.com/cap-dcwiz/Karez.git"
 reference = "main"
-resolved_reference = "2e30c6bf17847b82c9b08dc9cb9f3fc754d11f9e"
+resolved_reference = "eda3fca7d4a02de8dc12990cdcd63c7f93b6f717"
 
 [[package]]
 name = "lxml"
@@ -829,21 +813,20 @@ python-versions = "*"
 
 [[package]]
 name = "mkdocs"
-version = "1.3.1"
+version = "1.4.0"
 description = "Project documentation with Markdown."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
-click = ">=3.3"
+click = ">=7.0"
 ghp-import = ">=1.0"
-importlib-metadata = ">=4.3"
-Jinja2 = ">=2.10.2"
+Jinja2 = ">=2.11.1"
 Markdown = ">=3.2.1,<3.4"
 mergedeep = ">=1.3.4"
 packaging = ">=20.5"
-PyYAML = ">=3.10"
+PyYAML = ">=5.1"
 pyyaml-env-tag = ">=0.1"
 watchdog = ">=2.0"
 
@@ -886,7 +869,7 @@ mkdocs = ">=1.0.3,<2.0.0"
 
 [[package]]
 name = "mkdocs-material"
-version = "8.5.3"
+version = "8.5.6"
 description = "Documentation that simply works"
 category = "main"
 optional = false
@@ -895,7 +878,7 @@ python-versions = ">=3.7"
 [package.dependencies]
 jinja2 = ">=3.0.2"
 markdown = ">=3.2"
-mkdocs = ">=1.3.0"
+mkdocs = ">=1.4.0"
 mkdocs-material-extensions = ">=1.0.3"
 pygments = ">=2.12"
 pymdown-extensions = ">=9.4"
@@ -976,18 +959,18 @@ python-versions = "*"
 
 [[package]]
 name = "nats-py"
-version = "2.1.7"
+version = "2.2.0"
 description = "NATS client for Python"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [package.extras]
 nkeys = ["nkeys"]
 
 [[package]]
 name = "nbclassic"
-version = "0.4.3"
+version = "0.4.4"
 description = "A web-based notebook environment for interactive computing"
 category = "dev"
 optional = false
@@ -1089,7 +1072,7 @@ test = ["check-manifest", "pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
 name = "nest-asyncio"
-version = "1.5.5"
+version = "1.5.6"
 description = "Patch asyncio to allow nested event loops"
 category = "dev"
 optional = false
@@ -1343,7 +1326,7 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
 name = "pymdown-extensions"
-version = "9.5"
+version = "9.6"
 description = "Extension pack for Python Markdown."
 category = "main"
 optional = false
@@ -1443,7 +1426,7 @@ numpy-style = ["docstring_parser (>=0.7)"]
 
 [[package]]
 name = "pytz"
-version = "2022.2.1"
+version = "2022.4"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
@@ -1552,7 +1535,7 @@ idna2008 = ["idna"]
 
 [[package]]
 name = "rich"
-version = "12.5.1"
+version = "12.6.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
@@ -1580,14 +1563,14 @@ win32 = ["pywin32"]
 
 [[package]]
 name = "setuptools"
-version = "65.4.0"
+version = "65.4.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx", "sphinx-favicon", "sphinx-hoverxref (<2)", "sphinx-inline-tabs", "sphinx-notfound-page (==0.8.3)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-hoverxref (<2)", "sphinx-inline-tabs", "sphinx-notfound-page (==0.8.3)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
 testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8 (<5)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mock", "pip (>=19.1)", "pip-run (>=8.8)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
 
@@ -1655,7 +1638,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
 name = "terminado"
-version = "0.15.0"
+version = "0.16.0"
 description = "Tornado websocket backend for the Xterm.js Javascript terminal emulator library."
 category = "dev"
 optional = false
@@ -1812,22 +1795,10 @@ docs = ["Sphinx (>=3.4)", "sphinx-rtd-theme (>=0.5)"]
 optional = ["python-socks", "wsaccel"]
 test = ["websockets"]
 
-[[package]]
-name = "zipp"
-version = "3.8.1"
-description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.extras]
-docs = ["jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx"]
-testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)"]
-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "f4377a56593bcebb99f3b78a127795fd571beb92708d81f943dac7ee87ec5cba"
+content-hash = "b3e39bae89e28b219dde0b5872377846bb1d6d371d21f2ee1b249431576c075f"
 
 [metadata.files]
 aiofiles = [
@@ -1878,8 +1849,8 @@ asttokens = [
     {file = "asttokens-2.0.8.tar.gz", hash = "sha256:c61e16246ecfb2cde2958406b4c8ebc043c9e6d73aaa83c941673b35e5d3a76b"},
 ]
 asyncua = [
-    {file = "asyncua-0.9.97-py3-none-any.whl", hash = "sha256:66b1f357b6581081681c5857648f4e6e6b1047fe7f3b1bb2ff73fb242e3790bc"},
-    {file = "asyncua-0.9.97.tar.gz", hash = "sha256:754c9d30b6e5d8196c9095f4b0cd9f2b8a7ae6492d3f5d4b1ffe2e0670d9375e"},
+    {file = "asyncua-0.9.98-py3-none-any.whl", hash = "sha256:aadda7e64742d4b55eb3f7a130f76143dc33f7ee27e85e4c3295357470c65a0e"},
+    {file = "asyncua-0.9.98.tar.gz", hash = "sha256:f582bb98fdeaf964117a73447ec3ec6cd7ca872e90494212b19a047c940adc75"},
 ]
 attrs = [
     {file = "attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
@@ -2116,13 +2087,9 @@ idna = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
     {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
 ]
-importlib-metadata = [
-    {file = "importlib_metadata-4.12.0-py3-none-any.whl", hash = "sha256:7401a975809ea1fdc658c3aa4f78cc2195a0e019c5cbc4c06122884e9ae80c23"},
-    {file = "importlib_metadata-4.12.0.tar.gz", hash = "sha256:637245b8bab2b6502fcbc752cc4b7a6f6243bb02b31c5c26156ad103d3d45670"},
-]
 influxdb-client = [
-    {file = "influxdb_client-1.32.0-py3-none-any.whl", hash = "sha256:3c88127d3501a7101f4b798add611f1eefe3ebeca597f6a9db43339c75330879"},
-    {file = "influxdb_client-1.32.0.tar.gz", hash = "sha256:29bd40934cbdcbc0e914886028bee06ac05051cff5bccaece0457eefb67ace6d"},
+    {file = "influxdb_client-1.33.0-py3-none-any.whl", hash = "sha256:38a8bedce673ffd2211f60012b5848cb2418977c19f83a43454882b665acbc69"},
+    {file = "influxdb_client-1.33.0.tar.gz", hash = "sha256:45f6a1763804a19b972890daf4c5f0bd2d3ae2f202b86451c579e09dcadd30e6"},
 ]
 ipykernel = [
     {file = "ipykernel-6.16.0-py3-none-any.whl", hash = "sha256:d3d95241cd4dd302fea9d5747b00509b58997356d1f6333c9a074c3eccb78cb3"},
@@ -2161,8 +2128,8 @@ jupyter-core = [
     {file = "jupyter_core-4.11.1.tar.gz", hash = "sha256:2e5f244d44894c4154d06aeae3419dd7f1b0ef4494dc5584929b398c61cfd314"},
 ]
 jupyter-server = [
-    {file = "jupyter_server-1.19.0-py3-none-any.whl", hash = "sha256:310531a4ed1a5088daec9b930cfda08952d1e3809d0605e4b137af0a6da11669"},
-    {file = "jupyter_server-1.19.0.tar.gz", hash = "sha256:5d9b58c92011db1854a8ddeeac46e16bb37281e8f45156d4d0b2fb745f9561dd"},
+    {file = "jupyter_server-1.19.1-py3-none-any.whl", hash = "sha256:ea3587840f2a906883c9eecb6bc85ef87ba1b7ba4cb6eafbacfac4a568862106"},
+    {file = "jupyter_server-1.19.1.tar.gz", hash = "sha256:d1cc3596945849742bc3eedf0699feeb50ad6c6045ebef02a9298b7f13c27e9f"},
 ]
 jupyterlab = [
     {file = "jupyterlab-3.4.7-py3-none-any.whl", hash = "sha256:30c64bc0aa0ba09959ab6fd5c74f08a6ae64656b46a29e2522142a5fda0dc486"},
@@ -2308,8 +2275,8 @@ mistune = [
     {file = "mistune-2.0.4.tar.gz", hash = "sha256:9ee0a66053e2267aba772c71e06891fa8f1af6d4b01d5e84e267b4570d4d9808"},
 ]
 mkdocs = [
-    {file = "mkdocs-1.3.1-py3-none-any.whl", hash = "sha256:fda92466393127d2da830bc6edc3a625a14b436316d1caf347690648e774c4f0"},
-    {file = "mkdocs-1.3.1.tar.gz", hash = "sha256:a41a2ff25ce3bbacc953f9844ba07d106233cd76c88bac1f59cb1564ac0d87ed"},
+    {file = "mkdocs-1.4.0-py3-none-any.whl", hash = "sha256:ce057e9992f017b8e1496b591b6c242cbd34c2d406e2f9af6a19b97dd6248faa"},
+    {file = "mkdocs-1.4.0.tar.gz", hash = "sha256:e5549a22d59e7cb230d6a791edd2c3d06690908454c0af82edc31b35d57e3069"},
 ]
 mkdocs-autorefs = [
     {file = "mkdocs-autorefs-0.4.1.tar.gz", hash = "sha256:70748a7bd025f9ecd6d6feeba8ba63f8e891a1af55f48e366d6d6e78493aba84"},
@@ -2324,8 +2291,8 @@ mkdocs-literate-nav = [
     {file = "mkdocs_literate_nav-0.4.1-py3-none-any.whl", hash = "sha256:a4b761792ba21defbe2dfd5e0de6ba451639e1ca0f0661c37eda83cc6261e4f9"},
 ]
 mkdocs-material = [
-    {file = "mkdocs_material-8.5.3-py3-none-any.whl", hash = "sha256:d194c38041d1e83560221022b3f85eec4604b35e44f5c3a488c24b88542074ed"},
-    {file = "mkdocs_material-8.5.3.tar.gz", hash = "sha256:43b0aa707d6f9acd836024cab2dce9330957c94a4e1e41c23ee6c8ce67b4d8c5"},
+    {file = "mkdocs_material-8.5.6-py3-none-any.whl", hash = "sha256:b473162c800321b9760453f301a91f7cb40a120a85a9d0464e1e484e74b76bb2"},
+    {file = "mkdocs_material-8.5.6.tar.gz", hash = "sha256:38a21d817265d0c203ab3dad64996e45859c983f72180f6937bd5540a4eb84e4"},
 ]
 mkdocs-material-extensions = [
     {file = "mkdocs-material-extensions-1.0.3.tar.gz", hash = "sha256:bfd24dfdef7b41c312ede42648f9eb83476ea168ec163b613f9abd12bbfddba2"},
@@ -2352,11 +2319,11 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 nats-py = [
-    {file = "nats-py-2.1.7.tar.gz", hash = "sha256:e26e2c8be52e7f76c3f701d5d7d4b0935e52b17c97b2e01ab9275d4c71423c41"},
+    {file = "nats-py-2.2.0.tar.gz", hash = "sha256:e45a0bafde2d04fb2d2bd6b0527b95bc77f371beaf7b6237354be0234ff9bba9"},
 ]
 nbclassic = [
-    {file = "nbclassic-0.4.3-py3-none-any.whl", hash = "sha256:4b01076effdac53e775cd1b6a4e891663568b32621468e205b502a23b2921899"},
-    {file = "nbclassic-0.4.3.tar.gz", hash = "sha256:f03111b2cebaa69b88370a7b23b19b2b37c9bb71767f1828cdfd7a047eae8edd"},
+    {file = "nbclassic-0.4.4-py3-none-any.whl", hash = "sha256:6dbea338e67d36cdaf491178e9544d9f0088763ca8bb1f0901dd6cab15aba548"},
+    {file = "nbclassic-0.4.4.tar.gz", hash = "sha256:f6c4fbac2c5efc6f5e7c02a69f5359a6040b90ac648719990d059bdec380afec"},
 ]
 nbclient = [
     {file = "nbclient-0.6.8-py3-none-any.whl", hash = "sha256:7cce8b415888539180535953f80ea2385cdbb444944cdeb73ffac1556fdbc228"},
@@ -2371,8 +2338,8 @@ nbformat = [
     {file = "nbformat-5.6.1.tar.gz", hash = "sha256:146b5b9969391387c2089256359f5da7c718b1d8a88ba814320273ea410e646e"},
 ]
 nest-asyncio = [
-    {file = "nest_asyncio-1.5.5-py3-none-any.whl", hash = "sha256:b98e3ec1b246135e4642eceffa5a6c23a3ab12c82ff816a92c612d68205813b2"},
-    {file = "nest_asyncio-1.5.5.tar.gz", hash = "sha256:e442291cd942698be619823a17a86a5759eabe1f8613084790de189fe9e16d65"},
+    {file = "nest_asyncio-1.5.6-py3-none-any.whl", hash = "sha256:b9a953fb40dceaa587d109609098db21900182b16440652454a146cffb06e8b8"},
+    {file = "nest_asyncio-1.5.6.tar.gz", hash = "sha256:d267cc1ff794403f7df692964d1d2a3fa9418ffea2a3f6859a439ff482fef290"},
 ]
 notebook = [
     {file = "notebook-6.4.12-py3-none-any.whl", hash = "sha256:8c07a3bb7640e371f8a609bdbb2366a1976c6a2589da8ef917f761a61e3ad8b1"},
@@ -2570,8 +2537,8 @@ PyJWT = [
     {file = "PyJWT-2.5.0.tar.gz", hash = "sha256:e77ab89480905d86998442ac5788f35333fa85f65047a534adc38edf3c88fc3b"},
 ]
 pymdown-extensions = [
-    {file = "pymdown_extensions-9.5-py3-none-any.whl", hash = "sha256:ec141c0f4983755349f0c8710416348d1a13753976c028186ed14f190c8061c4"},
-    {file = "pymdown_extensions-9.5.tar.gz", hash = "sha256:3ef2d998c0d5fa7eb09291926d90d69391283561cf6306f85cd588a5eb5befa0"},
+    {file = "pymdown_extensions-9.6-py3-none-any.whl", hash = "sha256:1e36490adc7bfcef1fdb21bb0306e93af99cff8ec2db199bd17e3bf009768c11"},
+    {file = "pymdown_extensions-9.6.tar.gz", hash = "sha256:b956b806439bbff10f726103a941266beb03fbe99f897c7d5e774d7170339ad9"},
 ]
 pymodbus = [
     {file = "pymodbus-2.5.3-py2.py3-none-any.whl", hash = "sha256:6f91403294a73b5a1616a11309f93c0b782115c09379438ef7ebc5bdf86182e9"},
@@ -2621,8 +2588,8 @@ pytkdocs = [
     {file = "pytkdocs-0.16.1.tar.gz", hash = "sha256:e2ccf6dfe9dbbceb09818673f040f1a7c32ed0bffb2d709b06be6453c4026045"},
 ]
 pytz = [
-    {file = "pytz-2022.2.1-py2.py3-none-any.whl", hash = "sha256:220f481bdafa09c3955dfbdddb7b57780e9a94f5127e35456a48589b9e0c0197"},
-    {file = "pytz-2022.2.1.tar.gz", hash = "sha256:cea221417204f2d1a2aa03ddae3e867921971d0d76f14d87abb4414415bbdcf5"},
+    {file = "pytz-2022.4-py2.py3-none-any.whl", hash = "sha256:2c0784747071402c6e99f0bafdb7da0fa22645f06554c7ae06bf6358897e9c91"},
+    {file = "pytz-2022.4.tar.gz", hash = "sha256:48ce799d83b6f8aab2020e369b627446696619e79645419610b9facd909b3174"},
 ]
 pywin32 = [
     {file = "pywin32-304-cp310-cp310-win32.whl", hash = "sha256:3c7bacf5e24298c86314f03fa20e16558a4e4138fc34615d7de4070c23e65af3"},
@@ -2779,16 +2746,16 @@ rfc3986 = [
     {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
 ]
 rich = [
-    {file = "rich-12.5.1-py3-none-any.whl", hash = "sha256:2eb4e6894cde1e017976d2975ac210ef515d7548bc595ba20e195fb9628acdeb"},
-    {file = "rich-12.5.1.tar.gz", hash = "sha256:63a5c5ce3673d3d5fbbf23cd87e11ab84b6b451436f1b7f19ec54b6bc36ed7ca"},
+    {file = "rich-12.6.0-py3-none-any.whl", hash = "sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e"},
+    {file = "rich-12.6.0.tar.gz", hash = "sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0"},
 ]
 Send2Trash = [
     {file = "Send2Trash-1.8.0-py3-none-any.whl", hash = "sha256:f20eaadfdb517eaca5ce077640cb261c7d2698385a6a0f072a4a5447fd49fa08"},
     {file = "Send2Trash-1.8.0.tar.gz", hash = "sha256:d2c24762fd3759860a0aff155e45871447ea58d2be6bdd39b5c8f966a0c99c2d"},
 ]
 setuptools = [
-    {file = "setuptools-65.4.0-py3-none-any.whl", hash = "sha256:c2d2709550f15aab6c9110196ea312f468f41cd546bceb24127a1be6fdcaeeb1"},
-    {file = "setuptools-65.4.0.tar.gz", hash = "sha256:a8f6e213b4b0661f590ccf40de95d28a177cd747d098624ad3f69c40287297e9"},
+    {file = "setuptools-65.4.1-py3-none-any.whl", hash = "sha256:1b6bdc6161661409c5f21508763dc63ab20a9ac2f8ba20029aaaa7fdb9118012"},
+    {file = "setuptools-65.4.1.tar.gz", hash = "sha256:3050e338e5871e70c72983072fe34f6032ae1cdeeeb67338199c2f74e083a80e"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
@@ -2815,8 +2782,8 @@ starlette = [
     {file = "starlette-0.19.1.tar.gz", hash = "sha256:c6d21096774ecb9639acad41b86b7706e52ba3bf1dc13ea4ed9ad593d47e24c7"},
 ]
 terminado = [
-    {file = "terminado-0.15.0-py3-none-any.whl", hash = "sha256:0d5f126fbfdb5887b25ae7d9d07b0d716b1cc0ccaacc71c1f3c14d228e065197"},
-    {file = "terminado-0.15.0.tar.gz", hash = "sha256:ab4eeedccfcc1e6134bfee86106af90852c69d602884ea3a1e8ca6d4486e9bfe"},
+    {file = "terminado-0.16.0-py3-none-any.whl", hash = "sha256:3e995072a7178a104c41134548ce9b03e4e7f0a538e9c29df4f1fbc81c7cfc75"},
+    {file = "terminado-0.16.0.tar.gz", hash = "sha256:fac14374eb5498bdc157ed32e510b1f60d5c3c7981a9f5ba018bb9a64cec0c25"},
 ]
 tinycss2 = [
     {file = "tinycss2-1.1.1-py3-none-any.whl", hash = "sha256:fe794ceaadfe3cf3e686b22155d0da5780dd0e273471a51846d0a02bc204fec8"},
@@ -2901,8 +2868,4 @@ webencodings = [
 websocket-client = [
     {file = "websocket-client-1.4.1.tar.gz", hash = "sha256:f9611eb65c8241a67fb373bef040b3cf8ad377a9f6546a12b620b6511e8ea9ef"},
     {file = "websocket_client-1.4.1-py3-none-any.whl", hash = "sha256:398909eb7e261f44b8f4bd474785b6ec5f5b499d4953342fe9755e01ef624090"},
-]
-zipp = [
-    {file = "zipp-3.8.1-py3-none-any.whl", hash = "sha256:47c40d7fe183a6f21403a199b3e4192cca5774656965b0a4988ad2f8feb5f009"},
-    {file = "zipp-3.8.1.tar.gz", hash = "sha256:05b45f1ee8f807d0cc928485ca40a07cb491cf092ff587c0df9cb1fd154848d2"},
 ]

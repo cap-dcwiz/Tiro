@@ -65,7 +65,7 @@ class TiroTSPump(InfluxDBDataPump):
         uses: Optional[list[str | Path]] = None,
         arangodb_db="tiro",
         arangodb_graph="scenario",
-        arangodb_hosts="http://localhost:8529",
+        arangodb_hosts=None,
         arangodb_auth=None,
         arangodb_agent=None,
         **kwargs,
@@ -79,13 +79,16 @@ class TiroTSPump(InfluxDBDataPump):
         else:
             self.scenario = Scenario.from_yaml(scenario, *uses)
         if arangodb_agent is None:
-            self._arangodb_agent_params = dict(
-                scenario=scenario,
-                db_name=arangodb_db,
-                graph_name=arangodb_graph,
-                auth_info=arangodb_auth,
-                hosts=arangodb_hosts,
-            )
+            if arangodb_hosts is not None:
+                self._arangodb_agent_params = dict(
+                    scenario=scenario,
+                    db_name=arangodb_db,
+                    graph_name=arangodb_graph,
+                    auth_info=arangodb_auth,
+                    hosts=arangodb_hosts,
+                )
+            else:
+                self._arangodb_agent_params = None
         else:
             self._arangodb_agent_params = None
             if arangodb_agent.scenario is None:
