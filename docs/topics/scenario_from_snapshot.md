@@ -154,14 +154,10 @@ $ tiro draft reference snapshot.csv -o reference.yaml
       crac_4.SupplyTemperature: DataHall.data_hall.CRAC.crac_4.SupplyTemperature
       data_hall.Temperature: DataHall.data_hall.Temperature
       rack.ActivePower: DataHall.data_hall.Rack.rack.ActivePower
-      server_1.CPUTemperature:
-    DataHall.data_hall.Rack.rack.Server.server_1.CPUTemperature
-      server_2.CPUTemperature:
-    DataHall.data_hall.Rack.rack.Server.server_2.CPUTemperature
-      server_3.CPUTemperature:
-    DataHall.data_hall.Rack.rack.Server.server_3.CPUTemperature
-      server_4.CPUTemperature:
-    DataHall.data_hall.Rack.rack.Server.server_4.CPUTemperature
+      server_1.CPUTemperature: DataHall.data_hall.Rack.rack.Server.server_1.CPUTemperature
+      server_2.CPUTemperature: DataHall.data_hall.Rack.rack.Server.server_2.CPUTemperature
+      server_3.CPUTemperature: DataHall.data_hall.Rack.rack.Server.server_3.CPUTemperature
+      server_4.CPUTemperature: DataHall.data_hall.Rack.rack.Server.server_4.CPUTemperature
     value_range:
       DataHall.CRAC.ActivePower:
         max: 6000.0
