@@ -14,7 +14,7 @@ Tiro tries to solve the following problems:
        
     2. Also, the data user's development should not be blocked by the data collector's development. Since the requirements and shared data models are clearly defined, there should be some data mockers to generate mock data, based on the requirements and mode, for the data user to conduct their development first.
 
-4. How to properly organise the data collected from heterogeneous data sources in databases or storages, and how to provide the data to upper services and applications in a unified manner? The data collected from different data sources should be stored in a unified way. Lucky, we have already developed libraries [Karez](https://github.com/cap-dcwiz/Karez) and [Utinni](https://github.com/cap-dcwiz/Utinni) for collecting and using data from heterogeneous sources. Tiro can be plugged into the architecture by providing proper Karez roles and Utinni `DataPump`.
+4. How to properly organise the data collected from heterogeneous data sources in databases or storages, and how to provide the data to upper services and applications in a unified manner? The data collected from different data sources should be stored in a unified way. Luckily, we have already developed libraries [Karez](https://github.com/cap-dcwiz/Karez) and [Utinni](https://github.com/cap-dcwiz/Utinni) for collecting and using data from heterogeneous sources. Tiro can be plugged into the architecture by providing proper Karez roles and Utinni `DataPump`.
 
 Therefore, Trio provides tools as shown in the following workflow, which covers the whole process of data collection, data validation, data exchanging, mock data generation and finally data usage.
 
