@@ -37,7 +37,7 @@ def push(
     collect_interval: int = 60,
     data_ssl: bool = typer.Option(False, "-data-ssl", "-a"),
     data_address: str = typer.Option("127.0.0.1:8000", "--data-addr", "-d"),
-    receiver_ssl: bool = typer.Option(False, "-reveiver-ssl", "-e"),
+    receiver_ssl: bool = typer.Option(False, "-receiver-ssl", "-e"),
     receiver_address: str = typer.Option("127.0.0.1:8001", "--recv-addr", "-r"),
 ):
     while True:
