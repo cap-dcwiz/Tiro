@@ -1,23 +1,32 @@
-FROM python:3.10
+FROM ghcr.io/cap-dcwiz/utinni:0.10 as build
 
-WORKDIR /tiro
-
-ENV PYTHONPATH="${PYTHONPATH}:/tiro/" \
+ENV PYTHONPATH="${PYTHONPATH}:/opt/" \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=on
 
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
-COPY pyproject.toml /tiro/
-COPY deps/ /tiro/deps/
+WORKDIR /opt
 
-RUN apt-get update && apt-get upgrade -y &&  \
-    apt-get install build-essential graphviz graphviz-dev -y &&  \
-    poetry install -vvv --no-dev --no-interaction --no-ansi && \
-    pip install deps/*.whl && \
-    apt-get purge build-essential -y  &&  rm -rf /var/lib/apt/lists/*
+COPY ./ /opt/
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install build-essential && \
+    poetry install && poetry build -f wheel
 
-COPY tiro /tiro/tiro
-RUN poetry install -vvv --no-dev --no-interaction --no-ansi && \
-    rm /tiro/poetry.lock /tiro/pyproject.toml
+FROM ghcr.io/cap-dcwiz/utinni:0.10
+
+ENV PYTHONPATH="${PYTHONPATH}:/tiro/" \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=on
+
+COPY --from=build /opt/dist/*.whl /opt
+
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install build-essential -y && \
+    pip install *.whl && \
+    apt-get purge build-essential -y &&  \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /opt/*.whl
+
+WORKDIR /tiro
