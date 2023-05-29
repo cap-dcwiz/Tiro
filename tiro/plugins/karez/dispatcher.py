@@ -19,7 +19,7 @@ class DispatcherForMockServer(DispatcherBase):
             "by", "path", "Access data by path or uuid? (path, uuid)"
         )
 
-    def load_entities(self) -> list:
+    async def load_entities(self) -> list:
         if self.config.by == "path":
             url = f"{self.config.base_url}/points/"
         elif self.config.by == "uuid":
