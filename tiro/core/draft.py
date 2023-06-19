@@ -1,5 +1,4 @@
 import re
-from collections import OrderedDict
 from pathlib import Path
 from typing import Optional
 
@@ -18,6 +17,8 @@ class DraftGenerator:
         self.df.replace({np.nan: None}, inplace=True)
         self.df["data_point"] = self.df.data_point.apply(self.format_name)
         self.df["asset_type"] = self.df.asset_type.apply(self.format_name)
+        self.df["asset"] = self.df.asset.apply(self.format_name)
+        self.df["parent_asset"] = self.df.parent_asset.apply(self.format_name)
 
         self.parent_dict: dict[str, str] = (
             self.df.groupby("asset").parent_asset.first().to_dict()
@@ -42,8 +43,8 @@ class DraftGenerator:
     @staticmethod
     def format_name(name):
         if isinstance(name, str):
-            name = "".join(
-                [re.sub(r"\W|^(?=\d)", "", item) for item in name.strip().split()]
+            name = "_".join(
+                [re.sub(r"\W|^(?=\d)", "_", item) for item in name.strip().split()]
             )
         return name
 
