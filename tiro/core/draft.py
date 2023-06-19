@@ -44,7 +44,7 @@ class DraftGenerator:
     def format_name(name):
         if isinstance(name, str):
             name = "_".join(
-                [re.sub(r"\W|^(?=\d)", "_", item) for item in name.strip().split()]
+                [re.sub(r"\W|^(?=\d)", "", item) for item in name.strip().split()]
             )
         return name
 
