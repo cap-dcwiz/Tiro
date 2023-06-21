@@ -11,7 +11,7 @@ from .utils import split_path, insert_data_point_to_dict
 
 class DraftGenerator:
     def __init__(
-        self, dataframe: Optional[DataFrame] = None, csv_file: Optional[Path] = None
+            self, dataframe: Optional[DataFrame] = None, csv_file: Optional[Path] = None
     ):
         self.df: DataFrame = dataframe or pd.read_csv(csv_file)
         self.df.replace({np.nan: None}, inplace=True)
@@ -43,16 +43,14 @@ class DraftGenerator:
     @staticmethod
     def format_name(name):
         if isinstance(name, str):
-            name = "_".join(
-                [re.sub(r"\W|^(?=\d)", "", item) for item in name.strip().split()]
-            )
+            name = re.sub(r'\s+', ' ', re.sub(r'[./\\\\]+', '_', name))
         return name
 
     def get_children_counts(self) -> dict[str, dict[tuple[str, str], int]]:
         cc = (
             self.df.groupby(["parent_type", "asset_type", "parent_asset"])
-            .asset.nunique()
-            .unstack("parent_asset")
+                .asset.nunique()
+                .unstack("parent_asset")
         )
         return dict(
             min=cc.min(axis=1).astype(int).to_dict(),
@@ -76,7 +74,7 @@ class DraftGenerator:
             return component
 
     def insert_into_schema(
-        self, path: str | list[str], schema: dict, parent_type: Optional[str] = None
+            self, path: str | list[str], schema: dict, parent_type: Optional[str] = None
     ):
         path = split_path(path)
         if path:
@@ -96,7 +94,7 @@ class DraftGenerator:
                 if count_key not in self.count_info["min"]:
                     schema[asset_type][_num_field] = self.df[
                         self.df.asset_type == asset_type
-                    ].asset.nunique()
+                        ].asset.nunique()
             self.insert_into_schema(path, schema[asset_type], asset_type)
 
     def insert_into_uses(self, path: str | list[str], data_point: str, uses: dict):
@@ -128,8 +126,8 @@ class DraftGenerator:
         df["uuid"] = df.apply(lambda x: x.uuid or f"{x.asset}.{x.data_point}", axis=1)
         return (
             df.set_index("uuid")
-            .apply(lambda x: f"{x.path}.{x.data_point}", axis=1)
-            .to_dict()
+                .apply(lambda x: f"{x.path}.{x.data_point}", axis=1)
+                .to_dict()
         )
 
     @property
@@ -150,16 +148,16 @@ class DraftGenerator:
     def reference(self):
         tree = {}
         for path, dps in (
-            self.df[~self.df.data_point.isna()]
-            .groupby("path")
-            .data_point.unique()
-            .items()
+                self.df[~self.df.data_point.isna()]
+                        .groupby("path")
+                        .data_point.unique()
+                        .items()
         ):
             insert_data_point_to_dict(path, dict(DataPoints=list(dps)), tree)
         value_range = (
             self.df.groupby("type_path")
-            .value.agg([min, max])
-            .dropna()
-            .to_dict(orient="index")
+                .value.agg([min, max])
+                .dropna()
+                .to_dict(orient="index")
         )
         return dict(tree=tree, value_range=value_range, uuid_map=self.gen_uuid_map())
