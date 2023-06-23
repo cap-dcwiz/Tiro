@@ -7,6 +7,7 @@ from tiro.core import Scenario
 from tiro.core.mock import Reference
 from tiro.core.utils import PATH_SEP, split_path
 from karez.converter.extras.fix_timestamp import Converter as FixTimestampConverter
+from karez.converter import ConverterBase
 
 
 class TiroUpdateInfoForValueConverter(FixTimestampConverter):
@@ -74,3 +75,31 @@ class TiroPreprocessConverter(FixTimestampConverter):
                 yield from FixTimestampConverter.convert(self, item)
         else:
             yield from Scenario.decompose_data(payload["path"], payload["result"])
+
+
+class TiroFilterByReferenceConverter(ConverterBase):
+    def __init__(self, *args, **kwargs):
+        super(TiroFilterByReferenceConverter, self).__init__(*args, **kwargs)
+        self._reference = None
+
+    @property
+    def reference(self):
+        if self._reference is None:
+            path = Path(self.config.reference)
+            self._reference = Reference(yaml.safe_load(path.open()))
+        return self._reference
+
+    @classmethod
+    def role_description(cls):
+        return "Filter data points by reference"
+
+    @classmethod
+    def config_entities(cls):
+        yield from super(TiroFilterByReferenceConverter, cls).config_entities()
+        yield ConfigEntity("reference", "Reference file")
+        yield ConfigEntity("uuid_field", "Field name for uuid")
+
+    def convert(self, payload):
+        uuid = payload.get(self.config.uuid_field)
+        if uuid and self.reference.search_by_uuid(uuid):
+            yield payload
