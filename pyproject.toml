@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.12.2"
+version = "0.12.3"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
@@ -13,12 +13,12 @@ rich = "^12.2.0"
 nats-py = "^2.1.0"
 jsonschema = "^4.4.0"
 influxdb-client = "^1.28.0"
-karez = {git = "https://github.com/cap-dcwiz/Karez.git", rev = "main"}
 pandas = "^1.4.2"
 python-arango = "^7.5.0"
 typer = "^0.9.0"
 uvicorn = "^0.22.0"
 fastapi = "^0.95.2"
+karez = {git = "https://github.com/cap-dcwiz/karez.git", rev = "v0.7.3"}
 
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["jupyter"], version = "^22.8.0"}
