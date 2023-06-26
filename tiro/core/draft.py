@@ -43,7 +43,7 @@ class DraftGenerator:
     @staticmethod
     def format_name(name):
         if isinstance(name, str):
-            name = re.sub(r"\s+", " ", re.sub(r"[./\\\\]+", "_", name))
+            name = re.sub(r"\s+", " ", re.sub(r"[./\\\\\&]+", "_", name))
         return name
 
     def get_children_counts(self) -> dict[str, dict[tuple[str, str], int]]:
