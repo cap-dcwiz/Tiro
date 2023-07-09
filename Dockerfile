@@ -24,6 +24,8 @@ COPY --from=build /opt/dist/*.whl /opt
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install build-essential -y && \
+    # for easier debugging in container
+    apt-get install vim iputils-ping -y && \
     pip install *.whl && \
     apt-get purge build-essential -y &&  \
     rm -rf /var/lib/apt/lists/* && \
