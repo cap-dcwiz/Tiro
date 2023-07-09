@@ -453,23 +453,23 @@ class MockApp(FastAPI):
         self.use_defaults: bool = use_defaults
 
         @self.get("/hierarchy")
-        def get_hierarchy():
+        async def get_hierarchy():
             return self.mocker.dict(include_data_points=False)
 
         @self.get("/sample")
-        def get_sample(change_attrs: bool = False):
+        async def get_sample(change_attrs: bool = False):
             return self.mocker.dict(change_attrs=change_attrs)
 
         @self.get("/points/")
-        def list_points():
+        async def list_points():
             return self.mocker.list_data_points(skip_default=self.skip_defaults)
 
         @self.get("/values/")
-        def list_uuids():
+        async def list_uuids():
             return self.mocker.list_uuids()
 
         @self.get("/points/{path:str}")
-        def get_point(path):
+        async def get_point(path):
             try:
                 return self.mocker.gen_data_point(path, use_default=self.use_defaults)
             except KeyError as e:
@@ -478,7 +478,7 @@ class MockApp(FastAPI):
                 ) from e
 
         @self.get("/values/{uuid:str}")
-        def get_value_by_uuid(uuid):
+        async def get_value_by_uuid(uuid):
             try:
                 return self.mocker.gen_value_by_uuid(
                     uuid, use_default=self.use_defaults, value_only=True
