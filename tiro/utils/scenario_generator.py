@@ -361,7 +361,9 @@ class GPTPointGenerator:
             if line.strip():
                 path, value_range = line.split(":")
                 min_value, max_value = value_range.split(",")
-                res[path.strip()] = Point(float(min_value.strip()), float(max_value.strip()))
+                res[path.strip()] = Point(
+                    float(min_value.strip()), float(max_value.strip())
+                )
         return res
 
     def complete_asset(self, asset):
