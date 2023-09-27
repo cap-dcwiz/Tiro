@@ -13,7 +13,7 @@ class DraftGenerator:
     def __init__(
         self, dataframe: Optional[DataFrame] = None, csv_file: Optional[Path] = None
     ):
-        self.df: DataFrame = dataframe or pd.read_csv(csv_file)
+        self.df: DataFrame = dataframe if dataframe is not None else pd.read_csv(csv_file)
         self.df.replace({np.nan: None}, inplace=True)
         self.df["data_point"] = self.df.data_point.apply(self.format_name)
         self.df["asset_type"] = self.df.asset_type.apply(self.format_name)

@@ -3,7 +3,7 @@ from functools import partial
 from faker import Faker
 from pydantic import confloat, conint
 
-from .core.model import Telemetry
+from tiro.core.model import Telemetry
 
 default_faker = Faker()
 
