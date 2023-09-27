@@ -31,6 +31,7 @@ mkdocstrings = "^0.18.1"
 mkdocs-typer = "^0.0.2"
 Markdown = "^3.3.6"
 jupyterlab = "^3.4.8"
+openai = "^0.28.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

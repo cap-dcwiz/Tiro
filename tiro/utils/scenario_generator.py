@@ -6,7 +6,6 @@ import yaml
 
 from tiro.core.draft import DraftGenerator
 
-
 Point = namedtuple("Point", "min max")
 
 
@@ -59,7 +58,9 @@ class Asset:
                 raise KeyError(f"Asset type {child_type} not found.")
             return res
         else:
-            return {child.name: child for child in self.children if child.asset_type == item}
+            return {
+                child.name: child for child in self.children if child.asset_type == item
+            }
 
     def __setitem__(self, key, value):
         if isinstance(value, Point):
@@ -70,7 +71,9 @@ class Asset:
             else:
                 self.add_point(key, value.min, value.max)
         else:
-            raise ValueError("Only Point can be assigned to an asset. Use add_asset to add a child asset.")
+            raise ValueError(
+                "Only Point can be assigned to an asset. Use add_asset to add a child asset."
+            )
 
     def tree(self):
         """
@@ -185,7 +188,6 @@ class Asset:
     def _uuid(self, point_name):
         return f"{self.name}_{point_name}".lower().replace(" ", "_")
 
-
     def search(self, asset_name):
         if asset_name == self.name:
             return self
@@ -246,29 +248,33 @@ class Asset:
         """
         data = []
         for data_point, point in self.points.items():
-            data.append(pd.Series(
-                {
-                    "asset": self.name,
-                    "asset_type": self.asset_type,
-                    "parent_asset": parent_asset.name if parent_asset else None,
-                    "data_point": data_point,
-                    "value": np.random.uniform(point.min, point.max),
-                    "unit": None,
-                    "uuid": self._uuid(data_point),
-                }
-            ))
+            data.append(
+                pd.Series(
+                    {
+                        "asset": self.name,
+                        "asset_type": self.asset_type,
+                        "parent_asset": parent_asset.name if parent_asset else None,
+                        "data_point": data_point,
+                        "value": np.random.uniform(point.min, point.max),
+                        "unit": None,
+                        "uuid": self._uuid(data_point),
+                    }
+                )
+            )
         if not data:
-            data.append(pd.Series(
-                {
-                    "asset": self.name,
-                    "asset_type": self.asset_type,
-                    "parent_asset": parent_asset.name if parent_asset else None,
-                    "data_point": None,
-                    "value": None,
-                    "unit": None,
-                    "uuid": None,
-                }
-            ))
+            data.append(
+                pd.Series(
+                    {
+                        "asset": self.name,
+                        "asset_type": self.asset_type,
+                        "parent_asset": parent_asset.name if parent_asset else None,
+                        "data_point": None,
+                        "value": None,
+                        "unit": None,
+                        "uuid": None,
+                    }
+                )
+            )
         df = pd.DataFrame(data)
         for asset in self.children:
             df = pd.concat([df, asset.to_snapshot_frame(parent_asset=self)])
@@ -297,3 +303,70 @@ class Asset:
         if as_yaml:
             res = yaml.dump(res)
         return res
+
+
+class GPTPointGenerator:
+    """
+    A class that utilise GPT-3/4 to help data point generation.
+    The GPT can help to estimate reasonable value ranges of a data point.
+    For example, if given a point path like "DataCenter.Rack.Server.Power" and the unit "W", the GPT can help to estimate a reasonable value range for the power consumption of a server.
+    """
+
+    SYSTEM_PROMPT = """I will give a list of data point paths for a data center in {country}, please estimate a reasonable value range for each input. 
+    Example:
+        Q:
+          Chiller.Power in W
+          CoolingTower.CoolingWaterFlowRate in m^3/s
+
+        A:
+            Chiller.Power: 0, 100
+            CoolingTower.CoolingWaterFlowRate: 0.2, 0.5
+
+    Return only the output without any explanations. Each line contains one data point.
+    """
+
+    def __init__(self, token, model="gpt-4", country="Singapore"):
+        self.token = token
+        self.model = model
+        self.country = country
+        self.path_list = []
+
+    def add_path(self, path, unit):
+        self.path_list.append((path, unit))
+
+    def generate(self):
+        """
+        Each path in path_list is a tuple of (path, unit). The return should be a dict of {path: (min, max)}.
+        """
+        import openai
+
+        openai.api_key = self.token
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": self.SYSTEM_PROMPT.format(country=self.country),
+                },
+                {
+                    "role": "user",
+                    "content": "\n".join(
+                        [f"{path} in {unit}" for path, unit in self.path_list]
+                    ),
+                },
+            ],
+        )
+        res = {}
+        for line in response.choices[0]["message"]["content"].split("\n"):
+            if line.strip():
+                path, value_range = line.split(":")
+                min_value, max_value = value_range.split(",")
+                res[path.strip()] = Point(float(min_value.strip()), float(max_value.strip()))
+        return res
+
+    def complete_asset(self, asset):
+        """
+        Complete data points for an asset.
+        """
+        for path, point in self.generate().items():
+            asset[path] = point
