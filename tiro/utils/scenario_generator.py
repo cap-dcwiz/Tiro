@@ -312,7 +312,7 @@ class GPTPointGenerator:
     For example, if given a point path like "DataCenter.Rack.Server.Power" and the unit "W", the GPT can help to estimate a reasonable value range for the power consumption of a server.
     """
 
-    SYSTEM_PROMPT = """I will give a list of data point paths for a data center in {country}, please estimate a reasonable value range for each input. 
+    SYSTEM_PROMPT = """I will give a list of data point paths for a {asset} in {country}, please estimate a reasonable value range for each input. 
     Example:
         Q:
           Chiller.Power in W
@@ -325,10 +325,12 @@ class GPTPointGenerator:
     Return only the output without any explanations. Each line contains one data point.
     """
 
-    def __init__(self, token, model="gpt-4", country="Singapore"):
+    def __init__(self, root, token, model="gpt-4", country="Singapore", asset="DataCenter"):
+        self.root = root
         self.token = token
         self.model = model
         self.country = country
+        self.asset = asset
         self.path_list = []
 
     def add_path(self, path, unit):
@@ -346,7 +348,7 @@ class GPTPointGenerator:
             messages=[
                 {
                     "role": "system",
-                    "content": self.SYSTEM_PROMPT.format(country=self.country),
+                    "content": self.SYSTEM_PROMPT.format(country=self.country, asset=self.asset),
                 },
                 {
                     "role": "user",
@@ -357,18 +359,24 @@ class GPTPointGenerator:
             ],
         )
         res = {}
-        for line in response.choices[0]["message"]["content"].split("\n"):
-            if line.strip():
-                path, value_range = line.split(":")
-                min_value, max_value = value_range.split(",")
-                res[path.strip()] = Point(
-                    float(min_value.strip()), float(max_value.strip())
-                )
+        try:
+            answer = response.choices[0]["message"]["content"]
+            for line in answer.split("\n"):
+                if line.strip():
+                    path, value_range = line.split(":")
+                    min_value, max_value = value_range.split(",")
+                    res[path.strip()] = Point(
+                        float(min_value.strip()), float(max_value.strip())
+                    )
+        except Exception as e:
+            print("Unable to parse GPT response:")
+            print(response.choices[0])
+            raise e
         return res
 
-    def complete_asset(self, asset):
+    def complete_asset(self):
         """
         Complete data points for an asset.
         """
         for path, point in self.generate().items():
-            asset[path] = point
+            self.root[path] = point

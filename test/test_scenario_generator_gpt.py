@@ -12,7 +12,7 @@ for rack_id in range(1, 3):
     for server_id in range(1, 5):
         server = rack.add_asset("Server", f"Server {rack_id}_{server_id}")
 
-gpt_helper = GPTPointGenerator(token=argv[1], country="Singapore", model="gpt-4")
+gpt_helper = GPTPointGenerator(root, token=argv[1], country="Singapore", model="gpt-4")
 gpt_helper.add_path("DataHall.ACU.SupplyTemperature", "°C")
 gpt_helper.add_path("DataHall.ACU.ReturnTemperature", "°C")
 gpt_helper.add_path("DataHall.ACU.FanSpeed", "Hz")
@@ -21,6 +21,6 @@ gpt_helper.add_path("DataHall.Rack.Server.Power", "W")
 gpt_helper.add_path("DataHall.Rack.Server.Temperature", "°C")
 gpt_helper.add_path("DataHall.Rack.Server.Humidity", "%")
 gpt_helper.add_path("DataHall.Rack.Server.CPUUtilization", "%")
-gpt_helper.complete_asset(root)
+gpt_helper.complete_asset()
 
 print(root.to_reference(as_yaml=True))
