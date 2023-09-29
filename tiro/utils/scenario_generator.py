@@ -307,7 +307,7 @@ class Asset:
 
     # $asset_library_name: fxms_assets
     # $asset_library_path: scenario
-    def to_schema(self, as_yaml=False, library_name="tiro", library_path="scenario", file_name=None):
+    def to_schema(self, as_yaml=False, library_name="assets", library_path="scenario", file_name=None):
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.schema
         res["$asset_library_name"] = library_name
