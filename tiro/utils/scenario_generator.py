@@ -301,8 +301,9 @@ class Asset:
             "uuid_map": self.uuid_map(),
         }
         if as_yaml:
-            return self._to_yaml(res, file_name=file_name)
-        return res
+            self._to_yaml(res, file_name=file_name)
+        else:
+            return res
 
     # $asset_library_name: fxms_assets
     # $asset_library_path: scenario
@@ -312,15 +313,17 @@ class Asset:
         res["$asset_library_name"] = library_name
         res["$asset_library_path"] = library_path
         if as_yaml:
-            return self._to_yaml(res, file_name=file_name)
-        return res
+            self._to_yaml(res, file_name=file_name)
+        else:
+            return res
 
     def to_uses(self, as_yaml=False, file_name=None):
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.uses
         if as_yaml:
-            return self._to_yaml(res, file_name=file_name)
-        return res
+            self._to_yaml(res, file_name=file_name)
+        else:
+            return res
 
     def _to_library_class(self):
         """Generate python code for a library class."""
@@ -349,7 +352,8 @@ class Asset:
         if file_name:
             with open(file_name, "w") as f:
                 f.write(res)
-        return res
+        else:
+            return res
 
 
 class GPTPointGenerator:
