@@ -1,3 +1,5 @@
+import os
+
 import json
 from collections import namedtuple
 import pandas as pd
@@ -62,7 +64,7 @@ class Asset:
                 child.name: child for child in self.children if child.asset_type == item
             }
             if not res:
-                raise KeyError(f"Asset type {item} not found.")
+                logging.warning(f"Asset type {item} not found under {self}.")
             return res
 
     def __setitem__(self, key, value):
@@ -317,6 +319,35 @@ class Asset:
         res = draft_gen.uses
         if as_yaml:
             return self._to_yaml(res, file_name=file_name)
+        return res
+
+    def _to_library_class(self):
+        """Generate python code for a library class."""
+        lines = [
+            f"class {self.asset_type}(Entity):"
+        ]
+        if self.points:
+            for point_name, point in self.points.items():
+                lines.append(f"    {point_name}: RangedFloatTelemetry({point.min}, {point.max})")
+        else:
+            lines.append(f"    pass")
+        return "\n".join(lines)
+
+    def _to_library(self, existing_classes=None):
+        existing_classes = existing_classes or {}
+        existing_classes[self.asset_type] = self._to_library_class()
+        for child in self.children:
+            if child.asset_type not in existing_classes:
+                child._to_library(existing_classes)
+        return existing_classes
+
+    def to_library(self, file_name=None):
+        import_str = "from tiro.core.entity import Entity\n" \
+                     "from tiro.core.telemetry import RangedFloatTelemetry"
+        res = (os.linesep * 3).join([import_str, *self._to_library().values()])
+        if file_name:
+            with open(file_name, "w") as f:
+                f.write(res)
         return res
 
 

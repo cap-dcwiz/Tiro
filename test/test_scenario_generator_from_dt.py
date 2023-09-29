@@ -6,6 +6,7 @@ from rich import print
 root = Asset("DataCenter", "DC1")
 root.load_room_from_dt("test/rack_20_acu_1_mixed.json")
 root.load_room_from_dt("test/rack_16_acu_1_hot_mixed.json")
+
 chiller_plant = root.add_asset("ChillerPlant", "CP1")
 for i in range(1, 7):
     chiller_plant.add_asset("Chiller", f"CHILLER-{i}")
@@ -55,6 +56,7 @@ gpt_helper.add_path("ChillerPlant.Chiller.CoolingCapacity", "W")
 gpt_helper.complete_asset()
 
 
-print(root.to_reference(as_yaml=True))
+# print(root.to_reference(as_yaml=True))
 print(root.to_schema(as_yaml=True))
 print(root.to_uses(as_yaml=True))
+print(root.to_library())
