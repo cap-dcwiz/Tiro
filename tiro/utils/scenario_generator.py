@@ -346,8 +346,8 @@ class Asset:
         return existing_classes
 
     def to_library(self, file_name=None):
-        import_str = "from tiro.core.entity import Entity\n" \
-                     "from tiro.core.telemetry import RangedFloatTelemetry"
+        import_str = "from tiro.core import Entity\n" \
+                     "from tiro.utils import RangedFloatTelemetry"
         res = (os.linesep * 3).join([import_str, *self._to_library().values()])
         if file_name:
             with open(file_name, "w") as f:
