@@ -380,7 +380,7 @@ class GPTPointGenerator:
         self.asset = asset
         self.path_list = []
 
-    def add_path(self, path, unit):
+    def add_path(self, path, unit=None):
         self.path_list.append((path, unit))
 
     def generate(self):
@@ -400,7 +400,7 @@ class GPTPointGenerator:
                 {
                     "role": "user",
                     "content": "\n".join(
-                        [f"{path} in {unit}" for path, unit in self.path_list]
+                        [f"{path} in {unit}" if unit else path for path, unit in self.path_list]
                     ),
                 },
             ],
