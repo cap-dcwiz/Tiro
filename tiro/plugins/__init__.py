@@ -1,4 +1,4 @@
-import logging
+from loguru import logger as logging
 
 try:
     from .utinni import TiroTSPump

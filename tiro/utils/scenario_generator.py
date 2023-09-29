@@ -5,6 +5,7 @@ from collections import namedtuple
 import pandas as pd
 import numpy as np
 import yaml
+from loguru import logger as logging
 
 from tiro.core.draft import DraftGenerator
 
@@ -415,8 +416,8 @@ class GPTPointGenerator:
                         float(min_value.strip()), float(max_value.strip())
                     )
         except Exception as e:
-            print("Unable to parse GPT response:")
-            print(response.choices[0])
+            logging.error("Unable to parse GPT response:")
+            logging.error(response.choices[0])
             raise e
         return res
 

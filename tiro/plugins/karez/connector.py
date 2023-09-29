@@ -1,5 +1,5 @@
 import httpx
-import logging
+from loguru import logger as logging
 
 from karez.config import OptionalConfigEntity
 from karez.connector import RestfulConnectorBase

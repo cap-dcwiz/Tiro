@@ -1,4 +1,4 @@
-import logging
+from loguru import logger as logging
 from datetime import timedelta, datetime
 from pathlib import Path
 from typing import Optional, Literal

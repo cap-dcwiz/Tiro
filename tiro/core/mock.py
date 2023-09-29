@@ -1,5 +1,5 @@
 import json
-import logging
+from loguru import logger as logging
 import re
 from pathlib import Path
 from random import uniform
