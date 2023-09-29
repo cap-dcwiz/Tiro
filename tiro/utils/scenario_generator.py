@@ -267,7 +267,7 @@ class Asset:
                     }
                 )
             )
-        if not data:
+        if not data and self.children:
             data.append(
                 pd.Series(
                     {
@@ -292,7 +292,8 @@ class Asset:
         if file_name:
             with open(file_name, "w") as f:
                 f.write(data)
-        return data
+        else:
+            return data
 
     def to_reference(self, as_yaml=False, file_name=None):
         res = {
@@ -301,7 +302,7 @@ class Asset:
             "uuid_map": self.uuid_map(),
         }
         if as_yaml:
-            self._to_yaml(res, file_name=file_name)
+            return self._to_yaml(res, file_name=file_name)
         else:
             return res
 
@@ -313,7 +314,7 @@ class Asset:
         res["$asset_library_name"] = library_name
         res["$asset_library_path"] = library_path
         if as_yaml:
-            self._to_yaml(res, file_name=file_name)
+            return self._to_yaml(res, file_name=file_name)
         else:
             return res
 
@@ -321,7 +322,7 @@ class Asset:
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.uses
         if as_yaml:
-            self._to_yaml(res, file_name=file_name)
+            return self._to_yaml(res, file_name=file_name)
         else:
             return res
 
