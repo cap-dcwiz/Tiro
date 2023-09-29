@@ -58,9 +58,12 @@ class Asset:
                 raise KeyError(f"Asset type {child_type} not found.")
             return res
         else:
-            return {
+            res = {
                 child.name: child for child in self.children if child.asset_type == item
             }
+            if not res:
+                raise KeyError(f"Asset type {item} not found.")
+            return res
 
     def __setitem__(self, key, value):
         if isinstance(value, Point):
@@ -280,28 +283,40 @@ class Asset:
             df = pd.concat([df, asset.to_snapshot_frame(parent_asset=self)])
         return df
 
-    def to_reference(self, as_yaml=False):
+    @staticmethod
+    def _to_yaml(data, file_name=None):
+        data = yaml.dump(data)
+        if file_name:
+            with open(file_name, "w") as f:
+                f.write(data)
+        return data
+
+    def to_reference(self, as_yaml=False, file_name=None):
         res = {
             "tree": self.tree(),
             "value_range": self.value_range(),
             "uuid_map": self.uuid_map(),
         }
         if as_yaml:
-            res = yaml.dump(res)
+            return self._to_yaml(res, file_name=file_name)
         return res
 
-    def to_schema(self, as_yaml=False):
+    # $asset_library_name: fxms_assets
+    # $asset_library_path: scenario
+    def to_schema(self, as_yaml=False, library_name="tiro", library_path="scenario", file_name=None):
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.schema
+        res["$asset_library_name"] = library_name
+        res["$asset_library_path"] = library_path
         if as_yaml:
-            res = yaml.dump(res)
+            return self._to_yaml(res, file_name=file_name)
         return res
 
-    def to_uses(self, as_yaml=False):
+    def to_uses(self, as_yaml=False, file_name=None):
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.uses
         if as_yaml:
-            res = yaml.dump(res)
+            return self._to_yaml(res, file_name=file_name)
         return res
 
 
