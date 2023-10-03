@@ -7,7 +7,7 @@ from typing import Any, Type, Optional
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from jsonschema import validate, ValidationError as JSONSchemaValidatorError
-from pydantic import BaseModel, ValidationError as PydanticValidationError
+from pydantic.v1 import BaseModel, ValidationError as PydanticValidationError
 
 from .model import Entity
 from .utils import insert_data_point_to_dict

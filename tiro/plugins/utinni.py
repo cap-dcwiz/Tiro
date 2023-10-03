@@ -48,9 +48,9 @@ class PreProcessorForTiroTSTable(PreProcessorForTSTable):
         if key == "asset_path":
             return value
         return getattr(
-            value.groupby(lambda x: self._get_tag_from_asset_path(x, key), axis=1),
+            value.T.groupby(lambda x: self._get_tag_from_asset_path(x, key)),
             table_meta["asset_agg_fn"],
-        )(**table_meta.get("asset_agg_fn_kwargs", {}))
+        )(**table_meta.get("asset_agg_fn_kwargs", {})).T
 
 
 class TimeSeriesPrimaryTableForTiro(TimeSeriesPrimaryTable):
@@ -160,7 +160,6 @@ class TiroTSPump(InfluxDBDataPump):
             path=paths,
             table_cls=TimeSeriesPrimaryTableForTiro,
         )
-        logging.debug(f"paths: {';'.join(paths)}")
         table.set_meta("asset_agg_fn", asset_agg_fn)
         table.set_meta("asset_agg_fn_kwargs", asset_agg_fn_kwargs)
         table.set_meta("table_type", "historian")

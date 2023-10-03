@@ -8,7 +8,7 @@ from typing import Optional, Generator
 import yaml
 from faker import Faker
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 from .utils import camel_to_snake, PATH_SEP, concat_path, split_path
 from .model import Entity, DataPointInfo, Telemetry

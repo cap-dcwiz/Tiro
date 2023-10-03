@@ -1,7 +1,7 @@
 from functools import partial
 
 from faker import Faker
-from pydantic import confloat, conint
+from pydantic.v1 import confloat, conint
 
 from tiro.core.model import Telemetry
 

@@ -19,8 +19,8 @@ from typing import (
     Generator,
 )
 
-from pydantic import BaseModel, create_model, Field
-from pydantic.generics import GenericModel
+from pydantic.v1 import BaseModel, create_model, Field
+from pydantic.v1.generics import GenericModel
 from yaml import safe_load
 
 from .utils import (
