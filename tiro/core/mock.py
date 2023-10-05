@@ -484,7 +484,7 @@ class MockApp(FastAPI):
                     uuid, use_default=self.use_defaults, value_only=True
                 )
             except KeyError as e:
-                logging.error(f"{type(e)}:{e}")
+                logging.exception(f"{type(e)}:{e}")
                 raise HTTPException(
                     status_code=404, detail=f"Cannot find uuid {uuid}"
                 ) from e
