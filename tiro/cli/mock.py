@@ -22,6 +22,7 @@ def mock(
     skip_defaults: Optional[bool] = typer.Option(True, "--skip-defaults", "-s"),
     use_defaults: Optional[bool] = typer.Option(True, "--use-defaults", "-u"),
     reference: Optional[Path] = typer.Option(None, "--reference", "-r"),
+    workers: Optional[int] = typer.Option(1, "--workers", "-w"),
 ):
     scenario = Scenario.from_yaml(scenario_path, *uses)
     mock_app = MockApp(
@@ -29,7 +30,7 @@ def mock(
         skip_defaults=skip_defaults,
         use_defaults=use_defaults,
     )
-    uvicorn.run(mock_app, host=host, port=port)
+    uvicorn.run(mock_app, host=host, port=port, workers=workers)
 
 
 @app.command("push")
