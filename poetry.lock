@@ -1547,7 +1547,7 @@ influxdb = ["influxdb-client (>=1.33.0,<2.0.0)"]
 type = "git"
 url = "https://github.com/cap-dcwiz/karez.git"
 reference = "main"
-resolved_reference = "fe91590db4f292cae4c5520b91ecf68fdaf1868d"
+resolved_reference = "2b0d874654f624f5ac4c67e07764fd51eed8e16e"
 
 [[package]]
 name = "loguru"
