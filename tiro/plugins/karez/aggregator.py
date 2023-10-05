@@ -52,7 +52,7 @@ class ArangoAggregator(AggregatorBase):
         return self._agent
 
     def process(self, payload):
-        self.agent.create_graph(clear_existing=False, clear_database=False)
+        # self.agent.create_graph(clear_existing=False, clear_database=False)
         self.agent.update(payload)
 
 
