@@ -283,7 +283,13 @@ class Asset:
             )
         df = pd.DataFrame(data)
         for asset in self.children:
-            df = pd.concat([df, asset.to_snapshot_frame(parent_asset=self)])
+            child_df = asset.to_snapshot_frame(parent_asset=self)
+            if child_df.empty:
+                continue
+            elif df.empty:
+                df = child_df
+            else:
+                df = pd.concat([df.astype(child_df.dtypes), child_df.astype(df.dtypes)])
         return df
 
     @staticmethod
