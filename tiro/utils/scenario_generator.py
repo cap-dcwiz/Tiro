@@ -9,7 +9,18 @@ from loguru import logger as logging
 
 from tiro.core.draft import DraftGenerator
 
-Point = namedtuple("Point", "min max")
+
+class Point:
+    def __init__(self, min, max, unit=None):
+        self.min = min
+        self.max = max
+        self.unit = unit
+
+    def __str__(self):
+        return f"Point({self.min}, {self.max}, {self.unit})"
+
+    def __repr__(self):
+        return f"Point({self.min}, {self.max}, {self.unit})"
 
 
 class Asset:
@@ -26,17 +37,17 @@ class Asset:
     def add_asset(self, asset_type, name):
         return self.add_child(Asset(asset_type, name))
 
-    def add_point(self, point_name, min, max):
-        point = Point(min, max)
+    def add_point(self, point_name, min, max, unit=None):
+        point = Point(min, max, unit)
         self.points[point_name] = point
 
-    def add_point_to_children(self, path, point_name, min, max):
+    def add_point_to_children(self, path, point_name, min, max, unit=None):
         """
         Add a point to all children with the given path.
         For example, if the path is ["Rack", "Server"], then the point will be added to all servers.
         """
         for child in self[path].values():
-            child.add_point(point_name, min, max)
+            child.add_point(point_name, min, max, unit)
 
     def __str__(self):
         return f"{self.asset_type}#{self.name}"
@@ -48,6 +59,9 @@ class Asset:
             super().__setattr__(key, value)
 
     def __getitem__(self, item):
+        return self.get_children(item, ignore_not_found=False)
+
+    def get_children(self, item, ignore_not_found=False):
         """Return a dict of child assets with the given asset type."""
         if "." in item:
             res = {}
@@ -56,8 +70,8 @@ class Asset:
             for child in self.children:
                 if child.asset_type == child_type:
                     found = True
-                    res.update(child[offspring])
-            if not found:
+                    res.update(child.get_children(offspring, ignore_not_found=ignore_not_found))
+            if not found and not ignore_not_found:
                 raise KeyError(f"Asset type {child_type} not found.")
             return res
         else:
@@ -72,7 +86,7 @@ class Asset:
         if isinstance(value, Point):
             if "." in key:
                 path, point_name = key.rsplit(".", 1)
-                for child in self[path].values():
+                for child in self.get_children(path, ignore_not_found=True).values():
                     child.add_point(point_name, value.min, value.max)
             else:
                 self.add_point(key, value.min, value.max)
@@ -233,11 +247,11 @@ class Asset:
         Generate reference tree from a dt file
         """
         type_maps = {
-            "acus": "ACU",
-            "racks": "Rack",
-            "servers": "Server",
-            "sensors": "Sensor",
-        } | (type_maps or {})
+                        "acus": "ACU",
+                        "racks": "Rack",
+                        "servers": "Server",
+                        "sensors": "Sensor",
+                    } | (type_maps or {})
         point_maps = point_maps or {}
         skip_keys = set(skip_keys or []) | {"raisedFloor"}
         if isinstance(dt, str):
@@ -291,6 +305,49 @@ class Asset:
             else:
                 df = pd.concat([df.astype(child_df.dtypes), child_df.astype(df.dtypes)])
         return df
+
+    def _load_from_snapshot(self, df):
+        """
+        Load data from a snapshot dataframe.
+        """
+        for item in df[(df.asset == self.name) & (~df.data_point.isna())].itertuples():
+            value = getattr(item, "value", 0)
+            self.add_point(item.data_point, value, value, getattr(item, "unit", None))
+        for item in df[df.parent_asset == self.name].itertuples():
+            child = self.add_asset(item.asset_type, item.asset)
+            child._load_from_snapshot(df)
+
+    @classmethod
+    def from_snapshot(cls, df, root_type="Root", root_name="Root"):
+        """
+        Load data from a snapshot dataframe.
+        """
+        assets = []
+        top_level = df[df["parent_asset"].isna()]
+        for asset, sub_df in top_level.groupby("asset"):
+            asset_type = sub_df["asset_type"].iloc[0]
+            asset = cls(asset_type, asset)
+            asset._load_from_snapshot(df)
+            assets.append(asset)
+        if len(assets) == 1:
+            return assets[0]
+        else:
+            root = cls(root_type, root_name)
+            for asset in assets:
+                root.add_child(asset)
+            return root
+
+    def all_point_path(self):
+        """
+        Return a list of all point paths.
+        """
+        res = {}
+        for point_name, point in self.points.items():
+            res[f"{self.asset_type}.{point_name}"] = point
+        for child in self.children:
+            res.update(
+                {f"{self.asset_type}.{child_name}": child for child_name, child in child.all_point_path().items()})
+        return res
 
     @staticmethod
     def _to_yaml(data, file_name=None):

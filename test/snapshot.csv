@@ -1,0 +1,317 @@
+data_point,asset,asset_type,value,parent_asset,unit,uuid
+ActivePower,DB-2-CRAH-PU-1,PowerUnit,41766.08203,DB-2-CRAH-1,kW,SB-L2-MECH-1-Q1-6_Ptot
+BTULoad,Level-2,Floor,1430860.107,DC-SIN1,kW,ns=2;s=0:Cluster1.CHW_BTU_L2_LOAD
+BTULoad,Level-3,Floor,1371880.005,DC-SIN1,kW,ns=2;s=0:Cluster1.CHW_BTU_L3_LOAD
+BTULoad,Level-4,Floor,1071500,DC-SIN1,kW,ns=2;s=0:Cluster1.CHW_BTU_L4_LOAD
+BTULoad,Level-5,Floor,1063699.951,DC-SIN1,kW,ns=2;s=0:Cluster1.CHW_BTU_L5_LOAD
+BTULoad,Level-6,Floor,302600.0061,DC-SIN1,kW,ns=2;s=0:Cluster1.CHW_BTU_L6_LOAD
+BTULoad,DC-SIN1,DataCenter,5264200.195,,kW,ns=2;s=0:Cluster1.CHW_BTU_LOAD
+Priority,CHW-CH-L101A,Chiller,6,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L101A_Priority
+Priority,CHW-CH-L101B,Chiller,6,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L101B_Priority
+Chilled Water Return Temperature,CHW-CH-L101A,Chiller,21.89999962,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101A_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L101A,Chiller,20.89999962,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101A_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L101A,Chiller,26.70000076,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101A_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L101A,Chiller,27.5,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101A_MB_CWS
+Chilled Water Return Temperature,CHW-CH-L101B,Chiller,21.29999924,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101B_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L101B,Chiller,21,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101B_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L101B,Chiller,27.20000076,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101B_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L101B,Chiller,27.89999962,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L101B_MB_CWS
+Chilled Water Return Temperature,CHW-CH-L102,Chiller,19.79999924,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L102_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L102,Chiller,13.60000038,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L102_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L102,Chiller,28.10000038,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L102_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L102,Chiller,34.90000153,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L102_MB_CWS
+Priority,CHW-CH-L102,Chiller,4,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L102_Priority
+Chilled Water Return Temperature,CHW-CH-L103,Chiller,19.39999962,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L103_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L103,Chiller,13.80000019,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L103_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L103,Chiller,28,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L103_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L103,Chiller,33.70000076,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L103_MB_CWS
+Priority,CHW-CH-L103,Chiller,3,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L103_Priority
+Chilled Water Return Temperature,CHW-CH-L104,Chiller,19,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L104_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L104,Chiller,13.60000038,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L104_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L104,Chiller,28.60000038,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L104_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L104,Chiller,32.79999924,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L104_MB_CWS
+Priority,CHW-CH-L104,Chiller,5,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L104_Priority
+Chilled Water Return Temperature,CHW-CH-L105,Chiller,18.89999962,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L105_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L105,Chiller,13.60000038,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L105_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L105,Chiller,28.20000076,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L105_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L105,Chiller,33.29999924,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L105_MB_CWS
+Priority,CHW-CH-L105,Chiller,1,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L105_Priority
+Chilled Water Return Temperature,CHW-CH-L106,Chiller,18.10000038,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L106_MB_CHWR
+Chilled Water Supply Temperature,CHW-CH-L106,Chiller,16.79999924,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L106_MB_CHWS
+Condenser Water Return Temperature,CHW-CH-L106,Chiller,27.5,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L106_MB_CWR
+Condenser Water Supply Temperature,CHW-CH-L106,Chiller,28.29999924,CP-1,C,ns=2;s=0:Cluster1.CHW_CH_L106_MB_CWS
+Priority,CHW-CH-L106,Chiller,2,CP-1,,ns=2;s=0:Cluster1.CHW_CH_L106_Priority
+Temperature,CHW_L201,ChilledWaterLoop,13.69999981,Level-2,C,ns=2;s=0:Cluster1.CHW_L201_BTU_TT01_PV
+Temperature,CHW_L201,ChilledWaterLoop,21.30000114,Level-2,C,ns=2;s=0:Cluster1.CHW_L201_BTU_TT02_PV
+Temperature,CHW_L201,ChilledWaterLoop,13.90000057,Level-2,C,ns=2;s=0:Cluster1.CHW_L201_BTU_TT03_PV
+Temperature,CHW_L201,ChilledWaterLoop,21.5,Level-2,C,ns=2;s=0:Cluster1.CHW_L201_BTU_TT04_PV
+FlowRate,CHW_L201,ChilledWaterLoop,83.51999664,Level-2,m3/s,ns=2;s=0:Cluster1.CHW_L201_FT_01_PV
+FlowRate,CHW_L201,ChilledWaterLoop,83.51999664,Level-2,m3/s,ns=2;s=0:Cluster1.CHW_L201_FT_01_PV
+FlowRate,CHW_L201,ChilledWaterLoop,0,Level-2,m3/s,ns=2;s=0:Cluster1.CHW_L201_FT_02_PV
+Temperature,CHW_L301,ChilledWaterLoop,13.60000038,Level-3,C,ns=2;s=0:Cluster1.CHW_L301_BTU_TT01_PV
+Temperature,CHW_L301,ChilledWaterLoop,20.70000076,Level-3,C,ns=2;s=0:Cluster1.CHW_L301_BTU_TT02_PV
+Temperature,CHW_L301,ChilledWaterLoop,14.30000019,Level-3,C,ns=2;s=0:Cluster1.CHW_L301_BTU_TT03_PV
+Temperature,CHW_L301,ChilledWaterLoop,22.20000076,Level-3,C,ns=2;s=0:Cluster1.CHW_L301_BTU_TT04_PV
+FlowRate,CHW_L301,ChilledWaterLoop,80.58999634,Level-3,m3/s,ns=2;s=0:Cluster1.CHW_L301_FT_01_PV
+FlowRate,CHW_L301,ChilledWaterLoop,77.59999847,Level-3,m3/s,ns=2;s=0:Cluster1.CHW_L301_FT_02_PV
+Temperature,CHW_L401,ChilledWaterLoop,13.80000019,Level-4,C,ns=2;s=0:Cluster1.CHW_L401_BTU_TT01_PV
+Temperature,CHW_L401,ChilledWaterLoop,18.5,Level-4,C,ns=2;s=0:Cluster1.CHW_L401_BTU_TT02_PV
+Temperature,CHW_L401,ChilledWaterLoop,13.5,Level-4,C,ns=2;s=0:Cluster1.CHW_L401_BTU_TT03_PV
+Temperature,CHW_L401,ChilledWaterLoop,19.30000114,Level-4,C,ns=2;s=0:Cluster1.CHW_L401_BTU_TT04_PV
+FlowRate,CHW_L401,ChilledWaterLoop,84.09999847,Level-4,m3/s,ns=2;s=0:Cluster1.CHW_L401_FT_01_PV
+FlowRate,CHW_L401,ChilledWaterLoop,87.59999847,Level-4,m3/s,ns=2;s=0:Cluster1.CHW_L401_FT_02_PV
+FlowRate,CHW_L501,ChilledWaterLoop,109.8000031,Level-5,m3/s,ns=2;s=0:Cluster1.CHW_L501_FT_01_PV
+FlowRate,CHW_L501,ChilledWaterLoop,117.9000015,Level-5,m3/s,ns=2;s=0:Cluster1.CHW_L501_FT_02_PV
+Temperature,CHW_L501,ChilledWaterLoop,14.60000038,Level-5,C,ns=2;s=0:Cluster1.CHW_L501_TT_01_PV
+Temperature,CHW_L501,ChilledWaterLoop,18.20000076,Level-5,C,ns=2;s=0:Cluster1.CHW_L501_TT_02_PV
+Temperature,CHW_L501,ChilledWaterLoop,14.10000038,Level-5,C,ns=2;s=0:Cluster1.CHW_L501_TT_03_PV
+Temperature,CHW_L501,ChilledWaterLoop,18.5,Level-5,C,ns=2;s=0:Cluster1.CHW_L501_TT_04_PV
+FlowRate,CHW_L601,ChilledWaterLoop,33.29999924,Level-6,m3/s,ns=2;s=0:Cluster1.CHW_L601_FT_01_PV
+FlowRate,CHW_L601,ChilledWaterLoop,35.29999924,Level-6,m3/s,ns=2;s=0:Cluster1.CHW_L601_FT_02_PV
+Temperature,CHW_L601,ChilledWaterLoop,15.39999962,Level-6,C,ns=2;s=0:Cluster1.CHW_L601_TT_01_PV
+Temperature,CHW_L601,ChilledWaterLoop,19.29999924,Level-6,C,ns=2;s=0:Cluster1.CHW_L601_TT_02_PV
+Temperature,CHW_L601,ChilledWaterLoop,14,Level-6,C,ns=2;s=0:Cluster1.CHW_L601_TT_03_PV
+Temperature,CHW_L601,ChilledWaterLoop,17.70000076,Level-6,C,ns=2;s=0:Cluster1.CHW_L601_TT_04_PV
+Frequency,CHW-PPMP-L101A,ChilledWaterPump,0,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L101A_HZ
+ActivePower,CHW-PPMP-L101A,ChilledWaterPump,0,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L101A_PWR
+Frequency,CHW-PPMP-L101B,ChilledWaterPump,0,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L101B_HZ
+ActivePower,CHW-PPMP-L101B,ChilledWaterPump,0,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L101B_PWR
+Frequency,CHW-PPMP-L102,ChilledWaterPump,37,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L102_HZ
+ActivePower,CHW-PPMP-L102,ChilledWaterPump,10800.00019,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L102_PWR
+Frequency,CHW-PPMP-L103,ChilledWaterPump,33.84500122,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L103_HZ
+ActivePower,CHW-PPMP-L103,ChilledWaterPump,11250,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L103_PWR
+Frequency,CHW-PPMP-L104,ChilledWaterPump,37,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L104_HZ
+ActivePower,CHW-PPMP-L104,ChilledWaterPump,11699.99981,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L104_PWR
+Frequency,CHW-PPMP-L105,ChilledWaterPump,33.97499847,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L105_HZ
+ActivePower,CHW-PPMP-L105,ChilledWaterPump,12150.00057,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L105_PWR
+Frequency,CHW-PPMP-L106,ChilledWaterPump,-0.075000003,CP-1,Hz,ns=2;s=0:Cluster1.CHW_PPMP_L106_HZ
+ActivePower,CHW-PPMP-L106,ChilledWaterPump,0,CP-1,kW,ns=2;s=0:Cluster1.CHW_PPMP_L106_PWR
+Frequency,CHW-SPMP-L201,SecondaryChilledWaterPump,29.86499977,Level-2,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L201_HZ
+ActivePower,CHW-SPMP-L201,SecondaryChilledWaterPump,6300.000191,Level-2,kW,ns=2;s=0:Cluster1.CHW_SPMP_L201_PWR
+Frequency,CHW-SPMP-L202,SecondaryChilledWaterPump,29.8900013,Level-2,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L202_HZ
+ActivePower,CHW-SPMP-L202,SecondaryChilledWaterPump,5849.999905,Level-2,kW,ns=2;s=0:Cluster1.CHW_SPMP_L202_PWR
+Frequency,CHW-SPMP-L301,SecondaryChilledWaterPump,30.27499962,Level-3,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L301_HZ
+ActivePower,CHW-SPMP-L301,SecondaryChilledWaterPump,4759.999752,Level-3,kW,ns=2;s=0:Cluster1.CHW_SPMP_L301_PWR
+Frequency,CHW-SPMP-L302,SecondaryChilledWaterPump,30.20499992,Level-3,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L302_HZ
+ActivePower,CHW-SPMP-L302,SecondaryChilledWaterPump,4279.999733,Level-3,kW,ns=2;s=0:Cluster1.CHW_SPMP_L302_PWR
+Frequency,CHW-SPMP-L401,SecondaryChilledWaterPump,0,Level-4,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L401_HZ
+ActivePower,CHW-SPMP-L401,SecondaryChilledWaterPump,0,Level-4,kW,ns=2;s=0:Cluster1.CHW_SPMP_L401_PWR
+Frequency,CHW-SPMP-L402,SecondaryChilledWaterPump,22.5,Level-4,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L402_HZ
+ActivePower,CHW-SPMP-L402,SecondaryChilledWaterPump,2420.000076,Level-4,kW,ns=2;s=0:Cluster1.CHW_SPMP_L402_PWR
+Frequency,CHW-SPMP-L501,SecondaryChilledWaterPump,33.29999924,Level-5,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L501_HZ
+ActivePower,CHW-SPMP-L501,SecondaryChilledWaterPump,14399.99962,Level-5,kW,ns=2;s=0:Cluster1.CHW_SPMP_L501_PWR
+Frequency,CHW-SPMP-L502,SecondaryChilledWaterPump,31,Level-5,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L502_HZ
+ActivePower,CHW-SPMP-L502,SecondaryChilledWaterPump,8550.000191,Level-5,kW,ns=2;s=0:Cluster1.CHW_SPMP_L502_PWR
+Frequency,CHW-SPMP-L601,SecondaryChilledWaterPump,0,Level-6,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L601_HZ
+ActivePower,CHW-SPMP-L601,SecondaryChilledWaterPump,0,Level-6,kW,ns=2;s=0:Cluster1.CHW_SPMP_L601_PWR
+Frequency,CHW-SPMP-L602,SecondaryChilledWaterPump,27,Level-6,Hz,ns=2;s=0:Cluster1.CHW_SPMP_L602_HZ
+ActivePower,CHW-SPMP-L602,SecondaryChilledWaterPump,3359.999895,Level-6,kW,ns=2;s=0:Cluster1.CHW_SPMP_L602_PWR
+FlowRate,CW-CT-LR01,CoolingTower,0,CP-1,m3/s,ns=2;s=0:Cluster1.CW_CT_R01_FT_PV
+Frequency,CW-CT-LR01,CoolingTower,0,CP-1,Hz,ns=2;s=0:Cluster1.CW_CT_R01_HZ
+ActivePower,CW-CT-LR01,CoolingTower,0,CP-1,kW,ns=2;s=0:Cluster1.CW_CT_R01_PWR
+Supply Temperature,CW-CT-LR01,CoolingTower,34.25024414,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R01_TT_01_PV
+Return Temperature,CW-CT-LR01,CoolingTower,30.95300293,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R01_TT_02_PV
+Environment Temperature,CW-CT-LR01,CoolingTower,30.65499878,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R01_TT_03_PV
+FlowRate,CW-CT-LR02,CoolingTower,190.6037292,CP-1,m3/s,ns=2;s=0:Cluster1.CW_CT_R02_FT_PV
+Frequency,CW-CT-LR02,CoolingTower,40,CP-1,Hz,ns=2;s=0:Cluster1.CW_CT_R02_HZ
+ActivePower,CW-CT-LR02,CoolingTower,21600.00038,CP-1,kW,ns=2;s=0:Cluster1.CW_CT_R02_PWR
+Supply Temperature,CW-CT-LR02,CoolingTower,27.8837471,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R02_TT_01_PV
+Return Temperature,CW-CT-LR02,CoolingTower,34.79859543,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R02_TT_02_PV
+Environment Temperature,CW-CT-LR02,CoolingTower,30.92499924,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R02_TT_03_PV
+FlowRate,CW-CT-LR03,CoolingTower,242.5599976,CP-1,m3/s,ns=2;s=0:Cluster1.CW_CT_R03_FT_PV
+Frequency,CW-CT-LR03,CoolingTower,45.54000092,CP-1,Hz,ns=2;s=0:Cluster1.CW_CT_R03_HZ
+ActivePower,CW-CT-LR03,CoolingTower,20049.99924,CP-1,kW,ns=2;s=0:Cluster1.CW_CT_R03_PWR
+Supply Temperature,CW-CT-LR03,CoolingTower,27.39999962,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R03_TT_01_PV
+Return Temperature,CW-CT-LR03,CoolingTower,33.59999847,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R03_TT_02_PV
+Environment Temperature,CW-CT-LR03,CoolingTower,0,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R03_TT_03_PV
+FlowRate,CW-CT-LR04,CoolingTower,233.4165039,CP-1,m3/s,ns=2;s=0:Cluster1.CW_CT_R04_FT_PV
+Frequency,CW-CT-LR04,CoolingTower,37.79999924,CP-1,Hz,ns=2;s=0:Cluster1.CW_CT_R04_HZ
+ActivePower,CW-CT-LR04,CoolingTower,20700.00076,CP-1,kW,ns=2;s=0:Cluster1.CW_CT_R04_PWR
+Supply Temperature,CW-CT-LR04,CoolingTower,28.76280022,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R04_TT_01_PV
+Return Temperature,CW-CT-LR04,CoolingTower,33.83908463,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R04_TT_02_PV
+Environment Temperature,CW-CT-LR04,CoolingTower,30.93000031,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R04_TT_03_PV
+FlowRate,CW-CT-LR05,CoolingTower,257.3600159,CP-1,m3/s,ns=2;s=0:Cluster1.CW_CT_R05_FT_PV
+Frequency,CW-CT-LR05,CoolingTower,40.57500076,CP-1,Hz,ns=2;s=0:Cluster1.CW_CT_R05_HZ
+ActivePower,CW-CT-LR05,CoolingTower,26099.99847,CP-1,kW,ns=2;s=0:Cluster1.CW_CT_R05_PWR
+Supply Temperature,CW-CT-LR05,CoolingTower,28.60000038,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R05_TT_01_PV
+Return Temperature,CW-CT-LR05,CoolingTower,34,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R05_TT_02_PV
+Environment Temperature,CW-CT-LR05,CoolingTower,35,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R05_TT_03_PV
+FlowRate,CW-CT-LR06,CoolingTower,0,CP-1,m3/s,ns=2;s=0:Cluster1.CW_CT_R06_FT_PV
+Frequency,CW-CT-LR06,CoolingTower,0,CP-1,Hz,ns=2;s=0:Cluster1.CW_CT_R06_HZ
+ActivePower,CW-CT-LR06,CoolingTower,0,CP-1,kW,ns=2;s=0:Cluster1.CW_CT_R06_PWR
+Supply Temperature,CW-CT-LR06,CoolingTower,35.5,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R06_TT_01_PV
+Return Temperature,CW-CT-LR06,CoolingTower,30.79999924,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R06_TT_02_PV
+Environment Temperature,CW-CT-LR06,CoolingTower,34,CP-1,C,ns=2;s=0:Cluster1.CW_CT_R06_TT_03_PV
+Frequency,CW-PMP-L101A,CondenserWaterPump,0,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L101A_HZ
+ActivePower,CW-PMP-L101A,CondenserWaterPump,0,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L101A_PWR
+Frequency,CW-PMP-L101B,CondenserWaterPump,0,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L101B_HZ
+ActivePower,CW-PMP-L101B,CondenserWaterPump,0,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L101B_PWR
+Frequency,CW-PMP-L102,CondenserWaterPump,35,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L102_HZ
+ActivePower,CW-PMP-L102,CondenserWaterPump,14850.00038,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L102_PWR
+Frequency,CW-PMP-L103,CondenserWaterPump,35.18000031,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L103_HZ
+ActivePower,CW-PMP-L103,CondenserWaterPump,11699.99981,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L103_PWR
+Frequency,CW-PMP-L104,CondenserWaterPump,40,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L104_HZ
+ActivePower,CW-PMP-L104,CondenserWaterPump,22500,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L104_PWR
+Frequency,CW-PMP-L105,CondenserWaterPump,35.13500214,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L105_HZ
+ActivePower,CW-PMP-L105,CondenserWaterPump,12600.00038,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L105_PWR
+Frequency,CW-PMP-L106,CondenserWaterPump,-0.030000001,CP-1,Hz,ns=2;s=0:Cluster1.CW_PMP_L106_HZ
+ActivePower,CW-PMP-L106,CondenserWaterPump,0,CP-1,kW,ns=2;s=0:Cluster1.CW_PMP_L106_PWR
+FlowRate,WestRiser,Riser,461.600006,CP-1,m3/s,ns=2;s=0:Cluster1.ER_CHW_BTU_L101_FT_PV
+ChilledWaterSupplyTemperature,EastRiser,Riser,13.7451172,CP-1,C,ns=2;s=0:Cluster1.ER_CHW_BTU_L101_PR_TT_01_PV
+ChilledWaterReturnTemperature,EastRiser,Riser,19.8044739,CP-1,C,ns=2;s=0:Cluster1.ER_CHW_BTU_L101_PR_TT_02_PV
+ActivePower,CHW-PPMP-PU-9,PowerUnit,11692.88086,CHW-PPMP-L104,kW,MCC-1A1-F06_Ptot
+ActivePower,CHW-PPMP-PU-1,PowerUnit,0,CHW-PPMP-L101A,kW,MCC-1A1-F07_Ptot
+ActivePower,CW-PMP-L101B-P1,PowerUnit,0,CW-PMP-L101B,kW,MCC-1A1-F08_Ptot
+ActivePower,CW-CT-LR04-P1,PowerUnit,10713.82031,CW-CT-LR04,kW,MCC-1A1-F09_Ptot
+ActivePower,CW-PMP-L104-P1,PowerUnit,24048.48047,CW-PMP-L104,kW,MCC-1A1-F12_Ptot
+ActivePower,CHW-PPMP-PU-3,PowerUnit,0,CHW-PPMP-L101B,kW,MCC-1A1-F13_Ptot
+ActivePower,CHW-PPMP-PU-5,PowerUnit,0,CHW-PPMP-L102,kW,MCC-1A1-F14_Ptot
+ActivePower,CW-PMP-L101A-P1,PowerUnit,0,CW-PMP-L101A,kW,MCC-1A1-F15_Ptot
+ActivePower,CW-CT-LR01-P1,PowerUnit,7.960000515,CW-CT-LR01,kW,MCC-1A1-F16_Ptot
+ActivePower,CW-CT-LR02-P1,PowerUnit,0,CW-CT-LR02,kW,MCC-1A1-F17_Ptot
+ActivePower,CW-PMP-L102-P1,PowerUnit,0,CW-PMP-L102,kW,MCC-1A1-F20_Ptot
+ActivePower,CHW-PPMP-PU-6,PowerUnit,12156.64063,CHW-PPMP-L102,kW,MCC-1B1-F06_Ptot
+ActivePower,CHW-PPMP-PU-10,PowerUnit,0,CHW-PPMP-L104,kW,MCC-1B1-F08_Ptot
+ActivePower,CW-CT-LR04-P2,PowerUnit,0,CW-CT-LR04,kW,MCC-1B1-F09_Ptot
+ActivePower,CW-CT-LR01-P2,PowerUnit,0,CW-CT-LR01,kW,MCC-1B1-F10_Ptot
+ActivePower,CW-PMP-L102-P2,PowerUnit,15961.44043,CW-PMP-L102,kW,MCC-1B1-F12_Ptot
+ActivePower,CW-PMP-L104-P2,PowerUnit,0,CW-PMP-L104,kW,MCC-1B1-F13_Ptot
+ActivePower,CHW-PPMP-PU-2,PowerUnit,0,CHW-PPMP-L101A,kW,MCC-1B1-F15_Ptot
+ActivePower,CW-CT-LR02-P2,PowerUnit,10907.62012,CW-CT-LR02,kW,MCC-1B1-F16_Ptot
+ActivePower,CHW-PPMP-PU-4,PowerUnit,0,CHW-PPMP-L101B,kW,MCC-1B1-F17_Ptot
+ActivePower,CW-PMP-L101B-P2,PowerUnit,0,CW-PMP-L101B,kW,MCC-1B1-F20_Ptot
+ActivePower,CW-PMP-L101A-P2,PowerUnit,0,CW-PMP-L101A,kW,MCC-1B1-F21_Ptot
+ActivePower,CHW-PPMP-PU-11,PowerUnit,12018.73633,CHW-PPMP-L105,kW,MCC1A11A2-Q1-1_Ptot
+ActivePower,CW-PMP-L106-P1,PowerUnit,0,CW-PMP-L106,kW,MCC1A11A2-Q1-2_Ptot
+ActivePower,CW-PMP-L103-P1,PowerUnit,11348.72949,CW-PMP-L103,kW,MCC1A11A2-Q1-3_Ptot
+ActivePower,CW-PMP-L105-P1,PowerUnit,11753.89648,CW-PMP-L105,kW,MCC1A11A2-Q1-4_Ptot
+ActivePower,CHW-PPMP-PU-7,PowerUnit,11463.9541,CHW-PPMP-L103,kW,MCC1A11A2-Q1-5_Ptot
+ActivePower,CHW-PPMP-PU-13,PowerUnit,0,CHW-PPMP-L106,kW,MCC1A11A2-Q1-6_Ptot
+ActivePower,CHW-PPMP-PU-12,PowerUnit,0,CHW-PPMP-L105,kW,MCC1A11B2-Q1-1_Ptot
+ActivePower,CW-PMP-L106-P2,PowerUnit,33.68552399,CW-PMP-L106,kW,MCC1A11B2-Q1-2_Ptot
+ActivePower,CW-PMP-L103-P2,PowerUnit,0,CW-PMP-L103,kW,MCC1A11B2-Q1-3_Ptot
+ActivePower,CW-PMP-L105-P2,PowerUnit,0,CW-PMP-L105,kW,MCC1A11B2-Q1-4_Ptot
+ActivePower,CHW-PPMP-PU-8,PowerUnit,0,CHW-PPMP-L103,kW,MCC1A11B2-Q1-5_Ptot
+ActivePower,CHW-PPMP-PU-14,PowerUnit,156.6700134,CHW-PPMP-L106,kW,MCC1A11B2-Q1-6_Ptot
+ActivePower,CHW-CH-L106-P1,PowerUnit,0,CHW-CH-L106,kW,MMB-1A1-F04_Ptot
+ActivePower,CHW-CH-L105-P1,PowerUnit,152203.7969,CHW-CH-L105,kW,MMB-1A1-F05_Ptot
+ActivePower,CHW-CH-L104-P1,PowerUnit,141131.9219,CHW-CH-L104,kW,MMB-1A1-F06_Ptot
+ActivePower,CHW-CH-L101A-P1,PowerUnit,0,CHW-CH-L101A,kW,MMB-1A1-F10_Ptot
+ActivePower,CHW-CH-L103-P1,PowerUnit,135578.1719,CHW-CH-L103,kW,MMB-1A1-F11_Ptot
+ActivePower,CHW-CH-L102-P1,PowerUnit,0,CHW-CH-L102,kW,MMB-1A1-F12_Ptot
+ActivePower,CHW-CH-L101B-P1,PowerUnit,0,CHW-CH-L101B,kW,MMB-1A1-F16_Ptot
+ActivePower,CHW-CH-L105-P2,PowerUnit,0,CHW-CH-L105,kW,MMB-1B1-F04_Ptot
+ActivePower,CHW-CH-L106-P2,PowerUnit,0,CHW-CH-L106,kW,MMB-1B1-F05_Ptot
+ActivePower,CHW-CH-L104-P2,PowerUnit,0,CHW-CH-L104,kW,MMB-1B1-F06_Ptot
+ActivePower,CHW-CH-L101B-P2,PowerUnit,0,CHW-CH-L101B,kW,MMB-1B1-F10_Ptot
+ActivePower,CHW-CH-L102-P2,PowerUnit,162225.2031,CHW-CH-L102,kW,MMB-1B1-F11_Ptot
+ActivePower,CHW-CH-L103-P2,PowerUnit,0,CHW-CH-L103,kW,MMB-1B1-F12_Ptot
+ActivePower,CHW-CH-L101A-P2,PowerUnit,0,CHW-CH-L101A,kW,MMB-1B1-F16_Ptot
+ActivePower,ITLoad-4,ITPower,898.9942627,Level-4,kW,MSB-4A1-M01(AF)_Ptot
+ActivePower,ITLoad-5,ITPower,928.5874023,Level-5,kW,MSB-5A1-M02(AF)_Ptot
+ActivePower,ITLoad-6,ITPower,81.37796021,Level-6,kW,MSB-6A1-M02(AF)_Ptot
+ActivePower,ITLoad-2-1,ITPower,941625.0625,Level-2,kW,MSB201N1-M01_Ptot
+ActivePower,ITLoad-2-2,ITPower,324023.2813,Level-2,kW,MSB201N2-M01_Ptot
+ActivePower,ITLoad-3-1,ITPower,608395.5625,Level-3,kW,MSB301N1-M01_Ptot
+ActivePower,ITLoad-3-2,ITPower,625020.8125,Level-3,kW,MSB301N2-M01_Ptot
+ActivePower,CW-CT-LR06-P1,PowerUnit,0,CW-CT-LR06,kW,SB-CT-RF-1-F01_Ptot
+ActivePower,CW-CT-LR05-P1,PowerUnit,0,CW-CT-LR05,kW,SB-CT-RF-1-F02_Ptot
+ActivePower,CW-CT-LR03-P1,PowerUnit,0,CW-CT-LR03,kW,SB-CT-RF-1-F03_Ptot
+ActivePower,CW-CT-LR05-P2,PowerUnit,0,CW-CT-LR05,kW,SB-CT-RF-2-F01_Ptot
+ActivePower,CW-CT-LR06-P2,PowerUnit,0,CW-CT-LR06,kW,SB-CT-RF-2-F02_Ptot
+ActivePower,CW-CT-LR03-P2,PowerUnit,0,CW-CT-LR03,kW,SB-CT-RF-2-F03_Ptot
+ActivePower,CHW-SPMP-PU3,PowerUnit,0,CHW-SPMP-L202,kW,SB-L2-MECH-1-Q1-10_Ptot
+ActivePower,DB-2-CRAH-PU-2,PowerUnit,0,DB-2-CRAH-2,kW,SB-L2-MECH-2-Q1-2_Ptot
+ActivePower,DB-2-CRAH-PU-3,PowerUnit,0,DB-2-CRAH-3,kW,SB-L2-MECH-1-Q1-2_Ptot
+ActivePower,DB-2-CRAH-PU-4,PowerUnit,18654.90234,DB-2-CRAH-4,kW,SB-L2-MECH-2-Q1-6_Ptot
+ActivePower,DB-2-CRAH-PU-5,PowerUnit,9362.106445,DB-2-CRAH-5,kW,SB-L2-MECH-1-Q1-4_Ptot
+ActivePower,DB-2-CRAH-PU-6,PowerUnit,0,DB-2-CRAH-5,kW,SB-L2-MECH-2-Q1-5_Ptot
+ActivePower,DB-2-CRAH-PU-7,PowerUnit,0,DB-2-CRAH-6,kW,SB-L2-MECH-1-Q1-5_Ptot
+ActivePower,CHW-SPMP-PU1,PowerUnit,4915.382324,CHW-SPMP-L201,kW,SB-L2-MECH-1-Q1-9_Ptot
+ActivePower,CHW-SPMP-PU4,PowerUnit,4414.625977,CHW-SPMP-L202,kW,SB-L2-MECH-2-Q1-10_Ptot
+ActivePower,DB-2-CRAH-PU-8,PowerUnit,76.65955353,DB-2-CRAH-6,kW,SB-L2-MECH-2-Q1-4_Ptot
+ActivePower,DB-2-CRAH-PU-9,PowerUnit,16414.3457,DB-3-CRAH-1,kW,SB-L3-M-1-Q1-4_Ptot
+ActivePower,DB-2-CRAH-PU-10,PowerUnit,0,DB-3-CRAH-2,kW,SB-L3-M-2-Q1-4_Ptot
+ActivePower,DB-2-CRAH-PU-11,PowerUnit,0,DB-3-CRAH-3,kW,SB-L3-M-1-Q1-8_Ptot
+ActivePower,DB-2-CRAH-PU-12,PowerUnit,4779.582031,DB-3-CRAH-4,kW,SB-L3-M-2-Q1-8_Ptot
+ActivePower,DB-2-CRAH-PU-16,PowerUnit,58.43527222,DB-3-CRAH-5,kW,SB-L3-M-1-Q1-9_Ptot
+ActivePower,DB-2-CRAH-PU-17,PowerUnit,10706.58789,DB-3-CRAH-6,kW,SB-L3-M-2-Q1-9_Ptot
+ActivePower,DB-L2-ACMV-PU-1,PowerUnit,5303.794434,DB-L2-ACMV-01,kW,SB-L2-MECH-1-Q1-3_Ptot
+ActivePower,DB-L2-ACMV-PU-2,PowerUnit,0,DB-L2-ACMV-01,kW,SB-L2-MECH-2-Q1-3_Ptot
+ActivePower,DB-L2-ACMV-PU-3,PowerUnit,0,DB-L2-ACMV-02,kW,SB-L2-MECH-1-Q1-8_Ptot
+ActivePower,CHW-SPMP-PU2,PowerUnit,0,CHW-SPMP-L201,kW,SB-L2-MECH-2-Q1-9_Ptot
+ActivePower,DB-L2-ACMV-PU-4,PowerUnit,4779.582031,DB-L2-ACMV-02,kW,SB-L2-MECH-2-Q1-8_Ptot
+ActivePower,CHW-SPMP-PU5,PowerUnit,5032.782227,CHW-SPMP-L301,kW,SB-L3-M-1-Q1-3_Ptot
+ActivePower,CHW-SPMP-PU7,PowerUnit,0,CHW-SPMP-L302,kW,SB-L3-M-1-Q1-7_Ptot
+ActivePower,DB-L2-ACMV-PU-8,PowerUnit,5344.123047,DB-L3-ACMV-01,kW,SB-L3-M-1-Q1-2_Ptot
+ActivePower,DB-L2-ACMV-PU-9,PowerUnit,0,DB-L3-ACMV-01,kW,SB-L3-M-2-Q1-2_Ptot
+ActivePower,CHW-SPMP-PU6,PowerUnit,0,CHW-SPMP-L301,kW,SB-L3-M-2-Q1-3_Ptot
+ActivePower,DB-L2-ACMV-PU-10,PowerUnit,0,DB-L3-ACMV-02,kW,SB-L3-M-1-Q1-6_Ptot
+ActivePower,DB-L2-ACMV-PU-11,PowerUnit,4721.087891,DB-L3-ACMV-02,kW,SB-L3-M-2-Q1-6_Ptot
+ActivePower,CHW-SPMP-PU8,PowerUnit,4759.829102,CHW-SPMP-L302,kW,SB-L3-M-2-Q1-7_Ptot
+ActivePower,CHW-SPMP-PU9,PowerUnit,0,CHW-SPMP-L401,kW,SSB-4A1-F07_Ptot
+ActivePower,CHW-SPMP-PU11,PowerUnit,0,CHW-SPMP-L402,kW,SSB-4A1-F08_Ptot
+ActivePower,CCU-PU-1,PowerUnit,15415.28027,CCU4A1,kW,SSB-4A1-F10_Ptot
+ActivePower,CHW-SPMP-PU10,PowerUnit,0,CHW-SPMP-L401,kW,SSB-4B1-F01_Ptot
+ActivePower,CHW-SPMP-PU12,PowerUnit,2763.52002,CHW-SPMP-L402,kW,SSB-4B1-F03_Ptot
+ActivePower,CCU-PU-2,PowerUnit,38100.5625,CCU4B1,kW,SSB-4B1-F05_Ptot
+ActivePower,CHW-SPMP-PU13,PowerUnit,0,CHW-SPMP-L501,kW,SSB-5A1-F03_Ptot
+ActivePower,CCU-PU-3,PowerUnit,34032.72266,CCU5A1,kW,SSB-5A1-F07_Ptot
+ActivePower,CHW-SPMP-PU15,PowerUnit,2398.620117,CHW-SPMP-L502,kW,SSB-5A1-F08_Ptot
+ActivePower,CHW-SPMP-PU14,PowerUnit,11814.30078,CHW-SPMP-L501,kW,SSB-5B1-F09_Ptot
+ActivePower,CHW-SPMP-PU16,PowerUnit,0,CHW-SPMP-L502,kW,SSB-5B1-F10_Ptot
+ActivePower,CCU-PU-4,PowerUnit,35936.16016,CCU5B1,kW,SSB-5B1-F12_Ptot
+ActivePower,CHW-SPMP-PU17,PowerUnit,0,CHW-SPMP-L601,kW,SSB-6A1-F09_Ptot
+ActivePower,CHW-SPMP-PU19,PowerUnit,4521.560059,CHW-SPMP-L602,kW,SSB-6A1-F10_Ptot
+ActivePower,CCU-PU-5,PowerUnit,14836.16113,CCU6A1,kW,SSB-6A1-F12_Ptot
+ActivePower,CHW-SPMP-PU20,PowerUnit,20555.88086,CHW-SPMP-L602,kW,SSB-6B1-F01_Ptot
+ActivePower,CHW-SPMP-PU18,PowerUnit,0,CHW-SPMP-L601,kW,SSB-6B1-F02_Ptot
+ActivePower,CCU-PU-6,PowerUnit,14333.04102,CCU6B1,kW,SSB-6B1-F07_Ptot
+PUE,DC-SIN1,DataCenter,1.423727989,,,ns=2;s=0:Cluster1.TPUE
+FlowRate,EastRiser,Riser,192.84,CP-1,m3/s,ns=2;s=0:Cluster1.WR_CHW_BTU_L101_FT_PV
+ChilledWaterSupplyTemperature,WestRiser,Riser,13.5358276,CP-1,C,ns=2;s=0:Cluster1.WR_CHW_BTU_L101_PR_TT_01_PV
+ChilledWaterReturnTemperature,WestRiser,Riser,19.1852417,CP-1,C,ns=2;s=0:Cluster1.WR_CHW_BTU_L101_PR_TT_02_PV
+,CP-1,ChillerPlant,,DC-SIN1,,
+,DB-L2-ACMV-01,ACMV,,Level-2,,
+,DB-L2-ACMV-02,ACMV,,Level-2,,
+,DB-L3-ACMV-01,ACMV,,Level-3,,
+,DB-L3-ACMV-02,ACMV,,Level-3,,
+,CCU4A1,CCU,,Level-4,,
+,CCU4B1,CCU,,Level-4,,
+,CCU5A1,CCU,,Level-5,,
+,CCU5B1,CCU,,Level-5,,
+,CCU6A1,CCU,,Level-6,,
+,CCU6B1,CCU,,Level-6,,
+,DB-2-CRAH-1,CRAH,,Level-2,,
+,DB-2-CRAH-2,CRAH,,Level-2,,
+,DB-2-CRAH-3,CRAH,,Level-2,,
+,DB-2-CRAH-4,CRAH,,Level-2,,
+,DB-2-CRAH-5,CRAH,,Level-2,,
+,DB-2-CRAH-5,CRAH,,Level-2,,
+,DB-2-CRAH-6,CRAH,,Level-2,,
+,DB-3-CRAH-1,CRAH,,Level-3,,
+,DB-3-CRAH-2,CRAH,,Level-3,,
+,DB-3-CRAH-3,CRAH,,Level-3,,
+,DB-3-CRAH-4,CRAH,,Level-3,,
+,DB-3-CRAH-5,CRAH,,Level-3,,
+,DB-3-CRAH-6,CRAH,,Level-3,,
+,CHW-SPMP-L201,SecondaryChilledWaterPump,,Level-2,,
+,CHW-SPMP-L201,SecondaryChilledWaterPump,,Level-2,,
+,CHW-SPMP-L202,SecondaryChilledWaterPump,,Level-2,,
+,CHW-SPMP-L202,SecondaryChilledWaterPump,,Level-2,,
+,CHW-SPMP-L301,SecondaryChilledWaterPump,,Level-3,,
+,CHW-SPMP-L301,SecondaryChilledWaterPump,,Level-3,,
+,CHW-SPMP-L302,SecondaryChilledWaterPump,,Level-3,,
+,CHW-SPMP-L302,SecondaryChilledWaterPump,,Level-3,,
+,CHW-SPMP-L401,SecondaryChilledWaterPump,,Level-4,,
+,CHW-SPMP-L401,SecondaryChilledWaterPump,,Level-4,,
+,CHW-SPMP-L402,SecondaryChilledWaterPump,,Level-4,,
+,CHW-SPMP-L402,SecondaryChilledWaterPump,,Level-4,,
+,CHW-SPMP-L501,SecondaryChilledWaterPump,,Level-5,,
+,CHW-SPMP-L501,SecondaryChilledWaterPump,,Level-5,,
+,CHW-SPMP-L502,SecondaryChilledWaterPump,,Level-5,,
+,CHW-SPMP-L502,SecondaryChilledWaterPump,,Level-5,,
+,CHW-SPMP-L601,SecondaryChilledWaterPump,,Level-6,,
+,CHW-SPMP-L601,SecondaryChilledWaterPump,,Level-6,,
+,CHW-SPMP-L602,SecondaryChilledWaterPump,,Level-6,,
+,CHW-SPMP-L602,SecondaryChilledWaterPump,,Level-6,,
