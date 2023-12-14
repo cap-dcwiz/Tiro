@@ -11,10 +11,11 @@ from tiro.core.draft import DraftGenerator
 
 
 class Point:
-    def __init__(self, min, max, unit=None):
+    def __init__(self, min, max, unit=None, uuid=None):
         self.min = min
         self.max = max
         self.unit = unit
+        self.uuid = uuid
 
     def __str__(self):
         return f"Point({self.min}, {self.max}, {self.unit})"
@@ -37,24 +38,28 @@ class Asset:
     def add_asset(self, asset_type, name):
         return self.add_child(Asset(asset_type, name))
 
-    def add_point(self, point_name, min, max, unit=None):
-        point = Point(min, max, unit)
+    def add_point(self, point_name, min, max, unit=None, uuid=None):
+        old_point = self.points.get(point_name, None)
+        if old_point:
+            unit = unit or old_point.unit
+            uuid = uuid or old_point.uuid
+        point = Point(min, max, unit, uuid)
         self.points[point_name] = point
 
-    def add_point_to_children(self, path, point_name, min, max, unit=None):
+    def add_point_to_children(self, path, point_name, min, max, unit=None, uuid=None):
         """
         Add a point to all children with the given path.
         For example, if the path is ["Rack", "Server"], then the point will be added to all servers.
         """
         for child in self[path].values():
-            child.add_point(point_name, min, max, unit)
+            child.add_point(point_name, min, max, unit, uuid)
 
     def __str__(self):
         return f"{self.asset_type}#{self.name}"
 
     def __setattr__(self, key, value):
         if isinstance(value, Point):
-            self.add_point(key, value.min, value.max)
+            self.add_point(key, value.min, value.max, value.unit, value.uuid)
         else:
             super().__setattr__(key, value)
 
@@ -87,9 +92,9 @@ class Asset:
             if "." in key:
                 path, point_name = key.rsplit(".", 1)
                 for child in self.get_children(path, ignore_not_found=True).values():
-                    child.add_point(point_name, value.min, value.max)
+                    child.add_point(point_name, value.min, value.max, value.unit, value.uuid)
             else:
-                self.add_point(key, value.min, value.max)
+                self.add_point(key, value.min, value.max, value.unit, value.uuid)
         else:
             raise ValueError(
                 "Only Point can be assigned to an asset. Use add_asset to add a child asset."
@@ -197,9 +202,9 @@ class Asset:
         }
         """
         uuid_map = {}
-        for point_name in self.points.keys():
+        for point_name, point in self.points.items():
             entity_name = f"{self.asset_type}.{self.name}.{point_name}"
-            uuid_map[self._uuid(point_name)] = entity_name
+            uuid_map[point.uuid or self._uuid(point_name)] = entity_name
         for child in self.children:
             for uuid, entity_name in child.uuid_map().items():
                 uuid_map[uuid] = f"{self.asset_type}.{self.name}.{entity_name}"
@@ -312,7 +317,7 @@ class Asset:
         """
         for item in df[(df.asset == self.name) & (~df.data_point.isna())].itertuples():
             value = getattr(item, "value", 0)
-            self.add_point(item.data_point, value, value, getattr(item, "unit", None))
+            self.add_point(item.data_point, value, value, getattr(item, "unit", None), getattr(item, "uuid", None))
         for item in df[df.parent_asset == self.name].itertuples():
             child = self.add_asset(item.asset_type, item.asset)
             child._load_from_snapshot(df)
