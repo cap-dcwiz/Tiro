@@ -408,10 +408,10 @@ class Asset:
 
     def _to_library(self, existing_classes=None):
         existing_classes = existing_classes or {}
-        existing_classes[self.asset_type] = self._to_library_class()
+        if self.asset_type not in existing_classes:
+            existing_classes[self.asset_type] = self._to_library_class()
         for child in self.children:
-            if child.asset_type not in existing_classes:
-                child._to_library(existing_classes)
+            child._to_library(existing_classes)
         return existing_classes
 
     def to_library(self, file_name=None):
