@@ -30,7 +30,8 @@ class ConnectorForMockServer(RestfulConnectorBase):
             body = await self.try_request(client, f"/points/{entity}")
             if body:
                 return self.update_meta(
-                    dict(path=entity, result=body), category=entity.split(".")[-2].lower()
+                    dict(path=entity, result=body),
+                    category=entity.split(".")[-2].lower(),
                 )
         elif self.config.by == "uuid":
             body = await self.try_request(client, f"/values/{entity}")
@@ -44,6 +45,8 @@ class ConnectorForMockServer(RestfulConnectorBase):
         if self.config.shuffle.lower() == "true":
             entities = list(entities)
             shuffle(entities)
-        for item in await asyncio.gather(*[self.fetch_single(client, e) for e in entities]):
+        for item in await asyncio.gather(
+            *[self.fetch_single(client, e) for e in entities]
+        ):
             if item is not None:
                 yield item

@@ -1,7 +1,9 @@
 import os
 
 import json
-from collections import namedtuple
+from pathlib import Path
+from typing import Optional
+
 import pandas as pd
 import numpy as np
 import yaml
@@ -9,11 +11,19 @@ from loguru import logger as logging
 
 from tiro.core.draft import DraftGenerator
 
+from .use2query import use2query
+
 
 class Point:
-    def __init__(self, min, max, unit=None, uuid=None):
-        self.min = min
-        self.max = max
+    def __init__(
+        self,
+        _min: float | int,
+        _max: float | int,
+        unit: Optional[str] = None,
+        uuid: Optional[str] = None,
+    ):
+        self.min = _min
+        self.max = _max
         self.unit = unit
         self.uuid = uuid
 
@@ -25,34 +35,50 @@ class Point:
 
 
 class Asset:
-    def __init__(self, asset_type, name):
-        self.asset_type = asset_type
-        self.name = name
-        self.children = []
-        self.points = {}
+    def __init__(self, asset_type: str, name: str):
+        self.asset_type: str = asset_type
+        self.name: str = name
+        self.children: list[Asset] = []
+        self.points: dict[str, Point] = {}
 
-    def add_child(self, asset):
+    def add_child(self, asset: "Asset") -> "Asset":
         self.children.append(asset)
         return asset
 
-    def add_asset(self, asset_type, name):
+    def add_asset(self, asset_type: str, name: str) -> "Asset":
         return self.add_child(Asset(asset_type, name))
 
-    def add_point(self, point_name, min, max, unit=None, uuid=None):
+    def add_point(
+        self,
+        point_name: str,
+        _min: float | int,
+        _max: float | int,
+        unit: Optional[str] = None,
+        uuid: Optional[str] = None,
+    ) -> Point:
         old_point = self.points.get(point_name, None)
-        if old_point:
+        if old_point is not None:
             unit = unit or old_point.unit
             uuid = uuid or old_point.uuid
-        point = Point(min, max, unit, uuid)
+        point = Point(_min, _max, unit, uuid)
         self.points[point_name] = point
+        return point
 
-    def add_point_to_children(self, path, point_name, min, max, unit=None, uuid=None):
+    def add_point_to_children(
+        self,
+        path: str,
+        point_name: str,
+        _min: float | int,
+        _max: float | int,
+        unit: Optional[str] = None,
+        uuid: Optional[str] = None,
+    ) -> None:
         """
         Add a point to all children with the given path.
         For example, if the path is ["Rack", "Server"], then the point will be added to all servers.
         """
         for child in self[path].values():
-            child.add_point(point_name, min, max, unit, uuid)
+            child.add_point(point_name, _min, _max, unit, uuid)
 
     def __str__(self):
         return f"{self.asset_type}#{self.name}"
@@ -66,7 +92,9 @@ class Asset:
     def __getitem__(self, item):
         return self.get_children(item, ignore_not_found=False)
 
-    def get_children(self, item, ignore_not_found=False):
+    def get_children(
+        self, item: str, ignore_not_found: bool = False
+    ) -> dict[str, "Asset"]:
         """Return a dict of child assets with the given asset type."""
         if "." in item:
             res = {}
@@ -75,7 +103,9 @@ class Asset:
             for child in self.children:
                 if child.asset_type == child_type:
                     found = True
-                    res.update(child.get_children(offspring, ignore_not_found=ignore_not_found))
+                    res.update(
+                        child.get_children(offspring, ignore_not_found=ignore_not_found)
+                    )
             if not found and not ignore_not_found:
                 raise KeyError(f"Asset type {child_type} not found.")
             return res
@@ -87,12 +117,14 @@ class Asset:
                 logging.warning(f"Asset type {item} not found under {self}.")
             return res
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Point) -> None:
         if isinstance(value, Point):
             if "." in key:
                 path, point_name = key.rsplit(".", 1)
                 for child in self.get_children(path, ignore_not_found=True).values():
-                    child.add_point(point_name, value.min, value.max, value.unit, value.uuid)
+                    child.add_point(
+                        point_name, value.min, value.max, value.unit, value.uuid
+                    )
             else:
                 self.add_point(key, value.min, value.max, value.unit, value.uuid)
         else:
@@ -100,7 +132,7 @@ class Asset:
                 "Only Point can be assigned to an asset. Use add_asset to add a child asset."
             )
 
-    def tree(self):
+    def tree(self) -> dict:
         """
         Return a dict of the reference tree.
         For example:
@@ -138,7 +170,7 @@ class Asset:
         tree = {self.asset_type: {self.name: _tree}}
         return tree
 
-    def _tree(self):
+    def _tree(self) -> dict:
         tree = {}
         for point_name in self.points.keys():
             tree.setdefault("DataPoints", []).append(point_name)
@@ -148,7 +180,7 @@ class Asset:
                 tree.setdefault(asset.asset_type, {})[asset.name] = inner_tree
         return tree
 
-    def value_range(self):
+    def value_range(self) -> dict:
         """
         Return a dict of value range for each data point.
         For example:
@@ -189,7 +221,7 @@ class Asset:
                     range_dict[entity_name] = child_entity
         return range_dict
 
-    def uuid_map(self):
+    def uuid_map(self) -> dict[str, str]:
         """
         Return a dict of uuid mapping to path.
         For example:
@@ -210,10 +242,10 @@ class Asset:
                 uuid_map[uuid] = f"{self.asset_type}.{self.name}.{entity_name}"
         return uuid_map
 
-    def _uuid(self, point_name):
+    def _uuid(self, point_name: str) -> str:
         return f"{self.name}_{point_name}".lower().replace(" ", "_")
 
-    def search(self, asset_name):
+    def search(self, asset_name: str) -> Optional["Asset"]:
         if asset_name == self.name:
             return self
         for child in self.children:
@@ -224,7 +256,9 @@ class Asset:
                 if res:
                     return res
 
-    def parse_dt_construction(self, data, type_maps, skip_keys):
+    def parse_dt_construction(
+        self, data: dict, type_maps: dict, skip_keys: set[str]
+    ) -> None:
         construction = data.get("constructions", {})
         for asset_type, assets in construction.items():
             if asset_type in skip_keys:
@@ -236,7 +270,7 @@ class Asset:
                 child = self.add_asset(asset_type, asset_name)
                 child.parse_dt_construction(asset_info, type_maps, skip_keys)
 
-    def parse_dt_inputs(self, data, point_maps=None):
+    def parse_dt_inputs(self, data: dict, point_maps: dict) -> None:
         inputs = data.get("inputs", {})
         for asset_type, assets in inputs.items():
             for asset_name, data_points in assets.items():
@@ -247,16 +281,22 @@ class Asset:
                     )
                     asset.add_point(data_point, value, value)
 
-    def load_room_from_dt(self, dt, type_maps=None, point_maps=None, skip_keys=None):
+    def load_room_from_dt(
+        self,
+        dt: dict,
+        type_maps: dict = None,
+        point_maps: dict = None,
+        skip_keys: set[str] = None,
+    ) -> "Asset":
         """
         Generate reference tree from a dt file
         """
         type_maps = {
-                        "acus": "ACU",
-                        "racks": "Rack",
-                        "servers": "Server",
-                        "sensors": "Sensor",
-                    } | (type_maps or {})
+            "acus": "ACU",
+            "racks": "Rack",
+            "servers": "Server",
+            "sensors": "Sensor",
+        } | (type_maps or {})
         point_maps = point_maps or {}
         skip_keys = set(skip_keys or []) | {"raisedFloor"}
         if isinstance(dt, str):
@@ -266,10 +306,12 @@ class Asset:
         room.parse_dt_construction(dt, type_maps, skip_keys)
         room.parse_dt_inputs(dt, point_maps)
         self.add_child(room)
+        return self
 
-    def to_snapshot_frame(self, parent_asset=None):
+    def to_snapshot_frame(self, parent_asset: Optional["Asset"] = None) -> pd.DataFrame:
         """
-        Return a pandas.DataFrame containing columns asset,asset_type,parent_asset,data_point,value,unit,uuid, where unit is always None and value is always randomised between min and max.
+        Return a pandas.DataFrame containing columns asset,asset_type,parent_asset,data_point,value,unit,uuid,
+        where unit is always None and value is always randomised between min and max.
         """
         data = []
         for data_point, point in self.points.items():
@@ -311,23 +353,33 @@ class Asset:
                 df = pd.concat([df.astype(child_df.dtypes), child_df.astype(df.dtypes)])
         return df
 
-    def _load_from_snapshot(self, df):
+    def _load_from_snapshot(self, df: pd.DataFrame) -> None:
         """
         Load data from a snapshot dataframe.
         """
         for item in df[(df.asset == self.name) & (~df.data_point.isna())].itertuples():
             value = getattr(item, "value", 0)
-            self.add_point(item.data_point, value, value, getattr(item, "unit", None), getattr(item, "uuid", None))
+            self.add_point(
+                item.data_point,
+                value,
+                value,
+                getattr(item, "unit", None),
+                getattr(item, "uuid", None),
+            )
         for item in df[df.parent_asset == self.name].itertuples():
             child = self.add_asset(item.asset_type, item.asset)
             child._load_from_snapshot(df)
 
     @classmethod
-    def from_snapshot(cls, df, root_type="Root", root_name="Root"):
+    def from_snapshot(
+        cls, df: pd.DataFrame, root_type: str = "Root", root_name: str = "Root"
+    ) -> "Asset":
         """
         Load data from a snapshot dataframe.
         """
         assets = []
+        if "masked" in df.columns:
+            df = df[df.masked != 1]
         top_level = df[df["parent_asset"].isna()]
         for asset, sub_df in top_level.groupby("asset"):
             asset_type = sub_df["asset_type"].iloc[0]
@@ -342,7 +394,7 @@ class Asset:
                 root.add_child(asset)
             return root
 
-    def all_point_path(self):
+    def all_point_path(self) -> dict[str, Point]:
         """
         Return a list of all point paths.
         """
@@ -351,19 +403,27 @@ class Asset:
             res[f"{self.asset_type}.{point_name}"] = point
         for child in self.children:
             res.update(
-                {f"{self.asset_type}.{child_name}": child for child_name, child in child.all_point_path().items()})
+                {
+                    f"{self.asset_type}.{child_name}": child
+                    for child_name, child in child.all_point_path().items()
+                }
+            )
         return res
 
     @staticmethod
-    def _to_yaml(data, file_name=None):
+    def _to_yaml(data: dict, file_name: Optional[Path | str] = None) -> Optional[str]:
         data = yaml.dump(data)
         if file_name:
-            with open(file_name, "w") as f:
+            if isinstance(file_name, str):
+                file_name = Path(file_name)
+            with file_name.open("w") as f:
                 f.write(data)
         else:
             return data
 
-    def to_reference(self, as_yaml=False, file_name=None):
+    def to_reference(
+        self, as_yaml: bool = False, file_name: Optional[Path | str] = None
+    ) -> dict | str:
         res = {
             "tree": self.tree(),
             "value_range": self.value_range(),
@@ -374,9 +434,15 @@ class Asset:
         else:
             return res
 
-    # $asset_library_name: fxms_assets
+    # $asset_library_name: assets
     # $asset_library_path: scenario
-    def to_schema(self, as_yaml=False, library_name="assets", library_path="scenario", file_name=None):
+    def to_schema(
+        self,
+        as_yaml: bool = False,
+        library_name: bool = "assets",
+        library_path: str = "scenario",
+        file_name: Optional[Path | str] = None,
+    ) -> dict | str:
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.schema
         res["$asset_library_name"] = library_name
@@ -386,7 +452,9 @@ class Asset:
         else:
             return res
 
-    def to_uses(self, as_yaml=False, file_name=None):
+    def to_uses(
+        self, as_yaml: bool = False, file_name: Optional[Path | str] = None
+    ) -> dict | str:
         draft_gen = DraftGenerator(dataframe=self.to_snapshot_frame())
         res = draft_gen.uses
         if as_yaml:
@@ -394,19 +462,19 @@ class Asset:
         else:
             return res
 
-    def _to_library_class(self):
+    def _to_library_class(self) -> str:
         """Generate python code for a library class."""
-        lines = [
-            f"class {self.asset_type}(Entity):"
-        ]
+        lines = [f"class {self.asset_type}(Entity):"]
         if self.points:
             for point_name, point in self.points.items():
-                lines.append(f"    {point_name}: RangedFloatTelemetry({point.min}, {point.max})")
+                lines.append(
+                    f"    {point_name}: RangedFloatTelemetry({point.min}, {point.max})"
+                )
         else:
             lines.append(f"    pass")
         return "\n".join(lines)
 
-    def _to_library(self, existing_classes=None):
+    def _to_library(self, existing_classes: dict = None) -> dict:
         existing_classes = existing_classes or {}
         if self.asset_type not in existing_classes:
             existing_classes[self.asset_type] = self._to_library_class()
@@ -414,12 +482,34 @@ class Asset:
             child._to_library(existing_classes)
         return existing_classes
 
-    def to_library(self, file_name=None):
-        import_str = "from tiro.core import Entity\n" \
-                     "from tiro.utils import RangedFloatTelemetry"
+    def to_library(self, file_name: Optional[Path | str] = None) -> str | None:
+        import_str = (
+            "from tiro.core import Entity\n"
+            "from tiro.utils import RangedFloatTelemetry"
+        )
         res = (os.linesep * 3).join([import_str, *self._to_library().values()])
         if file_name:
-            with open(file_name, "w") as f:
+            if isinstance(file_name, str):
+                file_name = Path(file_name)
+            with file_name.open("w") as f:
                 f.write(res)
         else:
             return res
+
+    def gen_scenario(
+        self,
+        path: Path | str,
+        gen_query: bool = False,
+        query_path: Optional[Path | str] = None,
+    ) -> None:
+        if isinstance(path, str):
+            path = Path(path)
+        self.to_schema(as_yaml=True, file_name=path / "scenario.yaml")
+        self.to_uses(as_yaml=True, file_name=path / "uses.yaml")
+        self.to_reference(as_yaml=True, file_name=path / "reference.yaml")
+        self.to_library(file_name=path / "assets" / "__init__.py")
+        if gen_query:
+            if isinstance(query_path, str):
+                query_path = Path(query_path)
+            query_path = query_path or (path / "query.yaml")
+            use2query(path / "uses.yaml", query_path)
