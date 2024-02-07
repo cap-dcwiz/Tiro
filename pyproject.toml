@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.17.10"
+version = "0.17.11"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
@@ -13,7 +13,7 @@ jsonschema = "^4.4.0"
 python-arango = "^7.5.0"
 typer = "^0.9.0"
 influxdb-client = "^1.36.1"
-karez = {git = "https://github.com/cap-dcwiz/karez.git", rev = "v0.10.4"}
+karez = {git = "https://github.com/cap-dcwiz/karez.git", rev = "v0.10.5"}
 loguru = "^0.7.2"
 rich = "^13.6.0"
 pandas = "^2.1.1"
