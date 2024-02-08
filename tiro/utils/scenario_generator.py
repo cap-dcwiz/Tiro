@@ -364,7 +364,7 @@ class Asset:
                 value,
                 value,
                 getattr(item, "unit", None),
-                getattr(item, "uuid", None),
+                getattr(item, "uuid", f"{self.asset_type}_{self.name}_{item.data_point}"),
             )
         for item in df[df.parent_asset == self.name].itertuples():
             child = self.add_asset(item.asset_type, item.asset)
