@@ -59,8 +59,8 @@ class TiroUpdateInfoForValueConverter(FixTimestampConverter):
         category = dp_info.__class__.__name__
         path = PATH_SEP.join(path + [category, dp_name])
         result = dict(path=path, result=payload)
-        self.copy_meta(result, payload, clear_old=True)
-        self.update_meta(result, category=category.lower())
+        result = self.copy_meta(result, payload, clear_old=True)
+        result = self.update_meta(result, category=category.lower())
         yield result
 
 
@@ -70,11 +70,13 @@ class TiroPreprocessConverter(FixTimestampConverter):
         return "Converter to preprocess data points before send to data lake"
 
     def convert(self, payload):
+        print(payload)
         if self.is_configured("tz_infos"):
             for item in Scenario.decompose_data(payload["path"], payload["result"]):
                 yield from FixTimestampConverter.convert(self, item)
         else:
-            yield from Scenario.decompose_data(payload["path"], payload["result"])
+            for item in Scenario.decompose_data(payload["path"], payload["result"]):
+                yield self.copy_meta(item, payload)
 
 
 class TiroFilterByReferenceConverter(ConverterBase):
