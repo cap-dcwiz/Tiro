@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from karez.config import OptionalConfigEntity, ConfigEntity
+from karez.config import ConfigEntity
 from tiro.core import Scenario
 from tiro.core.mock import Reference
 from tiro.core.utils import PATH_SEP, split_path
@@ -70,7 +70,6 @@ class TiroPreprocessConverter(FixTimestampConverter):
         return "Converter to preprocess data points before send to data lake"
 
     def convert(self, payload):
-        print(payload)
         if self.is_configured("tz_infos"):
             for item in Scenario.decompose_data(payload["path"], payload["result"]):
                 yield from FixTimestampConverter.convert(self, item)

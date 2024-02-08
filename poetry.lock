@@ -1535,7 +1535,7 @@ test = ["hatch", "ipykernel", "openapi-core (>=0.18.0,<0.19.0)", "openapi-spec-v
 
 [[package]]
 name = "karez"
-version = "0.11.1"
+version = "0.11.2"
 description = ""
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -1563,8 +1563,8 @@ influxdb = ["influxdb-client (>=1.33.0,<2.0.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/cap-dcwiz/karez.git"
-reference = "v0.11.1"
-resolved_reference = "13fb5de46d0e1155654b385e487b84a58eef08bb"
+reference = "v0.11.2"
+resolved_reference = "ddf5fddc1870598e68921e36bada0ae2e086b524"
 
 [[package]]
 name = "loguru"
@@ -3954,4 +3954,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "93ed144566252a770d1b83e5560d5448b307e6b81447bd3fd68bb572748eec03"
+content-hash = "5f7ba743b9bcaa58d350591284b69d8a292d68d5e7bbc18558b8dbb6e618aac5"
