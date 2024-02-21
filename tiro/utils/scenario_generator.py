@@ -322,7 +322,7 @@ class Asset:
                         "asset_type": self.asset_type,
                         "parent_asset": parent_asset.name if parent_asset else None,
                         "data_point": data_point,
-                        "value": np.random.uniform(point.min, point.max),
+                        "value": np.random.uniform(point.min, point.max) if point.min < point.max else point.min,
                         "unit": None,
                         "uuid": self._uuid(data_point),
                     }
