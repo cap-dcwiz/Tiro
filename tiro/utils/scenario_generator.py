@@ -358,7 +358,7 @@ class Asset:
         Load data from a snapshot dataframe.
         """
         for item in df[(df.asset == self.name) & (~df.data_point.isna())].itertuples():
-            value = getattr(item, "value", 0)
+            value = getattr(item, "value", 0.0)
             self.add_point(
                 item.data_point,
                 value,
