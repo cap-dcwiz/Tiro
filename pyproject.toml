@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiro"
-version = "0.18.5"
+version = "0.19.1"
 description = ""
 authors = ["Zhu Zhaomeng <zhaomeng.zhu@gmail.com>"]
 
@@ -20,7 +20,7 @@ pandas = "^2.1.1"
 uvicorn = "<0.26.0"
 openpyxl = "^3.1.2"
 pydantic = "^2.6.1"
-fastapi = "^0.109.2"
+fastapi = "^0.110.0"
 
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["jupyter"], version = "^22.8.0"}
