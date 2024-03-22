@@ -68,16 +68,16 @@ class TimeSeriesPrimaryTableForTiro(TimeSeriesPrimaryTable):
 
 class TiroTSPump(InfluxDBDataPump):
     def __init__(
-            self,
-            *args,
-            scenario: Scenario | str | Path,
-            uses: Optional[list[str | Path]] = None,
-            arangodb_db="tiro",
-            arangodb_graph="scenario",
-            arangodb_hosts=None,
-            arangodb_auth=None,
-            arangodb_agent=None,
-            **kwargs,
+        self,
+        *args,
+        scenario: Scenario | str | Path,
+        uses: Optional[list[str | Path]] = None,
+        arangodb_db="tiro",
+        arangodb_graph="scenario",
+        arangodb_hosts=None,
+        arangodb_auth=None,
+        arangodb_agent=None,
+        **kwargs,
     ):
         super(TiroTSPump, self).__init__(*args, **kwargs)
         uses = uses or []
@@ -89,15 +89,15 @@ class TiroTSPump(InfluxDBDataPump):
             self.scenario = Scenario.from_yaml(scenario, *uses)
 
     def gen_table(
-            self,
-            query: Optional[str | dict | Path] = ".*",
-            type: Literal["historian", "status"] = "historian",
-            column: str = "asset_path",
-            asset_agg_fn: str = "mean",
-            asset_agg_fn_kwargs: dict = None,
-            time_agg_fn: str = "last",
-            # When query status, the telemetries updated before (now - max_time_diff) will be ignored.
-            max_time_diff: Optional[float] = 600,
+        self,
+        query: Optional[str | dict | Path] = ".*",
+        type: Literal["historian", "status"] = "historian",
+        column: str = "asset_path",
+        asset_agg_fn: str = "mean",
+        asset_agg_fn_kwargs: dict = None,
+        time_agg_fn: str = "last",
+        # When query status, the telemetries updated before (now - max_time_diff) will be ignored.
+        max_time_diff: Optional[float] = 600,
     ) -> PrimaryTable:
         paths = list(self.scenario.match_data_points(query))
         if not paths:
@@ -120,12 +120,12 @@ class TiroTSPump(InfluxDBDataPump):
         return table
 
     def gen_historian_table(
-            self,
-            pattern_or_uses: str | dict | Path,
-            column: str,
-            asset_agg_fn: str,
-            asset_agg_fn_kwargs: dict,
-            time_agg_fn: str,
+        self,
+        pattern_or_uses: str | dict | Path,
+        column: str,
+        asset_agg_fn: str,
+        asset_agg_fn_kwargs: dict,
+        time_agg_fn: str,
     ) -> TimeSeriesPrimaryTable:
         paths = list(self.scenario.match_data_points(pattern_or_uses))
         if not paths:

@@ -211,10 +211,6 @@ class CookbookFactoryBase(Calculator):
         return InfluxDBClient(**self.config.influxdb)
 
     @property
-    def arangodb(self):
-        return ArangoAgent(**self.config.arangodb)
-
-    @property
     def config(self):
         return self._config
 
@@ -243,7 +239,7 @@ class CookbookFactoryBase(Calculator):
         context.add_pump("tiro", TiroTSPump(scenario=self.scenario))
         context.add_pump("wrap", WrappedDataPump())
         context.add_pump("const", ConstantTSDataPump())
-        context.add_client(influxdb=self.influxdb, arangodb=self.arangodb)
+        context.add_client(influxdb=self.influxdb)
 
     def agg_fn_based_on_point_path(self, point_path):
         for k, v in self.SMART_AGG_FN_MAP.items():
@@ -366,10 +362,10 @@ class StatusCookbookFactory(CookbookFactoryBase):
     DEFAULT_MEAN_ARGS = {}
 
     def __init__(
-            self,
-            scenario_path: Path = Path("scenario/scenario.yaml"),
-            uses_path: Path = Path("scenario/uses.yaml"),
-            max_time_buffer: int = 3600,
+        self,
+        scenario_path: Path = Path("scenario/scenario.yaml"),
+        uses_path: Path = Path("scenario/uses.yaml"),
+        max_time_buffer: int = 3600,
     ):
         """
         :param scenario_path: path to scenario.yaml
@@ -385,7 +381,7 @@ class StatusCookbookFactory(CookbookFactoryBase):
             column=groupby,
             time_agg_fn="mean",
             asset_agg_fn=agg_fn,
-            max_time_diff=self.max_time_buffer
+            max_time_diff=self.max_time_buffer,
         )
         if agg_fn == "sum":
             extra_options["asset_agg_fn_kwargs"] = {"min_count": 1}
@@ -404,10 +400,7 @@ class HistorianCookbookFactory(CookbookFactoryBase):
 
     def create_table(self, point_path, field, groupby, agg_fn):
         extra_options = dict(
-            type="historian",
-            column=groupby,
-            time_agg_fn="mean",
-            asset_agg_fn=agg_fn
+            type="historian", column=groupby, time_agg_fn="mean", asset_agg_fn=agg_fn
         )
         if agg_fn == "sum":
             extra_options["asset_agg_fn_kwargs"] = {"min_count": 1}
