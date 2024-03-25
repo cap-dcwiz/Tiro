@@ -1,4 +1,4 @@
-FROM ghcr.io/cap-dcwiz/utinni:0.14.0 as build
+FROM ghcr.io/cap-dcwiz/utinni:0.14.1 as build
 
 ENV PYTHONPATH="${PYTHONPATH}:/opt/" \
     PYTHONUNBUFFERED=1 \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install build-essential && \
     poetry install && poetry build -f wheel
 
-FROM ghcr.io/cap-dcwiz/utinni:0.14.0
+FROM ghcr.io/cap-dcwiz/utinni:0.14.1
 
 ENV PYTHONPATH="${PYTHONPATH}:/tiro/" \
     PYTHONUNBUFFERED=1 \

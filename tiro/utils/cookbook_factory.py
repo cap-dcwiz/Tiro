@@ -138,6 +138,8 @@ class CookbookFactoryBase(Calculator):
             "riser",
             "floor",
             "room",
+            "pdu",
+            "pmm",
         ],
         AGGREGATION_FUNCTIONS=["mean", "sum", "total", "min", "max"],
         METRIC_VOCABULARY={
